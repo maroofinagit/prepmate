@@ -1,0 +1,260 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String?        @unique
+  password_hash String?
+  role          UserRole       @default(student)
+  image         String?
+  updated_at    DateTime       @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  emailVerified Boolean?       @default(false)
+  ai_prompts    AiPrompt[]
+  notifications Notification[]
+  exams         UserExam[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("user")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  scope                 String?
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+model Exam {
+  id                     Int        @id @default(autoincrement())
+  name                   String     @unique
+  description            String?
+  imageUrl               String     @default("")
+  default_duration_weeks Int?
+  created_at             DateTime   @default(now())
+  resources              Resource[]
+  subjects               Subject[]
+  userExams              UserExam[]
+}
+
+model Subject {
+  id         Int      @id @default(autoincrement())
+  exam_id    Int
+  name       String
+  created_at DateTime @default(now())
+  exam       Exam     @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  topics     Topic[]
+
+  @@unique([exam_id, name])
+}
+
+model Topic {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  difficulty  Difficulty
+  created_at  DateTime   @default(now())
+  subject_id  Int
+  subject     Subject    @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  @@unique([subject_id, name])
+}
+
+model UserExam {
+  id               Int      @id @default(autoincrement())
+  user_id          String
+  exam_id          Int
+  start_date       DateTime
+  end_date         DateTime
+  current_stage    String?
+  progress_percent Float?   @default(0)
+  created_at       DateTime @default(now())
+  roadmap          Roadmap?
+  exam             Exam     @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Roadmap {
+  id              Int            @id @default(autoincrement())
+  user_exam_id    Int            @unique
+  title           String
+  description     String?
+  generated_by_ai Boolean        @default(true)
+  created_at      DateTime       @default(now())
+  start_date      DateTime?
+  end_date        DateTime?
+  progress        Float          @default(0)
+  summary         String?
+  updated_at      DateTime       @updatedAt
+  version         Int            @default(1)
+  milestones      Milestone[]
+  userExam        UserExam       @relation(fields: [user_exam_id], references: [id], onDelete: Cascade)
+  phases          RoadmapPhase[]
+}
+
+model RoadmapPhase {
+  id          Int           @id @default(autoincrement())
+  roadmap_id  Int
+  phase_name  String
+  description String?
+  duration    String?
+  start_date  DateTime?
+  end_date    DateTime?
+  order_index Int           @default(0)
+  progress    Float         @default(0)
+  roadmap     Roadmap       @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
+  weeks       RoadmapWeek[]
+}
+
+model RoadmapWeek {
+  id          Int           @id @default(autoincrement())
+  phase_id    Int
+  week_number Int
+  start_date  DateTime?
+  end_date    DateTime?
+  focus       String
+  order_index Int           @default(0)
+  progress    Float         @default(0)
+  tasks       RoadmapTask[]
+  phase       RoadmapPhase  @relation(fields: [phase_id], references: [id], onDelete: Cascade)
+}
+
+model RoadmapTask {
+  id           Int         @id @default(autoincrement())
+  title        String
+  description  String?
+  start_date   DateTime?
+  end_date     DateTime?
+  is_completed Boolean     @default(false)
+  order_index  Int?
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  week_id      Int
+  week         RoadmapWeek @relation(fields: [week_id], references: [id], onDelete: Cascade)
+}
+
+model Milestone {
+  id          Int       @id @default(autoincrement())
+  roadmap_id  Int
+  name        String
+  goal        String
+  achieved    Boolean   @default(false)
+  target_date DateTime?
+  created_at  DateTime  @default(now())
+  roadmap     Roadmap   @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
+}
+
+model AiPrompt {
+  id         Int          @id @default(autoincrement())
+  user_id    String
+  prompt     String
+  response   String
+  type       AiPromptType
+  created_at DateTime     @default(now())
+  user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  user_id    String
+  message    String
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Resource {
+  id         Int          @id @default(autoincrement())
+  exam_id    Int
+  title      String
+  type       ResourceType
+  url        String
+  created_at DateTime     @default(now())
+  exam       Exam         @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+}
+
+model AiModel {
+  id           Int       @id @default(autoincrement())
+  name         String
+  temperature  Float?
+  last_used_at DateTime?
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+enum UserRole {
+  student
+  admin
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+enum ResourceType {
+  video
+  pdf
+  article
+  link
+}
+
+enum AiPromptType {
+  roadmap_gen
+  query_help
+  revision_tip
+}
