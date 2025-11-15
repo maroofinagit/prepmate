@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { db } from "../lib/db";
 import Image from "next/image";
 import { format } from "date-fns";
-import { authClient } from "../lib/auth-client";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
 import ProfileImageUploader from "@/components/ProfilePicUpdater";
+import { IoIosNotifications } from "react-icons/io";
 
 export default async function ProfilePage() {
 
@@ -53,12 +53,13 @@ export default async function ProfilePage() {
                 </div>
             </div>
 
-            {/* Role */}
-            <div className="mt-6">
-                <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium">
-                    {user.role.toUpperCase()}
-                </span>
-            </div>
+            {user.role?.toLowerCase() === "admin" && (
+                <div className="mt-6">
+                    <span className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
+                        {user.role.toUpperCase()}
+                    </span>
+                </div>
+            )}
 
             {/* Exams */}
             <section className="mt-10">
@@ -93,11 +94,14 @@ export default async function ProfilePage() {
                 {user.notifications.length > 0 ? (
                     <ul className="space-y-2">
                         {user.notifications.map((n) => (
-                            <li key={n.id} className="border p-3 rounded-lg text-sm">
-                                <p>{n.message}</p>
-                                <span className="text-xs text-gray-500">
-                                    {format(new Date(n.created_at), "dd MMM yyyy")}
-                                </span>
+                            <li key={n.id} className="border p-3 flex gap-2 rounded-lg text-sm md:text-base items-center">
+                                <IoIosNotifications color="#0039b7" size={32} />
+                                <div>
+                                    <p>{n.message}</p>
+                                    <span className="text-xs text-gray-500">
+                                        {format(new Date(n.created_at), "dd MMM yyyy")}
+                                    </span>
+                                </div>
                             </li>
                         ))}
                     </ul>

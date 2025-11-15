@@ -11,14 +11,11 @@ model User {
   id            String         @id @default(cuid())
   name          String?
   email         String?        @unique
-  password_hash String?
   role          UserRole       @default(student)
   image         String?
-  updated_at    DateTime       @updatedAt
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @default(now()) @updatedAt
   emailVerified Boolean?       @default(false)
-  ai_prompts    AiPrompt[]
   notifications Notification[]
   exams         UserExam[]
   accounts      Account[]
@@ -188,16 +185,6 @@ model Milestone {
   roadmap     Roadmap   @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
 }
 
-model AiPrompt {
-  id         Int          @id @default(autoincrement())
-  user_id    String
-  prompt     String
-  response   String
-  type       AiPromptType
-  created_at DateTime     @default(now())
-  user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-}
-
 model Notification {
   id         Int      @id @default(autoincrement())
   user_id    String
@@ -217,12 +204,6 @@ model Resource {
   exam       Exam         @relation(fields: [exam_id], references: [id], onDelete: Cascade)
 }
 
-model AiModel {
-  id           Int       @id @default(autoincrement())
-  name         String
-  temperature  Float?
-  last_used_at DateTime?
-}
 
 model Verification {
   id         String   @id
@@ -251,10 +232,4 @@ enum ResourceType {
   pdf
   article
   link
-}
-
-enum AiPromptType {
-  roadmap_gen
-  query_help
-  revision_tip
 }
