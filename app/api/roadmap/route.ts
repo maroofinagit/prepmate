@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
         // 3️⃣ Build AI Prompt
         const prompt = `
-You are an expert academic planner. Create a study roadmap for the exam "${exam.name}" where description is a general brief discription of the roadmap and the summary is bit more elaboarated summary of current roadmap on the basis of exam and duration provided.
+You are an expert academic planner. Create a study roadmap for the exam "${exam.name}" where description is a general brief discription of the roadmap and the summary is brief too but bit more specific summary of current roadmap on the basis of exam and duration provided.
 The roadmap should help a student prepare effectively by breaking down the syllabus into manageable phases, weeks, and tasks.  Include milestones to track progress.
 The preparation time is from ${start_date.toDateString()} to ${end_date.toDateString()} with subjetcs and topics are ${subjects.map((s) => `- ${s.name}: ${s.topics.join(", ")}`).join("\n")}.
 Output ONLY a valid JSON structure in this exact format:

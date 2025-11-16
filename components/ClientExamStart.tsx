@@ -56,8 +56,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
             await new Promise((r) => setTimeout(r, 1000));
-
-            window.location.href = '/dashboard/roadmap/';
+            window.location.href = `/dashboard/roadmap/${user_exam_id}`;
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Something went wrong');
