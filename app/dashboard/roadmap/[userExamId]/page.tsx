@@ -10,7 +10,7 @@ export default async function RoadmapPage({ params }: RoadmapPageProps) {
 
     if (!userExamId) {
         return (
-            <div className="text-center mt-16 text-gray-600">
+            <div className="text-center text-gray-600 flex justify-center items-center h-screen">
                 Invalid User Exam ID.
             </div>
         );
@@ -21,8 +21,8 @@ export default async function RoadmapPage({ params }: RoadmapPageProps) {
 
     if (!roadmap ) {
         return (
-            <div className="text-center mt-16 text-gray-600">
-                No roadmap found for this user exam.
+            <div className="text-center h-screen flex justify-center items-center text-gray-600">
+                No roadmap generated for this user exam.
             </div>
         );
     }

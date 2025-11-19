@@ -2,11 +2,23 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
+import { redirect } from 'next/navigation';
 
 export default function ClientExamStart({ exam }: { exam: any }) {
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [error, setError] = useState('');
+
+    function startMessageLoop(messages: string[], interval = 1500) {
+        let index = 0;
+        setLoadingMessage(messages[index]);
+        const id = setInterval(() => {
+            index = (index + 1) % messages.length;
+            setLoadingMessage(messages[index]);
+        }, interval);
+        return id; // you’ll use this to clear the loop
+    }
+
 
     async function handleStartPreparing(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -39,15 +51,26 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const { user_exam_id } = userExamJson;
 
             setLoadingMessage('✅ User exam created successfully!');
-            await new Promise((r) => setTimeout(r, 800));
+            await new Promise((r) => setTimeout(r, 1000));
 
             // Step 2: Generate Roadmap
-            setLoadingMessage('Generating your roadmap... please wait ⏳');
+            const loadingMessages = [
+                "Generating your roadmap... please wait ⏳",
+                "Aligning tasks with your strategy…",
+                "Calculating your weekly milestones…",
+                "Almost there… sprinkling the final touches ✨"
+            ];
+
+            const loopId = startMessageLoop(loadingMessages, 5000);
+
+            // Step 2: Generate Roadmap
             const roadmapRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/roadmap`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_exam_id }),
             });
+
+            clearInterval(loopId);
 
             const roadmapJson = await roadmapRes.json();
             if (!roadmapJson.success) {
@@ -56,7 +79,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
             await new Promise((r) => setTimeout(r, 1000));
-            window.location.href = `/dashboard/roadmap/${user_exam_id}`;
+            // Redirect to dashboard
+            redirect(`/dashboard/exam/${user_exam_id}`);
+
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Something went wrong');
