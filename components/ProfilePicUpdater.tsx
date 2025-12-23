@@ -4,7 +4,6 @@ import { CldUploadWidget } from "next-cloudinary";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Router from "next/router";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -27,7 +26,7 @@ export default function ProfileImageUploader({ initialImage }: { initialImage: s
                 body: JSON.stringify({ image: url }),
             });
             if (!res.ok) {
-                toast.error(res.error || "Failed to update profile picture.");
+                toast.error("Failed to update profile picture.");
             }
             if (res.ok) {
                 toast.success("Profile picture updated successfully!");

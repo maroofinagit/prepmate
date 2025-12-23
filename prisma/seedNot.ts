@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
     // Example: Fetch one existing user
-    const userId = '65jLIS55osEUKOsmoMeWl3ikj78b8NJD'; // replace with a real user id from your auth system
+    const userId = 'cl61cLweRaEywTtAvJxpRcSvlgsFUl3g'; // replace with a real user id from your auth system
 
     await prisma.notification.createMany({
         data: [

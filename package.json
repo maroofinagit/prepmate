@@ -27,11 +27,11 @@
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.548.0",
-    "next": "16.0.0",
-    "next-cloudinary": "^6.17.4",
+    "next": "^16.1.1",
+    "next-cloudinary": "^6.17.5",
     "openai": "^6.8.1",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-icons": "^5.5.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.4.1",
@@ -54,6 +54,6 @@
     "typescript": "^5.9.3"
   },
   "prisma": {
-    "seed": "ts-node prisma/seedNot.ts"
+    "seed": "prisma/seed3.ts"
   }
 }

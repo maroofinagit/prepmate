@@ -6,7 +6,7 @@ async function main() {
     console.log('🌱 Starting seed...');
 
     // ⚙️ CONFIG
-    const userId = '65jLIS55osEUKOsmoMeWl3ikj78b8NJD'; // replace with a real user id from your auth system
+    const userId = 'cl61cLweRaEywTtAvJxpRcSvlgsFUl3g'; // replace with a real user id from your auth system
     const examId = 2; // existing exam ID from your "Exam" table
 
     // 🧩 1️⃣ Create a UserExam

@@ -24,6 +24,7 @@ export default function Navbar() {
         { name: "About", href: "#about" },
         { name: "Features", href: "#features" },
         { name: "Courses", href: "#courses" },
+        {name :"Onboarding", href:"/onboarding" }
     ];
 
     const navLinksAuth = [

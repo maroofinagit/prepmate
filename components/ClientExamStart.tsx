@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { redirect } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function ClientExamStart({ exam }: { exam: any }) {
     const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
             // Step 1: Create User Exam
             setLoadingMessage('Creating your user exam...');
-            const userExamRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/createUserExam`, {
+            const userExamRes = await fetch(`/api/createUserExam`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -64,7 +65,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const loopId = startMessageLoop(loadingMessages, 5000);
 
             // Step 2: Generate Roadmap
-            const roadmapRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/roadmap`, {
+            const roadmapRes = await fetch(`/api/roadmap`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_exam_id }),
@@ -74,13 +75,14 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
             const roadmapJson = await roadmapRes.json();
             if (!roadmapJson.success) {
-                throw new Error('Failed to generate roadmap');
+                toast.error('Failed to generate roadmap. You can create one later from your dashboard.');
             }
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
             await new Promise((r) => setTimeout(r, 1000));
             // Redirect to dashboard
-            redirect(`/dashboard/exam/${user_exam_id}`);
+            // redirect(`/dashboard/exam/${user_exam_id}`);
+            window.location.href = `/dashboard/roadmap/${user_exam_id}`;
 
         } catch (err: any) {
             console.error(err);

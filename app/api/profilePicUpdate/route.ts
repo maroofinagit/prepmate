@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/app/lib/auth";
 import { db } from "@/app/lib/db";
+import { error } from "console";
 
 export async function POST(req: Request) {
     try {
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
             data: { image },
         });
 
-        return NextResponse.json({ success: true }, { status: 200 });
+        return NextResponse.json({ success: true, error: null }, { status: 200 });
     } catch (err) {
         console.log(err);
         return NextResponse.json({ error: "Failed" }, { status: 500 });
