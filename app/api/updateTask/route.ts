@@ -13,7 +13,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const result = await db.$transaction(async (tx) => {
+        const result = await db.$transaction(async (tx: any) => {
 
             // 1️⃣ Mark the task completed AND load its hierarchy pointers
             const task = await tx.roadmapTask.update({
