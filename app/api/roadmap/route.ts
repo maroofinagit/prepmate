@@ -25,9 +25,9 @@ export async function POST(req: Request) {
         const { exam, start_date, end_date } = userExam;
 
         // 2️⃣ Build the structured subject/topic list for prompt
-        const subjects = exam.subjects.map((s) => ({
+        const subjects = exam.subjects.map((s: any) => ({
             name: s.name,
-            topics: s.topics.map((t) => t.name),
+            topics: s.topics.map((t: any) => t.name),
         }));
 
         // 3️⃣ Build AI Prompt
