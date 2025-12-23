@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         const prompt = `
 You are an expert academic planner. Create a study roadmap for the exam "${exam.name}" where description is a general brief 1-2 line discription of the roadmap and the summary is brief too of about 2-3 lines but bit more specific of current roadmap on the basis of exam and duration provided.
 The roadmap should help a student prepare effectively by breaking down the syllabus into manageable phases, weeks, and tasks.  Include milestones to track progress.
-The preparation time is from ${start_date.toDateString()} to ${end_date.toDateString()} with subjetcs and topics are ${subjects.map((s) => `- ${s.name}: ${s.topics.join(", ")}`).join("\n")}.
+The preparation time is from ${start_date.toDateString()} to ${end_date.toDateString()} with subjetcs and topics are ${subjects.map((s: any) => `- ${s.name}: ${s.topics.join(", ")}`).join("\n")}.
 Output ONLY a valid JSON structure in this exact format:
 {
   "title": "string",
