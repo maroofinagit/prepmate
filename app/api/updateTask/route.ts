@@ -44,7 +44,7 @@ export async function POST(req: Request) {
             });
 
             const weekTotal = weekTasks.length;
-            const weekCompleted = weekTasks.filter(t => t.is_completed).length;
+            const weekCompleted = weekTasks.filter((t: any) => t.is_completed).length;
 
             const weekProgress = weekTotal
                 ? Math.round((weekCompleted / weekTotal) * 100)
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
             const phaseProgress = phaseWeeks.length
                 ? Math.round(
-                    phaseWeeks.reduce((sum, w) => sum + w.progress, 0) /
+                    phaseWeeks.reduce((sum: number, w: any) => sum + w.progress, 0) /
                     phaseWeeks.length
                 )
                 : 0;
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
 
             const roadmapProgress = roadmapPhases.length
                 ? Math.round(
-                    roadmapPhases.reduce((sum, p) => sum + p.progress, 0) /
+                    roadmapPhases.reduce((sum: number, p: any) => sum + p.progress, 0) /
                     roadmapPhases.length
                 )
                 : 0;
