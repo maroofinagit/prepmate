@@ -66,7 +66,7 @@ export default async function ProfilePage() {
                 <h2 className="text-xl font-semibold mb-3">Your Exams</h2>
                 {user.exams.length > 0 ? (
                     <div className="space-y-3">
-                        {user.exams.map((ue) => (
+                        {user.exams.map((ue: any) => (
                             <div
                                 key={ue.id}
                                 className="border rounded-lg p-4 hover:shadow-sm transition"
