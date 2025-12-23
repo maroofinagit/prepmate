@@ -93,7 +93,7 @@ export default async function ProfilePage() {
                 <h2 className="text-xl font-semibold mb-3">Recent Notifications</h2>
                 {user.notifications.length > 0 ? (
                     <ul className="space-y-2">
-                        {user.notifications.map((n) => (
+                        {user.notifications.map((n: any) => (
                             <li key={n.id} className="border p-3 flex gap-2 rounded-lg text-sm md:text-base items-center">
                                 <IoIosNotifications color="#0039b7" size={32} />
                                 <div>
