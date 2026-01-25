@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Interactive Commerce-Driven Portfolio Web Application
 
-## Getting Started
+A modern, interactive full-stack web application that blends a personal portfolio experience with commerce-inspired interactions. Designed to demonstrate production-grade frontend engineering using modern web technologies, performance optimization, and scalable UI architecture.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features
+
+- CMS-driven dynamic content rendering
+- Smooth animations and micro-interactions
+- SEO-optimized pages using SSR and SSG
+- Fully responsive, mobile-first layout
+- Reusable and scalable component architecture
+- Clean, accessible, and modern UI design
+- Optimized performance and fast load times
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- **Next.js** – React framework with SSR and SSG
+- **React.js** – Component-based UI development
+- **Tailwind CSS** – Utility-first styling
+- **Shadcn/UI** – Accessible and composable UI components
+- **Framer Motion** – Animations and transitions
+
+### CMS
+
+- **Sanity.io** – Headless CMS for structured content management
+
+---
+
+## 📂 Project Structure
+
+```text
+├── app/                # Next.js App Router
+├── components/         # Reusable UI components
+├── lib/                # Utilities and helpers
+├── styles/             # Global styles
+├── sanity/             # CMS schemas and configuration
+├── public/             # Static assets
+└── README.md          # Project documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🔧 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/your-username/project-name.git
 
-## Learn More
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install dependencies**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   cd project-name
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ---
 
-## Deploy on Vercel
+## 📈 Performance & Best Practices
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Server-side rendering (SSR) and static site generation (SSG)
+- Optimized images and assets
+- Clean component separation
+- Minimal client-side JavaScript
+- SEO-friendly routing and metadata
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🧠 What This Project Demonstrates
+
+- Strong command of modern frontend development
+- Practical use of Next.js SSR and SSG
+- UI/UX attention to detail
+- CMS-driven scalable architecture
+- Production-ready code organization
+
+---
+
+## 📌 Possible Enhancements
+
+- Authentication and user dashboards
+- Commerce checkout flows
+- Admin management panel
+- Analytics and tracking
+- Advanced filtering and search
+
+---
+
+## 📄 License
+
+MIT License
