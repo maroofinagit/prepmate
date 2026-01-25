@@ -1,6 +1,16 @@
-# Interactive Commerce-Driven Portfolio Web Application
+# Prepmate - An AI-Powered Study Companion
 
-A modern, interactive full-stack web application that blends a personal portfolio experience with commerce-inspired interactions. Designed to demonstrate production-grade frontend engineering using modern web technologies, performance optimization, and scalable UI architecture.
+A modern, interactive full-stack web application that serves as an AI-powered study companion for students. Built with Next.js, Tailwind CSS, and Sanity.io, Prepmate offers dynamic content, smooth animations, and a responsive design to enhance the learning experience.
+
+---
+
+## Usage
+
+- Generate dynamic roadmaps for study plans
+- Access curated resources and materials
+- Track progress with interactive dashboards
+- Benefit from AI-driven study recommendations
+- Engage with a user-friendly interface
 
 ---
 
@@ -24,11 +34,15 @@ A modern, interactive full-stack web application that blends a personal portfoli
 - **React.js** – Component-based UI development
 - **Tailwind CSS** – Utility-first styling
 - **Shadcn/UI** – Accessible and composable UI components
-- **Framer Motion** – Animations and transitions
+- **Gemini AI API** – AI-driven content generation
 
-### CMS
+### Backend
 
-- **Sanity.io** – Headless CMS for structured content management
+- **Prisma** – Type-safe database ORM
+- **PostgreSQL** – Relational database
+- **BetterAuth** – Authentication management
+_ **NextJS API Routes** – Serverless functions for backend logic    
+
 
 ---
 
@@ -39,7 +53,6 @@ A modern, interactive full-stack web application that blends a personal portfoli
 ├── components/         # Reusable UI components
 ├── lib/                # Utilities and helpers
 ├── styles/             # Global styles
-├── sanity/             # CMS schemas and configuration
 ├── public/             # Static assets
 └── README.md          # Project documentation
 ```
@@ -49,14 +62,14 @@ A modern, interactive full-stack web application that blends a personal portfoli
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/project-name.git
+   git clone https://github.com/maroofinagit/prepmate.git
 
    ```
 
 2. **Install dependencies**
 
    ```bash
-   cd project-name
+   cd prepmate
    npm install
    ```
 
@@ -84,11 +97,13 @@ A modern, interactive full-stack web application that blends a personal portfoli
 
 ## 📌 Possible Enhancements
 
-- Authentication and user dashboards
-- Commerce checkout flows
-- Admin management panel
-- Analytics and tracking
-- Advanced filtering and search
+- User authentication and profiles
+- Real-time collaboration features
+- Mobile app version
+- Dynamic quizzes and assessments
+- Integration with third-party educational tools
+- AI-powered chat support
+- Dynamic Exams and roadmaps generation
 
 ---
 
