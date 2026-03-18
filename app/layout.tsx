@@ -18,6 +18,38 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PrepMate - Your Ultimate Exam Preparation Companion",
   description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
+  keywords: ["prepmate", "prepmatex", "prepmate vercel", "prepmate maroof", "AI", "exam preparation", "study roadmap", "progress tracking", "personalized learning", "academic planner"],
+  authors: [{ name: "Maroof Ali Syed", url: "https://prepmatex.vercel.app" }],
+  applicationName: "PrepMate",
+  openGraph: {
+    title: "PrepMate - Your Ultimate Exam Preparation Companion",
+    description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
+    url: "https://prepmatex.vercel.app",
+    siteName: "PrepMate",
+    images: [
+      {
+        url: "https://prepmatex.vercel.app/logo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "PrepMate Open Graph Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PrepMate - Your Ultimate Exam Preparation Companion",
+    description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
+    creator: "@prepmatex",
+    images: [
+      {
+        url: "https://prepmatex.vercel.app/logo.jpg",
+        alt: "PrepMate Twitter Card Image",
+      },
+    ],
+  },
+
 };
 
 export default function RootLayout({
@@ -27,6 +59,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "PrepMate",
+          "url": "https://prepmatex.vercel.app",
+          "description": "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
+          "keywords": "prepmate, prepmatex, prepmate vercel, prepmate maroof, AI, exam preparation, study roadmap, progress tracking, personalized learning, academic planner",
+          "author": {
+            "@type": "Person",
+            "name": "Maroof Ali Syed",
+            "url": "https://prepmatex.vercel.app"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "PrepMate",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://prepmatex.vercel.app/logo.jpg"
+            }
+          }
+        })
+      }} />
+      
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
