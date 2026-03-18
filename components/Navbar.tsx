@@ -22,7 +22,7 @@ import Image from "next/image";
 export default function Navbar() {
     const navLinksLP = [
         { name: "Courses", href: "#courses" },
-        {name :"Onboarding", href:"/onboarding" }
+        { name: "Onboarding", href: "/onboarding" }
     ];
 
     const navLinksAuth = [
@@ -62,14 +62,14 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-white backdrop-blur-md shadow-md border-b border-gray-200">
+        <nav className="fixed top-0 left-0 w-full py-2 z-50 bg-white backdrop-blur-md shadow-md border-b border-gray-200">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-4 text-2xl font-bold text-[#004ba0]">
+                <Link href="/" className="flex items-center gap-4 text-3xl font-bold text-[#004ba0]">
                     <Image
                         src="/logo.jpg"
                         alt="PrepMate Logo"
-                        width={32}
-                        height={32}
+                        width={36}
+                        height={36}
                         className=" object-cover rounded-full"
                     />
                     PrepMate
@@ -77,9 +77,9 @@ export default function Navbar() {
 
 
                 {/* Nav Links */}
-                {pathname === "/" ? (
+                {isLoggedIn ? (
                     <div className="hidden md:flex space-x-8 font-medium">
-                        {navLinksLP.map((link) => (
+                        {navLinksAuth.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
@@ -92,7 +92,7 @@ export default function Navbar() {
                     </div>
                 ) : (
                     <div className="hidden md:flex space-x-8 font-medium">
-                        {navLinksAuth.map((link) => (
+                        {navLinksLP.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
@@ -131,7 +131,7 @@ export default function Navbar() {
                             <DropdownMenuContent className="w-48" align="end">
                                 <DropdownMenuLabel className="flex items-center gap-2">
                                     <Avatar className="h-6 w-6">
-                                        <AvatarImage src={user?.image || "/avatars/user.png"} className= " object-cover object-center " alt="@user" />
+                                        <AvatarImage src={user?.image || "/avatars/user.png"} className=" object-cover object-center " alt="@user" />
                                         <AvatarFallback>
                                             {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                                         </AvatarFallback>

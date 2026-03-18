@@ -65,9 +65,9 @@ export default async function LandingPage() {
 
             {/* USER EXAMS */}
             {isLoggedWithExam && (
-                <section className="py-14 px-6 bg-blue-50/60 text-center">
+                <section className="py-14 px-6 bg-blue-50 text-center">
                     <h2 className="text-3xl font-semibold text-gray-900 mb-2">
-                        Welcome back, <span className="text-blue-700">{user.name}</span>
+                        Welcome back, <span className="text-indigo-700">{user.name}</span>
                     </h2>
 
                     <p className="text-gray-600 mb-10">
@@ -78,16 +78,16 @@ export default async function LandingPage() {
                         {userExams.map((ue) => (
                             <div
                                 key={ue.id}
-                                className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-200 text-center"
+                                className="p-6 bg-white rounded-2xl shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 text-center"
                             >
-                                <h3 className="text-lg font-semibold mb-2 text-blue-700">{ue.exam.name}</h3>
+                                <h3 className="text-xl font-semibold mb-2 text-indigo-800">{ue.exam.name}</h3>
                                 <p className="text-gray-600 mb-4 md:text-base text-sm">
                                     Progress: {ue.progress_percent || 0}%
                                 </p>
 
                                 <Link
                                     href="/dashboard"
-                                    className="inline-block px-5 py-2 rounded-lg border text-blue-700 border-blue-700 hover:text-white hover:bg-blue-700 transition text-sm font-medium"
+                                    className="inline-block px-5 py-2 cursor-pointer rounded-lg border text-indigo-800 border-indigo-800 hover:text-white hover:bg-indigo-800 transition font-medium"
                                 >
                                     Continue →
                                 </Link>
@@ -97,70 +97,151 @@ export default async function LandingPage() {
                 </section>
             )}
 
-            {/* ABOUT (Smoother, tighter) */}
-            <section id="about" className="py-20 px-6 text-center bg-white">
-                <h2 className="text-3xl font-bold mb-6 text-gray-900">About PrepMate</h2>
+            {/* ABOUT */}
+            <section
+                id="about"
+                className="min-h-[80vh] flex items-center justify-center px-6 py-20 bg-linear-to-b from-gray-50 via-white to-gray-100"
+            >
+                <div className="max-w-4xl text-center">
 
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-                    PrepMate helps you stay disciplined and consistent by combining structured roadmaps,
-                    meaningful analytics, and AI-powered insights that guide your preparation from start to finish ensuring every study session counts.
-                </p>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-10 text-gray-900 leading-tight">
+                        <span className="text-indigo-700">Preparation </span>with Path
+                    </h2>
+
+                    <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                        Preparation is not just about effort it is about direction. In a world where
+                        information is endless and distractions are constant, most students struggle
+                        not because they lack potential, but because they lack clarity in how to move forward.
+
+
+                        <span className=" font-bold"> PrepMate</span> changes that by transforming scattered preparation into a structured journey.
+                        Instead of guessing what to study next, you follow a clear roadmap tailored to your goals,
+                        helping you build consistency and momentum over time. </p>
+
+                    <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                        What would normally take hours of planning and still leave room for uncertainty is
+                        streamlined through intelligent systems. By combining thoughtful design with AI-driven
+                        guidance, PrepMate helps you make better decisions, faster reducing confusion and
+                        increasing accuracy in your preparation.
+                    </p>
+
+                </div>
+
             </section>
 
-            {/* FEATURES (Unified card style) */}
-            <section id="features" className="py-20 px-6 bg-blue-50 text-center">
-                <h2 className="text-3xl font-bold mb-12 text-gray-900">Features</h2>
 
-                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* FEATURES */}
+            <section
+                id="features"
+                className="py-24 px-6 bg-linear-to-b from-white via-blue-50/40 to-white text-center relative overflow-hidden"
+            >
+                {/* subtle background glow */}
+                <div className="absolute inset-0 -z-10">
+                    <div className="w-125 h-125 bg-blue-200/30 blur-3xl rounded-full absolute -top-25 -left-25" />
+                    <div className="w-100 h-100 bg-purple-200/20 blur-3xl rounded-full absolute -bottom-25 -right-25" />
+                </div>
+
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+                    Smart <span className="text-blue-600">Features</span> for Smarter Prep
+                </h2>
+
+                <p className="text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
+                    Everything you need to stay consistent, track progress, and improve with clarity.
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
                     {[
                         {
                             title: "Personalized Roadmaps",
-                            desc: "Tailored study paths crafted to match your exam's demands.",
+                            desc: "Structured paths aligned with your exam, eliminating confusion and guesswork.",
+                            icon: "🧭",
                         },
                         {
                             title: "Progress Tracking",
-                            desc: "Clear analytics help you measure, adjust, and improve.",
+                            desc: "Visual insights that reveal your strengths, gaps, and growth over time.",
+                            icon: "📊",
                         },
                         {
-                            title: "AI Insights",
-                            desc: "Smart suggestions elevate your study efficiency instantly.",
+                            title: "AI-Powered Insights",
+                            desc: "Smart recommendations that help you study efficiently and stay ahead.",
+                            icon: "⚡",
                         },
                     ].map((f) => (
                         <div
                             key={f.title}
-                            className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all"
+                            className="group p-8 rounded-2xl bg-white/70 backdrop-blur-xl border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
                         >
-                            <h3 className="text-xl font-semibold mb-3 text-blue-600">{f.title}</h3>
-                            <p className="text-gray-600 text-sm">{f.desc}</p>
+                            {/* icon */}
+                            <div className="text-4xl mb-5">
+                                {f.icon}
+                            </div>
+
+                            <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
+                                {f.title}
+                            </h3>
+
+                            <p className="text-gray-600 leading-relaxed">
+                                {f.desc}
+                            </p>
+
+                            {/* subtle underline animation */}
+                            <div className="w-0 h-0.5 bg-blue-600 mt-4 group-hover:w-12 transition-all duration-300 mx-auto" />
                         </div>
                     ))}
                 </div>
             </section>
 
-            {/* COURSES (Beautiful & consistent) */}
-                <section id="courses" className="py-20 px-6 text-center bg-white">
-                    <h2 className="text-3xl font-bold mb-12 text-gray-900">Explore Courses</h2>
+            {/* COURSES */}
+            <section
+                id="courses"
+                className="py-24 px-6 bg-blue-50 text-center relative overflow-hidden"
+            >
+                {/* soft background glow */}
+                <div className="absolute inset-0 -z-10">
+                    <div className="w-112.5 h-112.5 bg-blue-100/40 blur-3xl rounded-full absolute -top-30 -right-25" />
+                    <div className="w-87.5 h-87.5 bg-indigo-100/30 blur-3xl rounded-full absolute -bottom-30 -left-20" />
+                </div>
 
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {exams.map((exam) => (
-                            <div
-                                key={exam.id}
-                                className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all"
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+                    Explore Your <span className="text-blue-600">Path</span>
+                </h2>
+
+                <p className="text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
+                    Choose your goal and begin a structured journey designed to take you from where you are to where you want to be.
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                    {exams.map((exam) => (
+                        <div
+                            key={exam.id}
+                            className="group gap-y-4 p-8 rounded-2xl bg-white/70 backdrop-blur-xl border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-left"
+                        >
+                            {/* course title */}
+                            <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
+                                {exam.name}
+                            </h3>
+
+                            {/* description */}
+                            <p className="text-gray-600 leading-relaxed">
+                                {exam.description}
+                            </p>
+
+                            {/* CTA */}
+                            <Link
+                                href="/onboarding"
+                                className="inline-flex items-center mt-2 gap-2 text-blue-600 font-medium group-hover:gap-3 transition-all"
                             >
-                                <h3 className="text-xl font-semibold mb-2 text-blue-600">{exam.name}</h3>
-                                <p className="text-gray-600 text-sm mb-5">{exam.description}</p>
+                                Start Journey
+                                <span className="transition-transform group-hover:translate-x-1">→</span>
+                            </Link>
 
-                                <Link
-                                    href="/onboarding"
-                                    className="text-blue-600 font-medium hover:underline text-sm"
-                                >
-                                    Enroll Now →
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            
+                            {/* subtle bottom line */}
+                            <div className="w-0 h-0.5 bg-blue-600 mt-4 group-hover:w-16 transition-all duration-300" />
+                        </div>
+                    ))}
+                </div>
+            </section>
+
         </>
     );
 }

@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({});
 export async function POST(req: Request) {
 
     const { user_exam_id } = await req.json();
-    
+
     try {
         // 1️⃣ Fetch the user exam along with exam → subjects → topics
         const userExam = await db.userExam.findUnique({
@@ -163,6 +163,15 @@ Output ONLY a valid JSON structure in this exact format:
         await db.userExam.update({
             where: { id: user_exam_id },
             data: { roadmap_status: "completed" },
+        });
+
+        await db.notification.create({
+            data: {
+                user_id: userExam.user_id,
+                title: "Roadmap Generated",
+                message: `Your study roadmap for ${exam.name} has been generated successfully!`,
+                type: "success",
+            },
         });
 
         return NextResponse.json({

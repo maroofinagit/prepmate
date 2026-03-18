@@ -199,7 +199,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     const isPhaseOpen = expandedPhases.includes(phase.id);
 
                     return (
-                        <Card key={phase.id} className="border shadow-sm">
+                        <Card key={phase.id} className={`border border-gray-300 shadow-sm ${isPhaseOpen ? "bg-white shadow-xl" : "bg-linear-to-r from-indigo-100 to-white"}`}>
                             <CardHeader
                                 onClick={() => togglePhase(phase.id)}
                                 className="cursor-pointer"
@@ -240,7 +240,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         return (
                                             <div
                                                 key={week.id}
-                                                className={`border rounded-lg p-5 ${isWeekOpen ? "shadow-md " : "shadow-sm"
+                                                className={`border rounded-lg space-y-4 p-5 ${isWeekOpen ? "shadow-xl " : "shadow-sm bg-linear-to-r from-indigo-100 to-white"
                                                     }`}
                                             >
                                                 <div
@@ -268,11 +268,11 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
                                                 {isWeekOpen && (
                                                     <>
-                                                        <ul className="space-y-3 mt-4">
+                                                        <ul className="space-y-4 mt-4">
                                                             {week.tasks.map((task) => (
                                                                 <li
                                                                     key={task.id}
-                                                                    className="border-l-4 border-blue-500 shadow-xl px-6 py-4 bg-white rounded-md flex justify-between items-center"
+                                                                    className="border-l-4 border-blue-500 shadow-md px-6 py-4 bg-linear-to-r from-indigo-100 to-white rounded-md flex justify-between items-center"
                                                                 >
                                                                     <div className="flex-1">
                                                                         <p className="font-medium">{task.title}</p>
@@ -357,6 +357,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         <CheckCircle2 className="text-green-600" size={20} />
                                     ) : (
                                         <Checkbox
+                                        className="border-2 border-green-700 hover:ring-2 hover:ring-green-500"
                                             checked={!!checkedMilestones[m.id]}
                                             onCheckedChange={() => handleMilestoneChange(m.id)}
                                         />
@@ -364,8 +365,8 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                 </CardHeader>
 
                                 <CardContent>
-                                    <p className="text-sm text-gray-600">{m.goal}</p>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className=" text-gray-600">{m.goal}</p>
+                                    <p className="text-sm mt-4 text-black">
                                         🎯 Target: {m.target_date
                                             ? formatDate(m.target_date.toDateString())
                                             : "Not specified"}

@@ -121,7 +121,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     }
 
     return (
-        <div className=" space-y-8 mt-20 p-10 ">
+        <div className=" space-y-8 pt-36 p-10 ">
             {
                 regenerating && (
                     <div className="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg" role="alert">
