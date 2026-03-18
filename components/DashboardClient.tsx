@@ -22,7 +22,7 @@ import {
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
 import { CheckCircle2, Clock } from "lucide-react";
-import { RoadmapStatus } from "@/generated/prisma/enums";
+import { RoadmapStatus } from "../generated/prisma/enums";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 /**
