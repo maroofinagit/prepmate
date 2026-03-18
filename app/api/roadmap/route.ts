@@ -168,9 +168,7 @@ Output ONLY a valid JSON structure in this exact format:
         await db.notification.create({
             data: {
                 user_id: userExam.user_id,
-                title: "Roadmap Generated",
                 message: `Your study roadmap for ${exam.name} has been generated successfully!`,
-                type: "success",
             },
         });
 
