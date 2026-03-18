@@ -5,9 +5,10 @@ import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({});
 
 export async function POST(req: Request) {
-    try {
-        const { user_exam_id } = await req.json();
 
+    const { user_exam_id } = await req.json();
+    
+    try {
         // 1️⃣ Fetch the user exam along with exam → subjects → topics
         const userExam = await db.userExam.findUnique({
             where: { id: user_exam_id },
@@ -23,6 +24,11 @@ export async function POST(req: Request) {
         if (!userExam) throw new Error("UserExam not found");
 
         const { exam, start_date, end_date } = userExam;
+
+        await db.userExam.update({
+            where: { id: user_exam_id },
+            data: { roadmap_status: "in_progress" },
+        });
 
         // 2️⃣ Build the structured subject/topic list for prompt
         const subjects = exam.subjects.map((s: any) => ({
@@ -154,12 +160,24 @@ Output ONLY a valid JSON structure in this exact format:
             });
         }
 
+        await db.userExam.update({
+            where: { id: user_exam_id },
+            data: { roadmap_status: "completed" },
+        });
+
         return NextResponse.json({
             success: true,
             roadmap_id: roadmap.id,
         });
+
     } catch (err: any) {
         console.error("❌ Roadmap generation failed:", err);
+
+        await db.userExam.update({
+            where: { id: user_exam_id },
+            data: { roadmap_status: "failed" },
+        });
+
         return NextResponse.json(
             { error: err.message || "Something went wrong" },
             { status: 500 }

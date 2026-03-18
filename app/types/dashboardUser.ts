@@ -1,3 +1,5 @@
+import { RoadmapStatus} from "@/generated/prisma/enums";
+
 export interface DashboardUser {
     id: string;
     name: string | null;
@@ -14,6 +16,7 @@ export interface DashboardUserExam {
     progress_percent: number | null;
     exam: DashboardExam;
     roadmap: DashboardRoadmap | null;
+    roadmap_status: RoadmapStatus 
 }
 
 export interface DashboardExam {
@@ -65,3 +68,10 @@ export interface DashboardTask {
     created_at: Date;
     updated_at: Date;
 }
+
+// export enum RoadmapStatus {
+//     pending = "pending",
+//     in_progress = "in_progress",
+//     completed = "completed",
+//     failed = "failed"
+// }

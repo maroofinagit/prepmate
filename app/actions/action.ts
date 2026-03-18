@@ -147,6 +147,7 @@ export async function getDashboardUser(userId: string) {
                 name: true,
                 email: true,
                 image: true,
+                createdAt: true,
 
                 exams: {
                     select: {
@@ -156,13 +157,15 @@ export async function getDashboardUser(userId: string) {
                         end_date: true,
                         current_stage: true,
                         progress_percent: true,
-
+                        roadmap_status: true,
+                        
                         // UserExam → Exam Details
                         exam: {
                             select: {
                                 id: true,
                                 name: true,
-                            }
+                                description: true,
+                            },
                         },
 
                         roadmap: {
@@ -221,7 +224,7 @@ export async function getDashboardUser(userId: string) {
                 }
             }
         });
-
+        
         return dashboardUser;
     }
     catch (err) {

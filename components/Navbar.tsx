@@ -21,8 +21,6 @@ import Image from "next/image";
 
 export default function Navbar() {
     const navLinksLP = [
-        { name: "About", href: "#about" },
-        { name: "Features", href: "#features" },
         { name: "Courses", href: "#courses" },
         {name :"Onboarding", href:"/onboarding" }
     ];

@@ -1,5 +1,5 @@
-import { PrismaClient, Difficulty, ResourceType } from '@prisma/client';
-const prisma = new PrismaClient();
+import {db} from '@/app/lib/db';
+import { Difficulty, ResourceType } from '../generated/prisma/enums';
 
 async function main() {
     console.log('🌱 Starting static data seeding...');
@@ -665,7 +665,7 @@ async function main() {
     ];
 
     for (const exam of exams) {
-        const createdExam = await prisma.exam.upsert({
+        const createdExam = await db.exam.upsert({
             where: { name: exam.name },
             update: {},
             create: {
@@ -678,7 +678,7 @@ async function main() {
 
         // Create subjects + topics
         for (const subject of exam.subjects) {
-            const createdSubject = await prisma.subject.upsert({
+            const createdSubject = await db.subject.upsert({
                 where: {
                     exam_id_name: { exam_id: createdExam.id, name: subject.name },
                 },
@@ -690,7 +690,7 @@ async function main() {
             });
 
             for (const topic of subject.topics) {
-                await prisma.topic.upsert({
+                await db.topic.upsert({
                     where: {
                         subject_id_name: { subject_id: createdSubject.id, name: topic.name },
                     },
@@ -707,7 +707,7 @@ async function main() {
 
         // Add resources
         for (const resource of exam.resources) {
-            await prisma.resource.create({
+            await db.resource.create({
                 data: {
                     exam_id: createdExam.id,
                     title: resource.title,
@@ -722,9 +722,9 @@ async function main() {
 }
 
 main()
-    .then(() => prisma.$disconnect())
+    .then(() => db.$disconnect())
     .catch((e) => {
         console.error('❌ Error during seeding:', e);
-        prisma.$disconnect();
+        db.$disconnect();
         process.exit(1);
     });

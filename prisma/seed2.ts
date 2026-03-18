@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const db = new PrismaClient();
+import {db} from '@/app/lib/db';
+import { Difficulty, ResourceType } from '../generated/prisma/enums';
 
 async function main() {
     console.log('🌱 Starting seed...');

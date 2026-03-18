@@ -22,7 +22,9 @@ import {
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
 import { CheckCircle2, Clock } from "lucide-react";
-
+import { RoadmapStatus } from "@/generated/prisma/enums";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 /**
  * Safe DashboardAnalytics component
  * - exams can be []
@@ -34,6 +36,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     // store selectedExam as the full exam object or null
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
+    const [regenerating, setRegenerating] = useState(false);
 
     // update selectedExam if exams change and selectedExam becomes stale
     // (keeps UI consistent if props update)
@@ -64,7 +67,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         )
         .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
-        console.log("week progress data:", weekProgressData);
+    console.log("week progress data:", weekProgressData);
 
     const totalUserExams = exams.length;
     const overallProgress = Math.round(
@@ -74,9 +77,58 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     // safe values for top cards
     const selectedProgress = exam?.progress_percent ?? 0;
     const selectedId = exam?.id ?? null;
+    const roadmapStatus = exam?.roadmap_status;
+    console.log("Selected Exam:", exam);
+
+
+    const router = useRouter();
+
+    const handleRegenerate = async () => {
+        if (!selectedId) return;
+        setRegenerating(true);
+        const roadmapRes = await fetch(`/api/roadmap`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_exam_id: selectedId }),
+        });
+        if (!roadmapRes.ok) {
+            toast.error('Failed to regenerate roadmap. Please try again later.');
+            setRegenerating(false);
+            return;
+        }
+        toast.success('Roadmap regeneration started. It may take a few moments to complete.');
+        setRegenerating(false);
+        router.refresh(); // refresh to update roadmap status and charts
+    }
+
+    const handleDelete = async () => {
+        if (!selectedId) return;
+        if (!confirm(`Are you sure you want to delete the ${exam?.exam?.name ?? "selected"} exam? This action cannot be undone.`)) {
+            return;
+        }
+        const res = await fetch(`/api/deleteUserExam`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_exam_id: selectedId }),
+        });
+        if (!res.ok) {
+            toast.error('Failed to delete exam. Please try again later.');
+            return;
+        }
+        toast.success('Exam deleted successfully.');
+        setSelectedExam(null); // reset selection
+        router.refresh(); // refresh to update dashboard data
+    }
 
     return (
         <div className=" space-y-8 mt-20 p-10 ">
+            {
+                regenerating && (
+                    <div className="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg" role="alert">
+                        <span className="font-medium">Regenerating roadmap...</span> This may take a moment. Please wait.
+                    </div>
+                )
+            }
             {/* Header */}
             <div className="flex items-center gap-4">
                 <Image
@@ -118,15 +170,30 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         <CardTitle>Go to Roadmap</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {selectedId ? (
+                        {!exam ? (
+                            <Link href="/onboarding">
+                                <Button className="w-full cursor-pointer">Create Roadmap</Button>
+                            </Link>
+                        ) : roadmapStatus === RoadmapStatus.completed ? (
                             <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                <Button className="w-full">Open Roadmap</Button>
+                                <Button className="w-full cursor-pointer">Open Roadmap</Button>
                             </Link>
-                        ) : (
-                            <Link href={`/onboarding`}>
-                                <Button className="w-full">Create Roadmap</Button>
-                            </Link>
-                        )}
+                        ) : roadmapStatus === RoadmapStatus.in_progress ? (
+                            <Button className="w-full" disabled>
+                                ⏳ Generating Roadmap...
+                            </Button>
+                        ) : regenerating ? (
+                            <Button className="w-full" disabled>
+                                🔁 Regenerating...
+                            </Button>
+                        ) :
+
+                            (
+                                <Button className="w-full cursor-pointer" onClick={handleRegenerate}>
+                                    🔁 Regenerate Roadmap
+                                </Button>
+                            )
+                        }
                     </CardContent>
                 </Card>
             </div>
@@ -339,6 +406,13 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     ))
                 )}
             </Tabs>
+            <button
+                onClick={handleDelete}
+                disabled={!selectedId || regenerating}
+                className="mt-6 border-2 border-red-600 text-red-600 py-3 px-4 rounded-lg hover:bg-red-700 hover:text-white transition disabled:bg-red-400 font-medium cursor-pointer"
+            >
+                Delete {exam?.exam?.name} exam 
+            </button>
         </div>
     );
 }

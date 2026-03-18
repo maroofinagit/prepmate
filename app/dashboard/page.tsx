@@ -13,7 +13,7 @@ export default async function DashboardPage() {
 
     if (!data?.session) redirect("/signin");
 
-    const dashboardUser = await getDashboardUser(data.session.userId);
+    const dashboardUser = await getDashboardUser(data.session.userId);    
 
     if (!dashboardUser) {
         return <div className="text-center text-gray-500 mt-20">User not found.</div>;

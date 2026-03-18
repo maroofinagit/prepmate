@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { redirect } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function ClientExamStart({ exam }: { exam: any }) {
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [error, setError] = useState('');
+    const router = useRouter();
 
     function startMessageLoop(messages: string[], interval = 1500) {
         let index = 0;
@@ -21,7 +22,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
     }
 
 
-    async function handleStartPreparing(event: React.FormEvent<HTMLFormElement>) {
+    async function handleStartPreparing(event: React.SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError('');
         setLoading(true);
@@ -76,13 +77,17 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const roadmapJson = await roadmapRes.json();
             if (!roadmapJson.success) {
                 toast.error('Failed to generate roadmap. You can create one later from your dashboard.');
+                setLoadingMessage('Failed to generate roadmap. Redirecting to dashboard...');
+                await new Promise((r) => setTimeout(r, 2000));
+                router.push('/dashboard');
+                return;
             }
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
             await new Promise((r) => setTimeout(r, 1000));
             // Redirect to dashboard
             // redirect(`/dashboard/exam/${user_exam_id}`);
-            window.location.href = `/dashboard/roadmap/${user_exam_id}`;
+            router.push(`/dashboard/roadmap/${user_exam_id}`);
 
         } catch (err: any) {
             console.error(err);
@@ -92,7 +97,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
     }
 
     return (
-        <div className="relative">
+        <div className="relative ">
             {/* Loading Overlay */}
             {loading && (
                 <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center z-50 rounded-2xl">

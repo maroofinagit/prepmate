@@ -202,7 +202,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                         <Card key={phase.id} className="border shadow-sm">
                             <CardHeader
                                 onClick={() => togglePhase(phase.id)}
-                                className="cursor-pointer bg-gray-50"
+                                className="cursor-pointer"
                             >
                                 <CardTitle className="flex justify-between">
                                     <div>
@@ -210,7 +210,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                             <span className="text-lg font-semibold">{phase.phase_name}</span>
                                             {/* optional calendar icon with dates */}
                                             {(phase.start_date || phase.end_date) && (
-                                                <span className="text-sm text-gray-500 flex items-center gap-2">
+                                                <span className=" text-gray-500 flex items-center gap-2">
                                                     <CalendarDays size={14} />
                                                     {phase.start_date && formatDate(phase.start_date.toDateString())}{" "}
                                                     {phase.start_date || phase.end_date ? "→" : ""}{" "}
@@ -240,7 +240,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         return (
                                             <div
                                                 key={week.id}
-                                                className={`border rounded-lg p-5 ${i % 2 === 0 ? "bg-blue-50/40" : "bg-green-50/40"
+                                                className={`border rounded-lg p-5 ${isWeekOpen ? "shadow-md " : "shadow-sm"
                                                     }`}
                                             >
                                                 <div
@@ -272,7 +272,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                             {week.tasks.map((task) => (
                                                                 <li
                                                                     key={task.id}
-                                                                    className="border-l-4 border-blue-500 px-6 py-4 bg-white rounded-md flex justify-between items-center"
+                                                                    className="border-l-4 border-blue-500 shadow-xl px-6 py-4 bg-white rounded-md flex justify-between items-center"
                                                                 >
                                                                     <div className="flex-1">
                                                                         <p className="font-medium">{task.title}</p>
@@ -310,6 +310,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                                 <div className="order-1 md:order-2">
                                                                                     <Checkbox
                                                                                         checked={!!checkedTasks[task.id]}
+                                                                                        className="cursor-pointer border-2 border-green-700 rounded-full hover:ring-2 hover:ring-green-500"
                                                                                         onCheckedChange={() => handleCheckboxChange(task.id)}
                                                                                     />
                                                                                 </div>
