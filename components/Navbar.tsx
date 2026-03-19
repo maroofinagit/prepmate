@@ -64,16 +64,22 @@ export default function Navbar() {
     return (
         <nav className="fixed top-0 left-0 w-full py-2 z-50 bg-white backdrop-blur-md shadow-md border-b border-gray-200">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-4 text-3xl font-bold text-[#004ba0]">
+                <Link href="/" className="flex items-center gap-4 text-xl md:text-3xl font-bold text-[#004ba0]">
                     <Image
                         src="/logo.jpg"
                         alt="PrepMate Logo"
                         width={36}
                         height={36}
-                        className=" object-cover rounded-full"
+                        className="hidden md:block object-cover rounded-full"
                     />
                     PrepMate
                 </Link>
+
+                <div className="md:hidden">
+                    <Link href="/onboarding" className={`hover:text-blue-600 transition ${pathname === "/onboarding" ? "text-blue-600" : "text-gray-700"}`}>
+                        Onboarding
+                    </Link>
+                </div>
 
 
                 {/* Nav Links */}

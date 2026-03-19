@@ -59,13 +59,13 @@ export default function OnboardingClient({
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 mt-12 px-6 py-10">
+        <div className="min-h-screen bg-gray-100 mt-12 px-10 py-10">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-4xl font-bold text-center mb-4 mt-10 text-gray-900">
+                <h1 className="text-2xl md:text-4xl font-bold text-center mb-4 mt-10 text-gray-900">
                     Choose Your Exam to Begin 🚀
                 </h1>
 
-                <p className="text-gray-600 text-lg md:text-xl max-w-2xl text-center mx-auto mb-12">
+                <p className="text-gray-600 md:text-xl max-w-2xl text-center mx-auto mb-12">
                     Plan, track, and master your exam journey with intelligent tools and personalized learning paths.
                 </p>
 
@@ -81,7 +81,7 @@ export default function OnboardingClient({
                                     }`}
                             >
                                 {/* Image Section */}
-                                <div className="relative h-52 aspect-auto">
+                                <div className="relative h-40 md:h-52 aspect-auto">
                                     <Image
                                         src={exam.imageUrl || "/placeholder.png"}
                                         alt={exam.name}
@@ -92,15 +92,15 @@ export default function OnboardingClient({
                                 </div>
 
                                 {/* Header: use a real button to ensure clicks are handled reliably */}
-                                <CardHeader className="border-b p-0 border-gray-100">
+                                <CardHeader className="border-b border-gray-100">
                                     <Button
                                         type="button"
                                         variant="ghost"
                                         aria-expanded={isExpanded}
                                         onClick={() => toggleExam(exam.id)}
-                                        className="w-full p-0 flex items-center justify-between text-left hover:bg-gray-100"
+                                        className="w-full flex items-center justify-between text-left hover:bg-gray-100"
                                     >
-                                        <span className="text-xl font-semibold text-gray-800">
+                                        <span className="md:text-xl text-lg font-semibold text-gray-800">
                                             {exam.name}
                                         </span>
 
@@ -113,17 +113,17 @@ export default function OnboardingClient({
 
                                 </CardHeader>
 
-                                <CardContent className="p-4">
+                                <CardContent className="p-4 text-center md:text-left">
                                     {/* Short Description */}
                                     {exam.description && (
-                                        <p className="text-gray-600 mb-3 line-clamp-3">
+                                        <p className="text-gray-600 text-sm md:text-lg mb-3 line-clamp-3">
                                             {exam.description}
                                         </p>
                                     )}
 
                                     {/* Expanded Syllabus Preview */}
                                     <div
-                                        className={`transition-all duration-300 overflow-hidden ${isExpanded ? "max-h-[450px] opacity-100" : "max-h-0 opacity-0"
+                                        className={`transition-all duration-300 overflow-hidden ${isExpanded ? "max-h-112.5 opacity-100" : "max-h-0 opacity-0"
                                             }`}
                                     >
                                         <div className="mt-2">
@@ -180,7 +180,7 @@ export default function OnboardingClient({
                                     </div>
 
                                     {/* Buttons */}
-                                    <div className="mt-4 flex gap-2 pt-3 border-t border-gray-200">
+                                    <div className=" flex gap-2 pt-3 border-gray-200">
                                         <Button
                                             asChild
                                             variant="outline"

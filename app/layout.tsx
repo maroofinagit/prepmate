@@ -59,29 +59,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "PrepMate",
-          "url": "https://prepmatex.vercel.app",
-          "description": "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
-          "keywords": "prepmate, prepmatex, prepmate vercel, prepmate maroof, AI, exam preparation, study roadmap, progress tracking, personalized learning, academic planner",
-          "author": {
-            "@type": "Person",
-            "name": "Maroof Ali Syed",
-            "url": "https://prepmatex.vercel.app"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "PrepMate",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://prepmatex.vercel.app/logo.jpg"
-            }
-          }
-        })
-      }} />
+     
       
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

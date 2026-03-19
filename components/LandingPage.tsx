@@ -21,10 +21,10 @@ export default async function LandingPage() {
         <>
             {/* HERO */}
             <section className="pt-32 pb-15 px-10 bg-[#0d2f55]">
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 grid-cols-1 gap-10 md:gap-20 justify-center items-center">
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 grid-cols-1 gap-0 md:gap-20 justify-center items-center">
 
                     {/* LEFT: LOGO IMAGE */}
-                    <div className="relative w-full h-64 md:h-full flex justify-center md:justify-start">
+                    <div className="relative w-full h-56 md:h-full flex justify-center md:justify-start">
                         <Image
                             src="/logo.jpg"
                             alt="PrepMate Logo"
@@ -35,11 +35,11 @@ export default async function LandingPage() {
 
                     {/* RIGHT: HEADING + PARA + BUTTON */}
                     <div className="text-center md:text-left">
-                        <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                        <h1 className="text-3xl md:text-6xl font-bold text-white mb-6 leading-tight">
                             Your Smart <span className="text-blue-400">Prep Companion</span>
                         </h1>
 
-                        <p className="text-blue-100 text-lg md:text-xl max-w-xl md:max-w-2xl mb-10">
+                        <p className="text-blue-100 md:text-xl max-w-xl md:max-w-2xl mb-10">
                             Plan, track, and master your exam journey with intelligent tools and personalized learning paths.
                         </p>
 
@@ -65,8 +65,8 @@ export default async function LandingPage() {
 
             {/* USER EXAMS */}
             {isLoggedWithExam && (
-                <section className="py-14 px-6 bg-blue-50 text-center">
-                    <h2 className="text-3xl font-semibold text-gray-900 mb-2">
+                <section className="py-14 px-12 bg-blue-50 text-center">
+                    <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
                         Welcome back, <span className="text-indigo-700">{user.name}</span>
                     </h2>
 
@@ -100,25 +100,23 @@ export default async function LandingPage() {
             {/* ABOUT */}
             <section
                 id="about"
-                className="min-h-[80vh] flex items-center justify-center px-6 py-20 bg-linear-to-b from-gray-50 via-white to-gray-100"
+                className="min-h-[80vh] flex items-center justify-center px-10 py-20 bg-linear-to-b from-gray-50 via-white to-gray-100"
             >
                 <div className="max-w-4xl text-center">
 
-                    <h2 className="text-4xl md:text-5xl font-bold mb-10 text-gray-900 leading-tight">
+                    <h2 className="text-2xl md:text-5xl font-bold mb-10 text-gray-900 leading-tight">
                         <span className="text-indigo-700">Preparation </span>with Path
                     </h2>
 
-                    <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
-                        Preparation is not just about effort it is about direction. In a world where
-                        information is endless and distractions are constant, most students struggle
-                        not because they lack potential, but because they lack clarity in how to move forward.
+                    <p className="text-gray-600 text-sm md:text-xl leading-relaxed mb-6">
+                        Preparation is not just about effort it is about direction.
 
 
                         <span className=" font-bold"> PrepMate</span> changes that by transforming scattered preparation into a structured journey.
                         Instead of guessing what to study next, you follow a clear roadmap tailored to your goals,
                         helping you build consistency and momentum over time. </p>
 
-                    <p className="text-gray-600 text-lg md:text-xl leading-relaxed mb-6">
+                    <p className="text-gray-600 text-sm md:text-xl leading-relaxed mb-6">
                         What would normally take hours of planning and still leave room for uncertainty is
                         streamlined through intelligent systems. By combining thoughtful design with AI-driven
                         guidance, PrepMate helps you make better decisions, faster reducing confusion and
@@ -133,7 +131,7 @@ export default async function LandingPage() {
             {/* FEATURES */}
             <section
                 id="features"
-                className="py-24 px-6 bg-linear-to-b from-white via-blue-50/40 to-white text-center relative overflow-hidden"
+                className="py-24 px-10 bg-linear-to-b from-white via-blue-50/40 to-white text-center relative overflow-hidden"
             >
                 {/* subtle background glow */}
                 <div className="absolute inset-0 -z-10">
@@ -141,11 +139,11 @@ export default async function LandingPage() {
                     <div className="w-100 h-100 bg-purple-200/20 blur-3xl rounded-full absolute -bottom-25 -right-25" />
                 </div>
 
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+                <h2 className="text-2xl md:text-5xl font-bold mb-4 text-gray-900">
                     Smart <span className="text-blue-600">Features</span> for Smarter Prep
                 </h2>
 
-                <p className="text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
+                <p className="text-gray-600 max-w-2xl mx-auto mb-16 md:text-lg">
                     Everything you need to stay consistent, track progress, and improve with clarity.
                 </p>
 
@@ -176,11 +174,11 @@ export default async function LandingPage() {
                                 {f.icon}
                             </div>
 
-                            <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
+                            <h3 className="md:text-xl text-lg font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
                                 {f.title}
                             </h3>
 
-                            <p className="text-gray-600 leading-relaxed">
+                            <p className="text-gray-600 md:text-lg text-sm leading-relaxed">
                                 {f.desc}
                             </p>
 
@@ -194,7 +192,7 @@ export default async function LandingPage() {
             {/* COURSES */}
             <section
                 id="courses"
-                className="py-24 px-6 bg-blue-50 text-center relative overflow-hidden"
+                className="py-24 px-10 bg-blue-50 text-center relative overflow-hidden"
             >
                 {/* soft background glow */}
                 <div className="absolute inset-0 -z-10">
@@ -202,11 +200,11 @@ export default async function LandingPage() {
                     <div className="w-87.5 h-87.5 bg-indigo-100/30 blur-3xl rounded-full absolute -bottom-30 -left-20" />
                 </div>
 
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+                <h2 className="text-2xl md:text-5xl font-bold mb-4 text-gray-900">
                     Explore Your <span className="text-blue-600">Path</span>
                 </h2>
 
-                <p className="text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
+                <p className="text-gray-600 max-w-2xl mx-auto mb-16 md:text-lg">
                     Choose your goal and begin a structured journey designed to take you from where you are to where you want to be.
                 </p>
 
@@ -217,12 +215,12 @@ export default async function LandingPage() {
                             className="group gap-y-4 p-8 rounded-2xl bg-white/70 backdrop-blur-xl border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-left"
                         >
                             {/* course title */}
-                            <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
+                            <h3 className="md:text-xl text-lg font-semibold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
                                 {exam.name}
                             </h3>
 
                             {/* description */}
-                            <p className="text-gray-600 leading-relaxed">
+                            <p className="text-gray-600 md:text-lg text-sm leading-relaxed">
                                 {exam.description}
                             </p>
 

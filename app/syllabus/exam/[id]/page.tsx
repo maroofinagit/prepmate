@@ -21,20 +21,15 @@ export default async function Page({
     <div className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-10 mt-20 border border-gray-200">
         {/* Exam Title */}
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">{exam.name}</h1>
-        <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2">{exam.name} Syllabus</h1>
+        <p className="text-gray-600  mb-8 md:text-lg leading-relaxed">
           {exam.description || "No description provided for this exam."}
         </p>
-
-        {/* Subjects */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Subjects Overview
-        </h2>
 
         <div className="space-y-10">
           {exam.subjects.map((subject, index) => (
             <div key={subject.id}>
-              <h3 className="text-xl font-semibold text-gray-700">
+              <h3 className="md:text-xl text-lg font-semibold text-gray-700">
                 {index + 1}. {subject.name}
               </h3>
 
@@ -46,8 +41,8 @@ export default async function Page({
                   <ul className="list-disc ml-6 space-y-1 text-gray-700">
                     {subject.topics.map((topic) => (
                       <li key={topic.id}>
-                        <span className="font-medium">{topic.name}</span>{" "}
-                        <span className="text-gray-500 text-sm">
+                        <span className="font-medium text-sm md:text-base">{topic.name}</span>{" "}
+                        <span className={`text-gray-500 text-sm ${topic.difficulty === "easy" ? "text-green-700" : topic.difficulty === "medium" ? "text-yellow-600" : "text-red-600"}`}>
                           ({topic.difficulty})
                         </span>
                       </li>
@@ -66,7 +61,7 @@ export default async function Page({
         {/* Back Button */}
         <div className="mt-12 text-center">
           <Link href="/onboarding">
-            <button className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors">
+            <button className="px-6 py-3 text-sm md:text-base bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors">
               ← Back to Onboarding
             </button>
           </Link>

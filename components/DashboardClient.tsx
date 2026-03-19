@@ -121,7 +121,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     }
 
     return (
-        <div className=" space-y-8 pt-36 p-10 ">
+        <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-7xl mx-auto">
             {
                 regenerating && (
                     <div className="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg" role="alert">
@@ -199,9 +199,14 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             </div>
 
             {/* Tabs */}
+            {/* Tabs */}
             <Tabs
                 defaultValue={exams[0] ? String(exams[0].id) : "none"}
                 onValueChange={(v) => {
+                    if (v === "none") {
+                        setSelectedExam(null);
+                        return;
+                    }
                     const id = Number(v);
                     const found = exams.find((ex) => ex.id === id);
                     setSelectedExam(found || null);
@@ -220,12 +225,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     )}
                 </TabsList>
 
-                {/* if no exams, show a single placeholder tab content */}
+                {/* NO EXAMS */}
                 {exams.length === 0 ? (
                     <TabsContent value="none">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
-                            {/* Empty charts render with empty arrays */}
+                        {/* 📱 MOBILE (ONLY PIE) */}
+                        <div className="block md:hidden mt-6">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Exam Progress</CardTitle>
@@ -233,7 +238,17 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 <CardContent>
                                     <ResponsiveContainer width="100%" height={250}>
                                         <PieChart>
-                                            <Pie dataKey="value" data={[{ name: "Completed", value: 0 }, { name: "Remaining", value: 100 }]} cx="50%" cy="50%" outerRadius={80} label>
+                                            <Pie
+                                                dataKey="value"
+                                                data={[
+                                                    { name: "Completed", value: 0 },
+                                                    { name: "Remaining", value: 100 },
+                                                ]}
+                                                cx="50%"
+                                                cy="50%"
+                                                outerRadius={80}
+                                                label
+                                            >
                                                 <Cell fill="#82ca9d" />
                                                 <Cell fill="#e5e7eb" />
                                             </Pie>
@@ -241,66 +256,90 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <p className="text-center font-semibold text-lg">0% Completed</p>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Phase Progress</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart data={[]}>
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            {/*  Weekly Progress  */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Weekly Progress</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart data={[]}>
-                                            <XAxis dataKey="" />
-                                            <YAxis />
-                                            <Tooltip />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                            </Card>
-
-                            {/*  Milestone Chart */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Milestone Chart</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart data={[]}>
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip />
-                                        </BarChart>
-                                    </ResponsiveContainer>
+                                    
                                 </CardContent>
                             </Card>
                         </div>
 
-                        <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
-                        <div className="text-sm text-muted-foreground">No milestones yet.</div>
+                        {/* 🖥 DESKTOP (ALL EMPTY STATES) */}
+                        <div className="hidden md:block">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Exam Progress</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <PieChart>
+                                                <Pie dataKey="value" data={[{ name: "Completed", value: 0 }, { name: "Remaining", value: 100 }]} cx="50%" cy="50%" outerRadius={80} label>
+                                                    <Cell fill="#82ca9d" />
+                                                    <Cell fill="#e5e7eb" />
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                        <p className="text-center font-semibold text-lg">0% Completed</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Phase Progress</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <BarChart data={[]}>
+                                                <XAxis dataKey="name" />
+                                                <YAxis />
+                                                <Tooltip />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Weekly Progress</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <BarChart data={[]}>
+                                                <XAxis dataKey="" />
+                                                <YAxis />
+                                                <Tooltip />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Milestone Chart</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <BarChart data={[]}>
+                                                <XAxis dataKey="name" />
+                                                <YAxis />
+                                                <Tooltip />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
+                            <div className="text-sm text-muted-foreground">No milestones yet.</div>
+                        </div>
+
                     </TabsContent>
                 ) : (
-                    // render each exam's content normally (but still safe)
                     exams.map((ex) => (
                         <TabsContent key={ex.id} value={String(ex.id)}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                {/* Pie - overall */}
+
+                            {/* 📱 MOBILE */}
+                            <div className="block md:hidden mt-6">
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Exam Progress</CardTitle>
@@ -325,93 +364,130 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 <Tooltip />
                                             </PieChart>
                                         </ResponsiveContainer>
-                                        <p className="text-center font-semibold text-lg">{ex.progress_percent ?? 0}% Completed</p>
+
+                                        <p className="text-center font-semibold text-lg">
+                                            {ex.progress_percent ?? 0}% Completed
+                                        </p>
+
                                     </CardContent>
                                 </Card>
-
-                                {/* Phase Progress */}
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Phase Progress</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <BarChart data={phaseProgressData}>
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
-                                                <Bar dataKey="progress" />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </CardContent>
-                                </Card>
-
-                                {/* Weekly */}
-                                <Card className=" col-span-2">
-                                    <CardHeader>
-                                        <CardTitle>Weekly Progress</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <LineChart data={weekProgressData}>
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
-                                                <Line type="basis" dataKey="progress" strokeWidth={2} stroke="#8884d8" />
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </CardContent>
-                                </Card>
-
                             </div>
 
-                            {/* Milestone Cards */}
-                            <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {(milestones.length ? milestones : []).map((m) => (
-                                    <Card key={m.id}>
+                            {/* 🖥 DESKTOP */}
+                            <div className="hidden md:block">
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+                                    {/* Pie */}
+                                    <Card>
                                         <CardHeader>
-                                            <CardTitle>{m.name}</CardTitle>
+                                            <CardTitle>Exam Progress</CardTitle>
                                         </CardHeader>
-                                        <CardContent className="space-y-2">
-                                            <p>
-                                                <span className="font-semibold">Goal:</span> {m.goal ?? "—"}
+                                        <CardContent>
+                                            <ResponsiveContainer width="100%" height={250}>
+                                                <PieChart>
+                                                    <Pie
+                                                        dataKey="value"
+                                                        data={[
+                                                            { name: "Completed", value: ex.progress_percent ?? 0 },
+                                                            { name: "Remaining", value: Math.max(0, 100 - (ex.progress_percent ?? 0)) },
+                                                        ]}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        outerRadius={80}
+                                                        label
+                                                    >
+                                                        <Cell fill="#82ca9d" />
+                                                        <Cell fill="#e5e7eb" />
+                                                    </Pie>
+                                                    <Tooltip />
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                            <p className="text-center font-semibold text-lg">
+                                                {ex.progress_percent ?? 0}% Completed
                                             </p>
-
-                                            <p>
-                                                <span className="font-semibold">Target:</span>{" "}
-                                                {m.target_date ? new Date(m.target_date).toLocaleDateString() : "N/A"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                                {m.achieved ? (
-                                                    <>
-                                                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                                        Achieved
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Clock className="h-4 w-4 text-orange-500" />
-                                                        Pending
-                                                    </>
-                                                )}
-                                            </p>
-
                                         </CardContent>
                                     </Card>
-                                ))}
-                                {/* fallback when no milestones */}
-                                {milestones.length === 0 && <div className="text-sm text-muted-foreground">No milestones yet.</div>}
+
+                                    {/* Phase */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Phase Progress</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <ResponsiveContainer width="100%" height={250}>
+                                                <BarChart data={phaseProgressData}>
+                                                    <XAxis dataKey="name" />
+                                                    <YAxis />
+                                                    <Tooltip />
+                                                    <Bar dataKey="progress" />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Weekly */}
+                                    <Card className="col-span-2">
+                                        <CardHeader>
+                                            <CardTitle>Weekly Progress</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <ResponsiveContainer width="100%" height={250}>
+                                                <LineChart data={weekProgressData}>
+                                                    <XAxis dataKey="name" />
+                                                    <YAxis />
+                                                    <Tooltip />
+                                                    <Line type="basis" dataKey="progress" strokeWidth={2} stroke="#8884d8" />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+
+                                {/* ✅ MILESTONES (DESKTOP ONLY) */}
+                                <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {(milestones.length ? milestones : []).map((m) => (
+                                        <Card key={m.id}>
+                                            <CardHeader>
+                                                <CardTitle>{m.name}</CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-2">
+                                                <p><span className="font-semibold">Goal:</span> {m.goal ?? "—"}</p>
+                                                <p>
+                                                    <span className="font-semibold">Target:</span>{" "}
+                                                    {m.target_date ? new Date(m.target_date).toLocaleDateString() : "N/A"}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                                    {m.achieved ? "✅ Achieved" : "⏳ Pending"}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+
+                                    {milestones.length === 0 && (
+                                        <div className="text-sm text-muted-foreground">No milestones yet.</div>
+                                    )}
+                                </div>
+
                             </div>
+
                         </TabsContent>
                     ))
                 )}
             </Tabs>
+
+            <p className=" block md:hidden text-sm text-muted-foreground mt-4">
+                For full analytics, please access the dashboard on a desktop device. 📊
+            </p>
+
             <button
                 onClick={handleDelete}
                 disabled={!selectedId || regenerating}
-                className="mt-6 border-2 border-red-600 text-red-600 py-3 px-4 rounded-lg hover:bg-red-700 hover:text-white transition disabled:bg-red-400 font-medium cursor-pointer"
+                className="mt-6 border-2 text-sm md:text-base border-red-600 text-red-600 py-3 px-4 rounded-lg hover:bg-red-700 hover:text-white transition disabled:bg-red-400 font-medium cursor-pointer"
             >
-                Delete {exam?.exam?.name} exam 
+                Delete {exam?.exam?.name} exam
             </button>
         </div>
     );

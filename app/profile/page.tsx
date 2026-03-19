@@ -40,9 +40,9 @@ export default async function ProfilePage() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-6 mt-20">
+        <div className="max-w-4xl mx-auto py-12 px-10 mt-20">
             {/* Header */}
-            <div className="flex items-center gap-6">
+            <div className="flex md:flex-row flex-col items-center gap-6">
                 <ProfileImageUploader initialImage={user.image ?? ""} />
                 <div>
                     <h1 className="text-2xl font-semibold">{user.name || "Unnamed User"}</h1>
@@ -69,7 +69,7 @@ export default async function ProfilePage() {
                         {user.exams.map((ue: any) => (
                             <div
                                 key={ue.id}
-                                className="border rounded-lg p-4 hover:shadow-sm transition"
+                                className="border space-y-4 rounded-lg py-4 px-6 hover:shadow-sm transition"
                             >
                                 <h3 className="font-medium text-lg">{ue.exam.name}</h3>
                                 <p className="text-sm text-gray-600">{ue.exam.description}</p>
@@ -94,7 +94,7 @@ export default async function ProfilePage() {
                 {user.notifications.length > 0 ? (
                     <ul className="space-y-2">
                         {user.notifications.map((n: any) => (
-                            <li key={n.id} className="border p-3 flex gap-2 rounded-lg text-sm md:text-base items-center">
+                            <li key={n.id} className="border py-4 px-6 flex gap-2 rounded-lg text-sm md:text-base items-center">
                                 <IoIosNotifications color="#0039b7" size={32} />
                                 <div>
                                     <p>{n.message}</p>

@@ -2,15 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaXTwitter, FaInstagram, FaLinkedin, FaFacebook } from "react-icons/fa6";
 
-
 export default function Footer() {
     return (
-        <footer className="bg-[#00203d] px-10 text-gray-300 border-t border-gray-800">
+        <footer className="bg-[#00203d] text-gray-300 border-t border-gray-800">
             <div className="max-w-7xl mx-auto px-6 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-10 text-center">
+
+                {/* GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
 
                     {/* Logo + Tagline */}
-                    <div>
+                    <div className="flex flex-col items-center md:items-start">
                         <div className="flex items-center gap-2 mb-4">
                             <Image
                                 src="/logo.jpg"
@@ -24,15 +25,14 @@ export default function Footer() {
                             </span>
                         </div>
 
-                        <p className="text-gray-400  text-left leading-relaxed max-w-xs">
+                        <p className="text-gray-400 leading-relaxed max-w-xs text-center md:text-left">
                             Smart roadmaps, structured learning, and intelligent tools your companion for every exam journey.
                         </p>
 
                         {/* Social Icons */}
-                        <div className="flex gap-4 mt-5">
+                        <div className="flex gap-4 mt-5 justify-center md:justify-start">
                             <Link href="#" className="hover:text-white transition">
                                 <FaXTwitter size={20} />
-
                             </Link>
                             <Link href="#" className="hover:text-white transition">
                                 <FaInstagram size={20} />
@@ -46,12 +46,12 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Product Column */}
+                    {/* Features */}
                     <div>
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
-                            Product
+                            Features
                         </h4>
-                        <ul className="space-y-3 text-gray-400 ">
+                        <ul className="space-y-2 md:space-y-3">
                             <li className="hover:text-white transition cursor-pointer">Roadmaps</li>
                             <li className="hover:text-white transition cursor-pointer">Weekly Tests</li>
                             <li className="hover:text-white transition cursor-pointer">Smart Analytics</li>
@@ -59,12 +59,12 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Company Column */}
+                    {/* Company */}
                     <div>
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
                             Company
                         </h4>
-                        <ul className="space-y-3 text-gray-400 ">
+                        <ul className="space-y-2 md:space-y-3">
                             <li className="hover:text-white transition cursor-pointer">About</li>
                             <li className="hover:text-white transition cursor-pointer">Contact</li>
                             <li className="hover:text-white transition cursor-pointer">Careers</li>
@@ -72,12 +72,12 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Legal Column */}
+                    {/* Legal */}
                     <div>
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
                             Legal
                         </h4>
-                        <ul className="space-y-3 text-gray-400 ">
+                        <ul className="space-y-2 md:space-y-3">
                             <li className="hover:text-white transition cursor-pointer">Privacy Policy</li>
                             <li className="hover:text-white transition cursor-pointer">Terms of Service</li>
                             <li className="hover:text-white transition cursor-pointer">Cookie Policy</li>
@@ -85,8 +85,8 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Bottom line */}
-                <div className="border-t border-gray-600 mt-10 pt-6 text-center text-gray-300 text-sm">
+                {/* Bottom */}
+                <div className="border-t border-gray-600 mt-10 pt-6 text-center text-gray-400 text-sm">
                     © {new Date().getFullYear()} PrepMate — All rights reserved.
                 </div>
             </div>

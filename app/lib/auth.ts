@@ -8,6 +8,9 @@ export const auth = betterAuth({
     database: prismaAdapter(db, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
+    advanced:{
+        disableOriginCheck: process.env.NODE_ENV === "development", // Disable origin check in development for easier testing
+    },
     emailAndPassword: { enabled: true},
     socialProviders: {
         github: {
