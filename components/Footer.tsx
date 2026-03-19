@@ -51,7 +51,7 @@ export default function Footer() {
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
                             Features
                         </h4>
-                        <ul className="space-y-2 md:space-y-3">
+                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
                             <li className="hover:text-white transition cursor-pointer">Roadmaps</li>
                             <li className="hover:text-white transition cursor-pointer">Weekly Tests</li>
                             <li className="hover:text-white transition cursor-pointer">Smart Analytics</li>
@@ -64,7 +64,7 @@ export default function Footer() {
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
                             Company
                         </h4>
-                        <ul className="space-y-2 md:space-y-3">
+                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
                             <li className="hover:text-white transition cursor-pointer">About</li>
                             <li className="hover:text-white transition cursor-pointer">Contact</li>
                             <li className="hover:text-white transition cursor-pointer">Careers</li>
@@ -77,7 +77,7 @@ export default function Footer() {
                         <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
                             Legal
                         </h4>
-                        <ul className="space-y-2 md:space-y-3">
+                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
                             <li className="hover:text-white transition cursor-pointer">Privacy Policy</li>
                             <li className="hover:text-white transition cursor-pointer">Terms of Service</li>
                             <li className="hover:text-white transition cursor-pointer">Cookie Policy</li>

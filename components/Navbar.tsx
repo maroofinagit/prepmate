@@ -75,11 +75,14 @@ export default function Navbar() {
                     PrepMate
                 </Link>
 
-                <div className="md:hidden">
-                    <Link href="/onboarding" className={`hover:text-blue-600 transition ${pathname === "/onboarding" ? "text-blue-600" : "text-gray-700"}`}>
-                        Onboarding
-                    </Link>
-                </div>
+                {isLoggedIn && (
+                    <div className="md:hidden">
+                        <Link href="/onboarding" className={`hover:text-blue-600 transition ${pathname === "/onboarding" ? "text-blue-600" : "text-gray-700"}`}>
+                            Onboarding
+                        </Link>
+                    </div>
+                )}
+                
 
 
                 {/* Nav Links */}
