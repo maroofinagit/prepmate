@@ -14,10 +14,7 @@ export default async function Page({ params }: { params: Promise<{ examId: strin
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 text-gray-800 p-8">
-            <div className="max-w-3xl mt-20 mx-auto bg-white rounded-2xl shadow-md p-6">
-                <ClientExamStart exam={exam} />
-            </div>
-        </div>
+
+        <ClientExamStart exam={exam} />
     );
 }
