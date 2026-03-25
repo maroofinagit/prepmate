@@ -127,7 +127,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const updateMilestone = async (milestoneId: number) => {
         try {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: true }));
-
+            
             const res = await fetch("/api/updateMilestone", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -380,7 +380,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
                                                                         <div className="flex items-center gap-3 flex-wrap justify-end">
                                                                             {task.is_completed ? (
-                                                                                <div className="flex items-center text-green-600">
+                                                                                <div className="flex items-center text-green-700">
                                                                                     <CheckCircle2 className="mr-1" size={18} />
                                                                                     Completed
                                                                                 </div>
@@ -390,7 +390,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                                     {checkedTasks[task.id] && (
                                                                                         <Button
                                                                                             size="sm"
-                                                                                            className="order-2 md:order-1 mt-3 md:mt-0 hover:bg-green-600 hover:border-green-600 hover:text-white transition-colors"
+                                                                                            className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
                                                                                             disabled={!!updatingTasks[task.id]}
                                                                                             onClick={() => updateSingleTask(task.id)}
                                                                                         >
@@ -405,7 +405,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                                     <div className="order-1 md:order-2">
                                                                                         <Checkbox
                                                                                             checked={!!checkedTasks[task.id]}
-                                                                                            className="cursor-pointer border-2 border-green-700 rounded-full hover:ring-2 hover:ring-green-500"
+                                                                                            className="cursor-pointer border-2 border-green-700 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-green-500 transition-colors"
                                                                                             onCheckedChange={() => handleCheckboxChange(task.id)}
                                                                                         />
                                                                                     </div>
@@ -452,10 +452,10 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         </CardTitle>
 
                                         {m.achieved ? (
-                                            <CheckCircle2 className="text-green-600" size={20} />
+                                            <CheckCircle2 className="text-green-700" size={20} />
                                         ) : (
                                             <Checkbox
-                                                className="border-2 border-green-700 hover:ring-2 hover:ring-green-500"
+                                                className="border-2 border-green-700 hover:ring-2 hover:ring-offset-2 hover:ring-green-500"
                                                 checked={!!checkedMilestones[m.id]}
                                                 onCheckedChange={() => handleMilestoneChange(m.id)}
                                             />
@@ -473,7 +473,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         {!m.achieved && checkedMilestones[m.id] && (
                                             <div className="pt-4">
                                                 <Button
-                                                    className="w-full md:w-auto transition-colors hover:bg-red-600 hover:border-red-600 hover:text-white"
+                                                    className="w-full md:w-auto transition-colors hover:bg-green-700 hover:border-green-700 cursor-pointer hover:text-white"
                                                     onClick={() => updateMilestone(m.id)}
                                                     disabled={loadingMilestone[m.id]}
                                                 >

@@ -19,7 +19,7 @@ import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 
-export default function Navbar() {
+export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
     const navLinksLP = [
         { name: "Courses", href: "#courses" },
         { name: "Onboarding", href: "/onboarding" }
@@ -44,6 +44,7 @@ export default function Navbar() {
                 else if (data?.session) {
                     setIsLoggedIn(true);
                     setUser({ name: data.user.name, email: data.user.email, image: data.user.image?.toString() });
+
                 } else setIsLoggedIn(false);
             } catch (err) {
                 console.error("Session error:", err);
@@ -82,12 +83,21 @@ export default function Navbar() {
                         </Link>
                     </div>
                 )}
-                
+
 
 
                 {/* Nav Links */}
                 {isLoggedIn ? (
                     <div className="hidden md:flex space-x-8 font-medium">
+                        {isAdmin && (
+                            <Link
+                                href="/admin"
+                                className={`hover:text-blue-600 transition ${pathname === "/admin" ? "text-blue-600" : "text-gray-700"
+                                    }`}
+                            >
+                                Admin
+                            </Link>
+                        )}
                         {navLinksAuth.map((link) => (
                             <Link
                                 key={link.href}
