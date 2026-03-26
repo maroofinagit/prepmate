@@ -29,21 +29,25 @@ A modern, interactive full-stack web application that serves as an AI-powered st
 - Optimized performance and fast load times
 
 ### 🏠 Homepage
+
 <p align="center">
   <img src="public/homepage.png" width="700" />
 </p>
 
 ### 📊 Dashboard
+
 <p align="center">
   <img src="public/dashboard.png" width="700" />
 </p>
 
 ### 📄 Onboarding Page
+
 <p align="center">
   <img src="public/onboarding.png" width="700" />
 </p>
 
 ### 🛣️ Roadmap
+
 <p align="center">
   <img src="public/roadmap.png" width="700" />
 </p>
@@ -65,8 +69,7 @@ A modern, interactive full-stack web application that serves as an AI-powered st
 - **Prisma** – Type-safe database ORM
 - **PostgreSQL** – Relational database
 - **BetterAuth** – Authentication management
-_ **NextJS API Routes** – Serverless functions for backend logic    
-
+  \_ **NextJS API Routes** – Serverless functions for backend logic
 
 ---
 
@@ -97,7 +100,7 @@ _ **NextJS API Routes** – Serverless functions for backend logic
    npm install
    ```
 
-   ---
+   ***
 
 ## 📈 Performance & Best Practices
 
