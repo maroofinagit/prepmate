@@ -2,6 +2,10 @@
 
 A modern, interactive full-stack web application that serves as an AI-powered study companion for students. Built with Next.js, Tailwind CSS, and Sanity.io, Prepmate offers dynamic content, smooth animations, and a responsive design to enhance the learning experience.
 
+<p align="center">
+  <img src="public/thumbnail.png" width="700" />
+</p>
+
 ---
 
 ## Usage
@@ -23,6 +27,26 @@ A modern, interactive full-stack web application that serves as an AI-powered st
 - Reusable and scalable component architecture
 - Clean, accessible, and modern UI design
 - Optimized performance and fast load times
+
+### 🏠 Homepage
+<p align="center">
+  <img src="public/homepage.png" width="700" />
+</p>
+
+### 📊 Dashboard
+<p align="center">
+  <img src="public/dashboard.png" width="700" />
+</p>
+
+### 📄 Onboarding Page
+<p align="center">
+  <img src="public/onboarding.png" width="700" />
+</p>
+
+### 🛣️ Roadmap
+<p align="center">
+  <img src="public/roadmap.png" width="700" />
+</p>
 
 ---
 
