@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -80,6 +80,15 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const roadmapStatus = exam?.roadmap_status;
     console.log("Selected Exam:", exam);
 
+    useEffect(() => {
+        // check if roadmap is not generated if not show a toast to inform user to generate roadmap
+        if (selectedExam && selectedExam.roadmap_status === RoadmapStatus.failed) {
+            toast.error(
+                `Your roadmap for ${selectedExam.exam?.name ?? "the selected exam"} is not generated yet. Please click "Regenerate Roadmap" to create your personalized study plan.`,
+                { autoClose: 8000 }
+            );
+        }
+    }, [exams, selectedExam]);
 
     const router = useRouter();
 
@@ -256,7 +265,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <p className="text-center font-semibold text-lg">0% Completed</p>
-                                    
+
                                 </CardContent>
                             </Card>
                         </div>

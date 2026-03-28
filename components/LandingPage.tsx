@@ -4,6 +4,7 @@ import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import VisitMobile from "./VisitMobile";
 
 export default async function LandingPage() {
     const headersData = await headers();
@@ -96,6 +97,8 @@ export default async function LandingPage() {
                     </div>
                 </section>
             )}
+
+            <VisitMobile />
 
             {/* ABOUT */}
             <section

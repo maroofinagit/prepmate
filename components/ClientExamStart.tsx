@@ -14,6 +14,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
     const today = new Date();
     const [startDate, setStartDate] = useState(format(today, 'yyyy-MM-dd'));
+    const [endDate, setEndDate] = useState(format(addMonths(today, 6), 'yyyy-MM-dd'));
     const minStartDate = format(subYears(new Date(startDate), 3), 'yyyy-MM-dd');
     const minEndDate = format(addMonths(new Date(startDate), 3), "yyyy-MM-dd");
     const maxEndDate = format(addYears(new Date(startDate), 3), "yyyy-MM-dd");
@@ -39,6 +40,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const formData = new FormData(event.currentTarget);
             const startDate = formData.get('start_date') as string;
             const endDate = formData.get('end_date') as string;
+
+            console.log("Form Data:", { startDate, endDate });
+            
 
             // Step 1: Create User Exam
             setLoadingMessage('Creating your user exam...');
@@ -163,9 +167,11 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                             </label>
                             <input
                                 type="date"
+                                name="start_date"
+                                min={minStartDate}
+                                max={format(addYears(new Date(), 3), 'yyyy-MM-dd')}
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
-                                min={minStartDate}
                                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 
                                    focus:ring-2 focus:ring-black focus:bg-white outline-none transition"
                             />
@@ -178,9 +184,11 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                             </label>
                             <input
                                 type="date"
+                                name="end_date"
                                 min={minEndDate}
                                 max={maxEndDate}
-                                defaultValue={format(addMonths(new Date(startDate), 12), 'yyyy-MM-dd')}
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
                                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 
                                    focus:ring-2 focus:ring-black focus:bg-white outline-none transition"
                             />
