@@ -197,8 +197,8 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                 Check off tasks as you complete them to track your progress. Click on phases and weeks to see more details, and watch your roadmap evolve as you move forward!
             </p>
 
-            <p className="text-sm text-gray-500 md:hidden block">
-                Sorry, the mobile view is limited. For the full interactive experience, please access this roadmap on a desktop device where you can also update your progress.
+            <p className="text-sm bg-yellow-300 p-3 rounded-lg md:hidden block">
+                ❗️ Sorry, the mobile view is limited. For the full interactive experience, please access the app on a desktop device where you can also update your progress.
             </p>
 
             {/* 📱 MOBILE VIEW */}

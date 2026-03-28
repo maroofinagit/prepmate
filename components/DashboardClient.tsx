@@ -487,8 +487,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 )}
             </Tabs>
 
-            <p className=" block md:hidden text-sm text-muted-foreground mt-4">
-                For full analytics, please access the dashboard on a desktop device. 📊
+            <p className=" block md:hidden text-sm mt-4 bg-yellow-300 p-3 rounded-lg">
+                ❗️ For full analytics, please access the dashboard on a desktop device. 📊
             </p>
 
             <button
