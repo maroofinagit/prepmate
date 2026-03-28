@@ -10,7 +10,7 @@ export default defineConfig({
     seed: "tsx prisma/seedCrs.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: process.env["DATABASE_URL"] || "",
     
   },
 });

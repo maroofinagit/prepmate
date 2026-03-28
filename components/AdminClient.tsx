@@ -37,6 +37,10 @@ export default function AdminClient({ data }: any) {
                 </div>
             </div>
 
+            <Link href="/admin/sendEmail" className="inline-block mb-6 px-4 py-2 bg-black text-white rounded-lg">
+                ✉️ Send Email
+            </Link>
+
             {/* 📋 USERS TABLE */}
             <div className="bg-white shadow-sm rounded-xl border overflow-hidden">
 
@@ -120,7 +124,9 @@ export default function AdminClient({ data }: any) {
                                             {user.name || "No Name"}
                                         </td>
                                         <td className="p-3 text-gray-600">
-                                            {user.email}
+                                            <Link href={`/admin/users/${user.id}`} className="underline">
+                                                {user.email}
+                                            </Link>
                                         </td>
                                         <td colSpan={3} className="p-3 text-gray-400">
                                             No exams enrolled
