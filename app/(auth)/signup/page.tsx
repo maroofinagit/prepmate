@@ -1,9 +1,11 @@
 "use client";
 
+import { sendAdminNotificationEmail } from "@/app/actions/admin";
 import { authClient } from "@/app/lib/auth-client";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
+
 
 export default function SignUpPage() {
     const [email, setEmail] = useState("");
@@ -11,8 +13,10 @@ export default function SignUpPage() {
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+    const router = useRouter();
 
     useState(() => {
+
         // If user is already logged in, redirect to dashboard
         const fetchSession = async () => {
             const { data, error } = await authClient.getSession();
@@ -27,7 +31,7 @@ export default function SignUpPage() {
 
     },);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const { data, error } = await authClient.signUp.email({
@@ -40,10 +44,18 @@ export default function SignUpPage() {
                 setLoading(true);
                 setErrorMsg("");
             },
-            onSuccess: (ctx) => {
+            onSuccess: async (ctx) => {
                 //redirect to the dashboard or sign in page
                 toast.success("Account created successfully!");
-                redirect("/");
+
+                // Send welcome email using Resend
+                const adminNotificationResult = await sendAdminNotificationEmail(process.env.NEXT_PUBLIC_GMAIL_USER!, name);
+                if (!adminNotificationResult.success) {
+                    toast.error("Failed to send admin notification email.");
+                }
+                
+                router.push("/signin");
+
 
             },
             onError: (ctx) => {
@@ -109,7 +121,7 @@ export default function SignUpPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? "opacity-50 cursor-not-allowed" : ""
+                        className={`w-full py-2 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {loading ? "Signing Up..." : "Sign Up"}
@@ -118,7 +130,7 @@ export default function SignUpPage() {
 
                 <p className="mt-6 text-center text-gray-600">
                     Already have an account?{" "}
-                    <a href="/signin" className="text-blue-600 font-medium hover:underline">
+                    <a href="/signin" className="text-blue-700 font-medium hover:underline">
                         Sign In
                     </a>
                 </p>

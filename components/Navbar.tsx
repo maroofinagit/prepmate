@@ -159,13 +159,13 @@ export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                                    <DropdownMenuItem>
                                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                                        Dashboard
+                                        <Link href="/dashboard">Dashboard</Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                                    <DropdownMenuItem >
                                         <User className="mr-2 h-4 w-4" />
-                                        Profile
+                                        <Link href="/profile">Profile</Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
