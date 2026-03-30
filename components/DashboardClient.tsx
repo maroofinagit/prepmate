@@ -21,10 +21,19 @@ import {
     Cell,
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
-import { CheckCircle2, Clock } from "lucide-react";
 import { RoadmapStatus } from "@/generated/prisma/enums";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog";
 /**
  * Safe DashboardAnalytics component
  * - exams can be []
@@ -112,22 +121,21 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     const handleDelete = async () => {
         if (!selectedId) return;
-        if (!confirm(`Are you sure you want to delete the ${exam?.exam?.name ?? "selected"} exam? This action cannot be undone.`)) {
-            return;
+
+        try {
+            await fetch(`/api/deleteUserExam`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_exam_id: selectedId }),
+            });
+            toast.success("Exam deleted successfully.");
+            setSelectedExam(null);
+            router.refresh();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to delete exam. Please try again later.");
         }
-        const res = await fetch(`/api/deleteUserExam`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_exam_id: selectedId }),
-        });
-        if (!res.ok) {
-            toast.error('Failed to delete exam. Please try again later.');
-            return;
-        }
-        toast.success('Exam deleted successfully.');
-        setSelectedExam(null); // reset selection
-        router.refresh(); // refresh to update dashboard data
-    }
+    };
 
     return (
         <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-7xl mx-auto">
@@ -456,7 +464,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 {/* ✅ MILESTONES (DESKTOP ONLY) */}
                                 <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                                     {(milestones.length ? milestones : []).map((m) => (
                                         <Card key={m.id}>
                                             <CardHeader>
@@ -479,6 +487,58 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         <div className="text-sm text-muted-foreground">No milestones yet.</div>
                                     )}
                                 </div>
+                                {/* DELETE EXAM */}
+                                <div className=" border-t pt-8">
+                                    <h2 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
+
+                                    <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                                        <div>
+                                            <p className="font-medium text-red-700">Delete your account</p>
+                                            <p className="text-sm text-red-500">
+                                                This action is permanent and cannot be undone.
+                                            </p>
+                                        </div>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                                    Delete Exam
+                                                </button>
+                                            </DialogTrigger>
+
+                                            <DialogContent className="sm:max-w-md">
+                                                <DialogHeader>
+                                                    <DialogTitle className="text-red-600">
+                                                        Delete Exam?
+                                                    </DialogTitle>
+
+                                                    <DialogDescription>
+                                                        Are you sure you want to delete{" "}
+                                                        <span className="font-semibold text-black">
+                                                            {exam?.exam?.name ?? "this exam"}
+                                                        </span>
+                                                        ? This action cannot be undone.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                <DialogFooter className="mt-4">
+                                                    <DialogClose asChild>
+                                                        <button className="px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50" disabled={false}>
+                                                            Cancel
+                                                        </button>
+                                                    </DialogClose>
+
+                                                    <button
+                                                        onClick={handleDelete}
+                                                        className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-red-700"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -491,13 +551,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 ❗️ For full analytics, please access the dashboard on a desktop device. 📊
             </p>
 
-            <button
-                onClick={handleDelete}
-                disabled={!selectedId || regenerating}
-                className="mt-6 border-2 text-sm md:text-base border-red-600 text-red-600 py-3 px-4 rounded-lg hover:bg-red-700 hover:text-white transition disabled:bg-red-400 font-medium cursor-pointer"
-            >
-                Delete {exam?.exam?.name} exam
-            </button>
         </div>
     );
 }
