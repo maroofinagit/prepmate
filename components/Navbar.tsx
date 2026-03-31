@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Image from "next/image";
 
 export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
@@ -58,7 +58,7 @@ export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
         await authClient.signOut();
         router.push("/");
         setIsLoggedIn(false);
-        toast.success("Logged out successfully.", { autoClose: 1500, });
+        toast.success("Logged out successfully.", { duration: 1500 });
 
     };
 

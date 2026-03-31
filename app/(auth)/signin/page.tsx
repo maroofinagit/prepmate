@@ -9,7 +9,7 @@ import { FaChrome } from "react-icons/fa";
 import { CiMail } from "react-icons/ci";
 import { FiLoader } from "react-icons/fi";
 import { authClient } from "@/app/lib/auth-client";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -46,11 +46,12 @@ export default function SignInPage() {
                     setError("");
                 },
                 onSuccess: () => {
-                    toast.success("Signed in successfully!", { autoClose: 1500 });
+                    toast.success("Signed in successfully!");
                     redirect("/");
                 },
                 onError: (ctx) => {
                     setError(ctx.error?.message || "Something went wrong.");
+                    toast.error(ctx.error?.message || "Something went wrong.");
                     setLoading(false);
                 },
             }
@@ -76,10 +77,13 @@ export default function SignInPage() {
                 },
                 onSuccess: () => {
                     setOauthLoading(null);
+                    toast.success("Signed in successfully!");
+                    redirect("/");
                 },
                 onError: (ctx) => {
                     setError(ctx.error?.message || "Something went wrong.");
                     setOauthLoading(null);
+                    toast.error(ctx.error?.message || "Something went wrong.");
                 },
             }
         );
@@ -124,7 +128,7 @@ export default function SignInPage() {
                         <p className="text-sm text-red-500 text-center">{error}</p>
                     )}
 
-                    <Button type="submit" disabled={loading} className="w-full">
+                    <Button type="submit" disabled={loading} className="w-full cursor-pointer">
                         {loading ? (
                             <FiLoader className="animate-spin h-4 w-4 mr-2" />
                         ) : (
@@ -148,7 +152,7 @@ export default function SignInPage() {
                         variant="outline"
                         disabled={oauthLoading === "google"}
                         onClick={() => handleSocialSignIn("google")}
-                        className="w-full flex items-center justify-center"
+                        className="w-full flex items-center justify-center cursor-pointer"
                     >
                         {oauthLoading === "google" ? (
                             <FiLoader className="h-4 w-4 mr-2 animate-spin" />
@@ -163,7 +167,7 @@ export default function SignInPage() {
                         variant="outline"
                         disabled={oauthLoading === "github"}
                         onClick={() => handleSocialSignIn("github")}
-                        className="w-full flex items-center justify-center"
+                        className="w-full flex items-center justify-center cursor-pointer"
                     >
                         {oauthLoading === "github" ? (
                             <FiLoader className="h-4 w-4 mr-2 animate-spin" />

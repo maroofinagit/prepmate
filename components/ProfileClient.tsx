@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import ProfileImageUploader from "@/components/ProfilePicUpdater";
 import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { Delete } from "lucide-react";
 import { DeleteAccountDialog } from "./DeleteAccountDialoge";
 
 export default function ProfilePage({ user }: { user: any }) {
@@ -18,28 +16,6 @@ export default function ProfilePage({ user }: { user: any }) {
     }
 
     const [loading, setLoading] = useState(false);
-
-    const handleDeleteAccount = async () => {
-        
-        toast.warning("Deleting your account is irreversible. Please confirm to proceed.",{
-            
-        });
-
-
-        setLoading(true);
-        try {
-            await fetch("/api/delete-account" , {
-                method: "DELETE",
-            });
-            toast.success("Account deleted successfully.");
-            router.push("/");
-        } catch (error) {
-            console.error("Error deleting account:", error);
-            toast.error("Failed to delete account. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="max-w-5xl mx-auto py-12 px-6 mt-16">

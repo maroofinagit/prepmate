@@ -22,7 +22,7 @@ import {
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
 import { RoadmapStatus } from "@/generated/prisma/enums";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
     Dialog,
@@ -94,7 +94,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (selectedExam && selectedExam.roadmap_status === RoadmapStatus.failed) {
             toast.error(
                 `Your roadmap for ${selectedExam.exam?.name ?? "the selected exam"} is not generated yet. Please click "Regenerate Roadmap" to create your personalized study plan.`,
-                { autoClose: 8000 }
+                {
+                    duration: 1500, // show for 1.5 seconds
+                }
             );
         }
     }, [exams, selectedExam]);

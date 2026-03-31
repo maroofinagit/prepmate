@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 // @ts-ignore: Allow importing CSS globals without type declarations
 import "./globals.css";
-import { ToastContainer } from "react-toastify";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { isAdmin } from "./lib/isAdmin";
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -61,13 +61,13 @@ export default async function RootLayout({
   const admin = await isAdmin();
   return (
     <html lang="en">
-     
-      
+
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastContainer />
-            <Navbar isAdmin={admin} />
+        <Toaster position="top-right" richColors />
+        <Navbar isAdmin={admin} />
         {children}
         <Footer />
       </body>

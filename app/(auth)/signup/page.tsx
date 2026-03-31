@@ -4,7 +4,7 @@ import { sendAdminNotificationEmail } from "@/app/actions/admin";
 import { authClient } from "@/app/lib/auth-client";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 
 export default function SignUpPage() {
@@ -65,6 +65,7 @@ export default function SignUpPage() {
         });
         if (error) {
             setErrorMsg(error.message || "An unexpected error occurred.");
+            toast.error(error.message || "An unexpected error occurred.");
             setLoading(false);
             return;
         }
