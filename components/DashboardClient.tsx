@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -19,6 +19,9 @@ import {
     PieChart,
     Pie,
     Cell,
+    AreaChart,
+    CartesianGrid,
+    Area,
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
 import { RoadmapStatus } from "@/generated/prisma/enums";
@@ -34,6 +37,8 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { TrendingUp } from "lucide-react";
 /**
  * Safe DashboardAnalytics component
  * - exams can be []
@@ -42,6 +47,7 @@ import {
  */
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
     const exams = dashboardUser?.exams || [];
+    // const exams: any[] = [];
 
     // store selectedExam as the full exam object or null
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
@@ -63,24 +69,25 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const milestones = roadmap?.milestones || [];
 
     // Chart data (always arrays)
-    const phaseProgressData = phases.map((p) => ({
+    const phaseProgressData = phases.map((p: any) => ({
         name: p.phase_name ?? "Phase",
         progress: Math.round(p.progress ?? 0),
     }));
 
     const weekProgressData = phases
-        .flatMap((p) =>
-            (p.weeks || []).map((w) => ({
+        .flatMap((p: any) =>
+            (p.weeks || []).map((w: any) => ({
                 name: `W${w.week_number ?? "?"}`,
                 progress: Math.round(w.progress ?? 0),
                 order: typeof w.week_number === "number" ? w.week_number : Infinity,
             }))
         )
-        .sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+        .sort((a: any, b: any) => (a.order ?? Infinity) - (b.order ?? Infinity));
 
     console.log("week progress data:", weekProgressData);
 
     const totalUserExams = exams.length;
+
     const overallProgress = Math.round(
         exams.reduce((acc, e) => acc + (e.progress_percent ?? 0), 0) / (exams.length || 1)
     );
@@ -90,6 +97,35 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const selectedId = exam?.id ?? null;
     const roadmapStatus = exam?.roadmap_status;
     console.log("Selected Exam:", exam);
+
+    // Chart config (labels, colors, etc.)
+    const chartConfig = {
+        value: {
+            label: "Progress",
+        },
+        completed: {
+            label: "Completed",
+            color: "#22c55e", // green
+        },
+        remaining: {
+            label: "Remaining",
+            color: "#e5e7eb", // gray
+        },
+    }
+
+    //PieChart Value
+    const pieChartData = [
+        {
+            status: "Completed",
+            value: selectedProgress ?? 0,
+            fill: "var(--color-completed)",
+        },
+        {
+            status: "Remaining",
+            value: Math.max(0, 100 - (selectedProgress ?? 0)),
+            fill: "var(--color-remaining)",
+        },
+    ]
 
     useEffect(() => {
         // check if roadmap is not generated if not show a toast to inform user to generate roadmap
@@ -146,7 +182,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     };
 
     return (
-        <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-7xl mx-auto">
+        <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-8xl mx-auto">
             {
                 regenerating && (
                     <div className="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg" role="alert">
@@ -161,22 +197,22 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     width={60}
                     height={60}
                     alt="User"
-                    className="rounded-full object-cover object-center"
+                    className="rounded-full aspect-square w-15 object-cover object-center"
                 />
                 <div>
-                    <h1 className="text-2xl font-bold">Welcome, {dashboardUser?.name ?? "Student"}</h1>
-                    <p className="text-muted-foreground">Your Exam Analytics Dashboard</p>
+                    <h1 className="md:text-2xl text-xl font-bold">Welcome, {dashboardUser?.name ?? "Student"}</h1>
+                    <p className="text-muted-foreground md:text-base text-sm">Your Exam Analytics Dashboard</p>
                 </div>
             </div>
 
             {/* Top Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <Card>
                     <CardHeader>
                         <CardTitle>User Exams Enrolled</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-4xl font-bold">{totalUserExams}</p>
+                        <p className="md:text-4xl text-xl font-bold">{totalUserExams}</p>
                     </CardContent>
                 </Card>
 
@@ -192,29 +228,39 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                 <Card>
                     <CardHeader>
+                        <CardTitle>{currentSelectedExam?.exam.name || "Selected"} Progress</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Progress value={selectedProgress || 0} className="h-3" />
+                        <p className="text-center mt-2 font-semibold">{selectedProgress || 0}%</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
                         <CardTitle>Go to Roadmap</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {!exam ? (
                             <Link href="/onboarding">
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white  ">Create Roadmap</Button>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Create Roadmap</Button>
                             </Link>
                         ) : roadmapStatus === RoadmapStatus.completed ? (
                             <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white">Open Roadmap</Button>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Open Roadmap</Button>
                             </Link>
                         ) : roadmapStatus === RoadmapStatus.in_progress ? (
-                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50" disabled>
+                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50 md:text-base text-sm" disabled>
                                 ⏳ Generating Roadmap...
                             </Button>
                         ) : regenerating ? (
-                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50" disabled>
+                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50 md:text-base text-sm" disabled>
                                 🔁 Regenerating...
                             </Button>
                         ) :
 
                             (
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white" onClick={handleRegenerate}>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm" onClick={handleRegenerate}>
                                     🔁 Regenerate Roadmap
                                 </Button>
                             )
@@ -223,7 +269,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 </Card>
             </div>
 
-            {/* Tabs */}
             {/* Tabs */}
             <Tabs
                 defaultValue={exams[0] ? String(exams[0].id) : "none"}
@@ -261,25 +306,21 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <CardTitle>Exam Progress</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <ResponsiveContainer width="100%" height={250}>
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                    >
                                         <PieChart>
+                                            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+
                                             <Pie
+                                                data={pieChartData}
                                                 dataKey="value"
-                                                data={[
-                                                    { name: "Completed", value: 0 },
-                                                    { name: "Remaining", value: 100 },
-                                                ]}
-                                                cx="50%"
-                                                cy="50%"
-                                                outerRadius={80}
+                                                nameKey="status"
                                                 label
-                                            >
-                                                <Cell fill="#82ca9d" />
-                                                <Cell fill="#e5e7eb" />
-                                            </Pie>
-                                            <Tooltip />
+                                            />
                                         </PieChart>
-                                    </ResponsiveContainer>
+                                    </ChartContainer>
                                     <p className="text-center font-semibold text-lg">0% Completed</p>
 
                                 </CardContent>
@@ -295,46 +336,157 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         <CardTitle>Exam Progress</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
+                                        <ChartContainer
+                                            config={chartConfig}
+                                            className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                        >
                                             <PieChart>
-                                                <Pie dataKey="value" data={[{ name: "Completed", value: 0 }, { name: "Remaining", value: 100 }]} cx="50%" cy="50%" outerRadius={80} label>
-                                                    <Cell fill="#82ca9d" />
-                                                    <Cell fill="#e5e7eb" />
-                                                </Pie>
-                                                <Tooltip />
+                                                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+
+                                                <Pie
+                                                    data={pieChartData}
+                                                    dataKey="value"
+                                                    nameKey="status"
+                                                    label
+                                                />
                                             </PieChart>
-                                        </ResponsiveContainer>
+                                        </ChartContainer>
                                         <p className="text-center font-semibold text-lg">0% Completed</p>
                                     </CardContent>
                                 </Card>
 
+                                {/* Phase Progress Card */}
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Phase Progress</CardTitle>
                                     </CardHeader>
-                                    <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <BarChart data={[]}>
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
+
+                                    <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                                        <ChartContainer
+                                            config={{
+                                                progress: {
+                                                    label: "Progress",
+                                                    color: "var(--chart-1)",
+                                                },
+                                            }}
+                                            className="aspect-auto h-62.5 w-full"
+                                        >
+                                            <BarChart
+                                                accessibilityLayer
+                                                data={phaseProgressData}
+                                                margin={{
+                                                    left: 12,
+                                                    right: 12,
+                                                }}
+                                            >
+                                                <CartesianGrid vertical={false} />
+
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+
+                                                />
+
+                                                <YAxis
+                                                    domain={[0, 100]}
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+                                                />
+
+                                                <ChartTooltip
+                                                    cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
+                                                    content={
+                                                        <ChartTooltipContent
+                                                            className="w-37.5"
+                                                            nameKey="progress"
+                                                            labelFormatter={(value) => `Phase: ${value}`}
+                                                            formatter={(value) => `${value}% completed`}
+                                                        />
+                                                    }
+                                                />
+
+                                                <Bar
+                                                    dataKey="progress"
+                                                    fill="var(--color-progress)"
+                                                    radius={8}
+                                                    activeBar={{
+                                                        fill: "var(--color-progress-hover)",
+                                                        opacity: 1,
+                                                        stroke: "var(--color-progress-hover)",
+                                                        strokeWidth: 2,
+                                                    }
+
+                                                    }
+                                                />
                                             </BarChart>
-                                        </ResponsiveContainer>
+                                        </ChartContainer>
                                     </CardContent>
+
+                                    <CardFooter className="flex-col items-start gap-2 text-sm">
+                                        <div className="flex gap-2 leading-none font-medium">
+                                            Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
+                                        </div>
+                                        <div className="leading-none text-muted-foreground">
+                                            Each phase represents your learning milestone
+                                        </div>
+                                    </CardFooter>
                                 </Card>
 
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Weekly Progress</CardTitle>
                                     </CardHeader>
-                                    <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <BarChart data={[]}>
-                                                <XAxis dataKey="" />
-                                                <YAxis />
-                                                <Tooltip />
-                                            </BarChart>
-                                        </ResponsiveContainer>
+                                    <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                                        <ChartContainer
+                                            config={{
+                                                progress: {
+                                                    label: "Weekly Progress",
+                                                    color: "var(--chart-1)",
+                                                },
+                                            }}
+                                            className="aspect-auto h-62.5 w-full"
+                                        >
+                                            <AreaChart data={weekProgressData}>
+                                                <defs>
+                                                    <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
+                                                        <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
+                                                    </linearGradient>
+                                                </defs>
+
+                                                <CartesianGrid vertical={false} />
+
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tickMargin={8}
+                                                />
+
+                                                <YAxis
+                                                    domain={[0, 100]}
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tickMargin={8}
+                                                />
+
+                                                <ChartTooltip
+                                                    cursor={false}
+                                                    content={<ChartTooltipContent indicator="dot" />}
+                                                />
+
+                                                <Area
+                                                    dataKey="progress"
+                                                    type="natural"
+                                                    fill="url(#fillProgress)"
+                                                    stroke="var(--color-progress)"
+                                                    strokeWidth={2}
+                                                />
+                                            </AreaChart>
+                                        </ChartContainer>
                                     </CardContent>
                                 </Card>
 
@@ -370,31 +522,118 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         <CardTitle>Exam Progress</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
+                                        <ChartContainer
+                                            config={chartConfig}
+                                            className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                        >
                                             <PieChart>
+                                                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+
                                                 <Pie
+                                                    data={pieChartData}
                                                     dataKey="value"
-                                                    data={[
-                                                        { name: "Completed", value: ex.progress_percent ?? 0 },
-                                                        { name: "Remaining", value: Math.max(0, 100 - (ex.progress_percent ?? 0)) },
-                                                    ]}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    outerRadius={80}
+                                                    nameKey="status"
                                                     label
-                                                >
-                                                    <Cell fill="#82ca9d" />
-                                                    <Cell fill="#e5e7eb" />
-                                                </Pie>
-                                                <Tooltip />
+                                                />
                                             </PieChart>
-                                        </ResponsiveContainer>
+                                        </ChartContainer>
 
                                         <p className="text-center font-semibold text-lg">
                                             {ex.progress_percent ?? 0}% Completed
                                         </p>
 
                                     </CardContent>
+                                    <CardFooter className="flex-col items-start gap-2 text-sm">
+                                        <div className="flex gap-2 leading-none font-medium">
+                                            {(ex.progress_percent ?? 0) >= 70
+                                                ? "Strong progress — you're close to the finish line"
+                                                : (ex.progress_percent ?? 0) >= 40
+                                                    ? "Good pace — stay consistent"
+                                                    : "Just getting started — build the habit"}
+                                            <TrendingUp className="h-4 w-4" />
+                                        </div>
+                                        <div className="leading-none text-muted-foreground">
+                                            {(ex.progress_percent ?? 0)}% of your exam journey is complete
+                                        </div>
+                                    </CardFooter>
+                                </Card>
+
+                                <Card className="mt-6">
+                                    <CardHeader>
+                                        <CardTitle>Phase Progress</CardTitle>
+                                    </CardHeader>
+
+                                    <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                                        <ChartContainer
+                                            config={{
+                                                progress: {
+                                                    label: "Progress",
+                                                    color: "#22c55e",
+                                                },
+                                            }}
+                                            className="aspect-auto h-62.5 w-full"
+                                        >
+                                            <BarChart
+                                                accessibilityLayer
+                                                data={phaseProgressData}
+                                                margin={{
+                                                    left: 12,
+                                                    right: 12,
+                                                }}
+                                            >
+                                                <CartesianGrid vertical={false} />
+
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+
+                                                />
+
+                                                <YAxis
+                                                    domain={[0, 100]}
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+                                                />
+
+                                                <ChartTooltip
+                                                    cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
+                                                    content={
+                                                        <ChartTooltipContent
+                                                            className="w-37.5"
+                                                            nameKey="progress"
+                                                            labelFormatter={(value) => `Phase: ${value}`}
+                                                            formatter={(value) => `${value}% completed`}
+                                                        />
+                                                    }
+                                                />
+
+                                                <Bar
+                                                    dataKey="progress"
+                                                    fill="#22c55e"
+                                                    radius={8}
+                                                    activeBar={{
+                                                        fill: "#16a34a",
+                                                        opacity: 1,
+                                                        stroke: "#16a34a",
+                                                        strokeWidth: 2,
+                                                    }
+
+                                                    }
+                                                />
+                                            </BarChart>
+                                        </ChartContainer>
+                                    </CardContent>
+                                    <CardFooter className="flex-col items-start gap-2 text-sm">
+                                        <div className="flex gap-2 leading-none font-medium">
+                                            Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
+                                        </div>
+                                        <div className="leading-none text-muted-foreground">
+                                            Track how consistently you’re improving week by week
+                                        </div>
+                                    </CardFooter>
                                 </Card>
                             </div>
 
@@ -406,66 +645,188 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     {/* Pie */}
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle>Exam Progress</CardTitle>
+                                            <CardTitle>{currentSelectedExam?.exam.name} Exam Progress</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <ResponsiveContainer width="100%" height={250}>
+                                            <ChartContainer
+                                                config={chartConfig}
+                                                className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                            >
                                                 <PieChart>
+                                                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+
                                                     <Pie
+                                                        data={pieChartData}
                                                         dataKey="value"
-                                                        data={[
-                                                            { name: "Completed", value: ex.progress_percent ?? 0 },
-                                                            { name: "Remaining", value: Math.max(0, 100 - (ex.progress_percent ?? 0)) },
-                                                        ]}
-                                                        cx="50%"
-                                                        cy="50%"
-                                                        outerRadius={80}
+                                                        nameKey="status"
                                                         label
-                                                    >
-                                                        <Cell fill="#82ca9d" />
-                                                        <Cell fill="#e5e7eb" />
-                                                    </Pie>
-                                                    <Tooltip />
+                                                    />
                                                 </PieChart>
-                                            </ResponsiveContainer>
+                                            </ChartContainer>
                                             <p className="text-center font-semibold text-lg">
                                                 {ex.progress_percent ?? 0}% Completed
                                             </p>
                                         </CardContent>
+                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                {(ex.progress_percent ?? 0) >= 70
+                                                    ? "Strong progress — you're close to the finish line"
+                                                    : (ex.progress_percent ?? 0) >= 40
+                                                        ? "Good pace — stay consistent"
+                                                        : "Just getting started — build the habit"}
+                                                <TrendingUp className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                {(ex.progress_percent ?? 0)}% of your exam journey is complete
+                                            </div>
+                                        </CardFooter>
                                     </Card>
 
-                                    {/* Phase */}
+                                    {/* Phase Progress Bar Chart */}
                                     <Card>
                                         <CardHeader>
                                             <CardTitle>Phase Progress</CardTitle>
+                                            <CardDescription>Progress across all phases</CardDescription>
                                         </CardHeader>
+
                                         <CardContent>
-                                            <ResponsiveContainer width="100%" height={250}>
-                                                <BarChart data={phaseProgressData}>
-                                                    <XAxis dataKey="name" />
-                                                    <YAxis />
-                                                    <Tooltip />
-                                                    <Bar dataKey="progress" />
+                                            <ChartContainer
+                                                config={{
+                                                    progress: {
+                                                        label: "Progress",
+                                                        color: "#22c55e",
+                                                    },
+                                                }}
+                                                className="aspect-auto h-62.5 w-full"
+                                            >
+                                                <BarChart
+                                                    accessibilityLayer
+                                                    data={phaseProgressData}
+                                                    margin={{
+                                                        left: 12,
+                                                        right: 12,
+                                                    }}
+                                                >
+                                                    <CartesianGrid vertical={false} />
+
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        tickLine={true}
+                                                        axisLine={true}
+                                                        tickMargin={8}
+
+                                                    />
+
+                                                    <YAxis
+                                                        domain={[0, 100]}
+                                                        tickLine={true}
+                                                        axisLine={true}
+                                                        tickMargin={8}
+                                                    />
+
+                                                    <ChartTooltip
+                                                        cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
+                                                        content={
+                                                            <ChartTooltipContent
+                                                                className="w-37.5"
+                                                                nameKey="progress"
+                                                                labelFormatter={(value) => `Phase: ${value}`}
+                                                                formatter={(value) => `${value}% completed`}
+                                                            />
+                                                        }
+                                                    />
+
+                                                    <Bar
+                                                        dataKey="progress"
+                                                        fill="#22c55e"
+                                                        radius={8}
+                                                        activeBar={{
+                                                            fill: "#16a34a",
+                                                            opacity: 1,
+                                                            stroke: "#16a34a",
+                                                            strokeWidth: 2,
+                                                        }
+
+                                                        }
+                                                    />
                                                 </BarChart>
-                                            </ResponsiveContainer>
+                                            </ChartContainer>
                                         </CardContent>
+
+                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                Each phase represents your learning milestone
+                                            </div>
+                                        </CardFooter>
                                     </Card>
 
-                                    {/* Weekly */}
+
+
+                                    {/* Weekly area chart */}
                                     <Card className="col-span-2">
                                         <CardHeader>
                                             <CardTitle>Weekly Progress</CardTitle>
                                         </CardHeader>
-                                        <CardContent>
-                                            <ResponsiveContainer width="100%" height={250}>
-                                                <LineChart data={weekProgressData}>
-                                                    <XAxis dataKey="name" />
-                                                    <YAxis />
-                                                    <Tooltip />
-                                                    <Line type="basis" dataKey="progress" strokeWidth={2} stroke="#8884d8" />
-                                                </LineChart>
-                                            </ResponsiveContainer>
+                                        <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                                            <ChartContainer
+                                                config={{
+                                                    progress: {
+                                                        label: "Weekly Progress",
+                                                        color: "#22c55e",
+                                                    },
+                                                }}
+                                                className="aspect-auto h-62.5 w-full"
+                                            >
+                                                <AreaChart data={weekProgressData}>
+                                                    <defs>
+                                                        <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
+                                                            <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
+                                                        </linearGradient>
+                                                    </defs>
+
+                                                    <CartesianGrid vertical={false} />
+
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                        tickMargin={8}
+                                                    />
+
+                                                    <YAxis
+                                                        domain={[0, 100]}
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                        tickMargin={8}
+                                                    />
+
+                                                    <ChartTooltip
+                                                        cursor={false}
+                                                        content={<ChartTooltipContent indicator="dot" />}
+                                                    />
+
+                                                    <Area
+                                                        dataKey="progress"
+                                                        type="natural"
+                                                        fill="url(#fillProgress)"
+                                                        stroke="var(--color-progress)"
+                                                        strokeWidth={2}
+                                                    />
+                                                </AreaChart>
+                                            </ChartContainer>
                                         </CardContent>
+                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                Track how consistently you’re improving week by week
+                                            </div>
+                                        </CardFooter>
                                     </Card>
                                 </div>
 
@@ -473,7 +834,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                                    {(milestones.length ? milestones : []).map((m) => (
+                                    {(milestones.length ? milestones : []).map((m: any) => (
                                         <Card key={m.id}>
                                             <CardHeader>
                                                 <CardTitle>{m.name}</CardTitle>
@@ -523,7 +884,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         {deleting ? (
                                                             <span className="font-medium text-black flex items-center gap-2">
                                                                 <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                                                                    
+
                                                                 Deleting {exam?.exam?.name ?? "this exam"}...
                                                             </span>
                                                         ) : (
