@@ -7,7 +7,7 @@ import { CalendarDays, ChevronDown, ChevronUp, CheckCircle2, Loader2 } from "luc
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { Roadmap } from "@/app/types/roadmap";
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
@@ -112,6 +112,13 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                         ),
                     })),
                 })),
+                userExam: {
+                    ...prev.userExam,
+                    exam: {
+                        ...prev.userExam.exam,
+                        resources: prev.userExam.exam.resources, // keep resources unchanged
+                    },
+                },
             }));
 
             setCheckedTasks((prev) => ({ ...prev, [taskId]: false }));
@@ -127,7 +134,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const updateMilestone = async (milestoneId: number) => {
         try {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: true }));
-            
+
             const res = await fetch("/api/updateMilestone", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -137,7 +144,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed updating milestone");
 
-            toast.success(data.message || "Milestone updated!", { autoClose: 1500 });
+            toast.success(data.message || "Milestone updated!", { duration: 1500 });
 
             // Instant UI update
             setLocalRoadmap((prev) => ({
@@ -192,7 +199,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     </Button>
                 </div>
             </div>
-            
+
             <p className="text-sm text-gray-500 md:block hidden">
                 Check off tasks as you complete them to track your progress. Click on phases and weeks to see more details, and watch your roadmap evolve as you move forward!
             </p>
@@ -283,7 +290,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     </div>
                 )}
 
-            
+
             </div>
 
             {/* Desktop view */}
@@ -486,6 +493,56 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         )}
                                     </CardContent>
                                 </Card>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <Separator />
+
+                {localRoadmap.userExam.exam.resources.length > 0 && (
+                    <div className="space-y-6 mt-8">
+
+                        {/* Header */}
+                        <div>
+                            <h2 className="text-2xl font-semibold text-gray-800">
+                                Recommended Resources
+                            </h2>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Handpicked materials to sharpen your preparation. Dive in.
+                            </p>
+                        </div>
+
+                        {/* Cards */}
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {localRoadmap.userExam.exam.resources.map((res) => (
+                                <a
+                                    key={res.id}
+                                    href={res.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group block p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-blue-400 transition-all duration-200"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+
+                                        {/* Title */}
+                                        <div>
+                                            <h3 className="font-medium text-gray-800 group-hover:text-blue-600 transition">
+                                                {res.title}
+                                            </h3>
+
+                                            {/* Type badge */}
+                                            <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-600">
+                                                {res.type}
+                                            </span>
+                                        </div>
+
+                                        {/* External icon */}
+                                        <div className="text-gray-400 group-hover:text-blue-500 transition">
+                                            ↗
+                                        </div>
+                                    </div>
+                                </a>
                             ))}
                         </div>
                     </div>

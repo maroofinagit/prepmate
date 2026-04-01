@@ -1,5 +1,8 @@
 // -------------------------
 // 🧭 Main Roadmap Structure
+
+import { ResourceType } from "@/generated/prisma/browser";
+
 // -------------------------
 export interface Roadmap {
     id: number;
@@ -18,6 +21,23 @@ export interface Roadmap {
     // Relations
     phases: RoadmapPhase[];
     milestones: Milestone[];
+    userExam: UserExam;
+}
+
+export interface UserExam {
+    id: number;
+    exam_id: number;
+
+
+    // Relations
+    exam: Exam;
+}
+
+export interface Exam {
+    id: number;
+    name: string;
+    description?: string | null;
+    resources: Resource[];
 }
 
 export interface RoadmapPhase {
@@ -68,4 +88,16 @@ export interface Milestone {
     goal: string;
     achieved: boolean;
     target_date?: Date | null;
-    created_at: Date}
+    created_at: Date
+}
+
+
+
+export interface Resource {
+    id: number;
+    exam_id: number;
+    title: string;
+    type: ResourceType;
+    url: string;
+    created_at: Date;
+}

@@ -27,7 +27,7 @@ export async function getFullExams() {
                 },
             },
             orderBy: {
-                userExams: { _count: "desc" }
+                userExams: { _count: "asc" }
             }
         });
 
@@ -124,7 +124,15 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
                 milestones: {
                     orderBy: { target_date: "asc" },
                 },
-                userExam: true, // optional: remove if not needed
+                userExam: {
+                    include: {
+                        exam: {
+                            include: {
+                                resources: true,
+                            }
+                        }
+                    }
+                }
             },
         });
 
@@ -134,8 +142,6 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
         return null;
     }
 }
-
-
 
 
 export async function getDashboardUser(userId: string) {
@@ -158,7 +164,7 @@ export async function getDashboardUser(userId: string) {
                         current_stage: true,
                         progress_percent: true,
                         roadmap_status: true,
-                        
+
                         // UserExam → Exam Details
                         exam: {
                             select: {
@@ -224,7 +230,7 @@ export async function getDashboardUser(userId: string) {
                 }
             }
         });
-        
+
         return dashboardUser;
     }
     catch (err) {

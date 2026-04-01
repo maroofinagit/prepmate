@@ -13,6 +13,7 @@ export const db =
   globalForPrisma.db ||
   new PrismaClient({
     adapter,
+    
   })
 
 if (process.env.NODE_ENV !== "production") {

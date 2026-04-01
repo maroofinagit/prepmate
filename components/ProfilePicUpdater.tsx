@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export default function ProfileImageUploader({ initialImage }: { initialImage: string }) {
     const [image, setImage] = useState(initialImage);
