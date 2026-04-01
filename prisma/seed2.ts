@@ -5,8 +5,8 @@ async function main() {
     console.log('🌱 Starting seed...');
 
     // ⚙️ CONFIG
-    const userId = 'cl61cLweRaEywTtAvJxpRcSvlgsFUl3g'; // replace with a real user id from your auth system
-    const examId = 2; // existing exam ID from your "Exam" table
+    const userId = 'chkvrGqoHciMgW5J3oxdzAJ2cpy5naTY'; // replace with a real user id from your auth system
+    const examId = 9; // existing exam ID from your "Exam" table
 
     // 🧩 1️⃣ Create a UserExam
     const userExam = await db.userExam.create({
@@ -17,6 +17,7 @@ async function main() {
             end_date: new Date('2026-03-12'),
             current_stage: 'Not Started',
             progress_percent: 0,
+            roadmap_status : 'completed',
         },
     });
 
@@ -26,7 +27,7 @@ async function main() {
     const roadmap = await db.roadmap.create({
         data: {
             user_exam_id: userExam.id,
-            title: "Full DSA Preparation Plan",
+            title: "GenAI Web Dev Roadmap",
             description: "A complete 34-week DSA roadmap.",
             start_date: new Date("2025-11-01"),
             end_date: new Date("2026-06-30"),

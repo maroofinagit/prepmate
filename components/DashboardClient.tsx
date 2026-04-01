@@ -46,6 +46,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     // store selectedExam as the full exam object or null
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const [dltDialogOpen, setDltDialogOpen] = useState(false);
 
     // update selectedExam if exams change and selectedExam becomes stale
     // (keeps UI consistent if props update)
@@ -123,19 +125,23 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     const handleDelete = async () => {
         if (!selectedId) return;
-
         try {
+            setDeleting(true);
             await fetch(`/api/deleteUserExam`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_exam_id: selectedId }),
             });
             toast.success("Exam deleted successfully.");
+            setDltDialogOpen(false);
+            setDeleting(false);
             setSelectedExam(null);
             router.refresh();
         } catch (err) {
             console.error(err);
             toast.error("Failed to delete exam. Please try again later.");
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -495,45 +501,56 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                     <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
                                         <div>
-                                            <p className="font-medium text-red-700">Delete your account</p>
+                                            <p className="font-medium text-red-700">Delete your {exam?.exam?.name ?? "exam"} exam.</p>
                                             <p className="text-sm text-red-500">
                                                 This action is permanent and cannot be undone.
                                             </p>
                                         </div>
-                                        <Dialog>
+                                        <Dialog open={dltDialogOpen} onOpenChange={setDltDialogOpen}>
                                             <DialogTrigger asChild>
-                                                <button className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                                    Delete Exam
+                                                <button onClick={() => setDltDialogOpen(true)} className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled={deleting}>
+                                                    {deleting ? "Deleting..." : "Delete Exam"}
                                                 </button>
                                             </DialogTrigger>
 
                                             <DialogContent className="sm:max-w-md">
                                                 <DialogHeader>
-                                                    <DialogTitle className="text-red-600">
-                                                        Delete Exam?
+                                                    <DialogTitle className="text-red-600 mb-2">
+                                                        Delete Exam ?
                                                     </DialogTitle>
 
                                                     <DialogDescription>
-                                                        Are you sure you want to delete{" "}
-                                                        <span className="font-semibold text-black">
-                                                            {exam?.exam?.name ?? "this exam"}
-                                                        </span>
-                                                        ? This action cannot be undone.
+                                                        {deleting ? (
+                                                            <span className="font-medium text-black flex items-center gap-2">
+                                                                <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                                                    
+                                                                Deleting {exam?.exam?.name ?? "this exam"}...
+                                                            </span>
+                                                        ) : (
+                                                            <>
+                                                                Are you sure you want to delete{" "}
+                                                                <span className="font-semibold text-black">
+                                                                    {exam?.exam?.name ?? "this exam"} exam
+                                                                </span>
+                                                                ? This action cannot be undone.
+                                                            </>
+                                                        )}
                                                     </DialogDescription>
                                                 </DialogHeader>
 
                                                 <DialogFooter className="mt-4">
                                                     <DialogClose asChild>
-                                                        <button className="px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50" disabled={false}>
+                                                        <button className="px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50" disabled={deleting}>
                                                             Cancel
                                                         </button>
                                                     </DialogClose>
 
                                                     <button
                                                         onClick={handleDelete}
-                                                        className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-red-700"
+                                                        className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-700"
+                                                        disabled={deleting}
                                                     >
-                                                        Delete
+                                                        {deleting ? "Deleting..." : "Yes, Delete"}
                                                     </button>
                                                 </DialogFooter>
                                             </DialogContent>
