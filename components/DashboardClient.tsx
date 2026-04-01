@@ -191,24 +191,24 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     <CardContent>
                         {!exam ? (
                             <Link href="/onboarding">
-                                <Button className="w-full cursor-pointer">Create Roadmap</Button>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white  ">Create Roadmap</Button>
                             </Link>
                         ) : roadmapStatus === RoadmapStatus.completed ? (
                             <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                <Button className="w-full cursor-pointer">Open Roadmap</Button>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white">Open Roadmap</Button>
                             </Link>
                         ) : roadmapStatus === RoadmapStatus.in_progress ? (
-                            <Button className="w-full" disabled>
+                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50" disabled>
                                 ⏳ Generating Roadmap...
                             </Button>
                         ) : regenerating ? (
-                            <Button className="w-full" disabled>
+                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50" disabled>
                                 🔁 Regenerating...
                             </Button>
                         ) :
 
                             (
-                                <Button className="w-full cursor-pointer" onClick={handleRegenerate}>
+                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white" onClick={handleRegenerate}>
                                     🔁 Regenerate Roadmap
                                 </Button>
                             )
