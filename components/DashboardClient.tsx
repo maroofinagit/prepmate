@@ -8,17 +8,13 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import Image from "next/image";
 import {
-    ResponsiveContainer,
-    LineChart,
-    Line,
+
     XAxis,
     YAxis,
-    Tooltip,
     BarChart,
     Bar,
     PieChart,
     Pie,
-    Cell,
     AreaChart,
     CartesianGrid,
     Area,
@@ -38,18 +34,13 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { TrendingUp } from "lucide-react";
-/**
- * Safe DashboardAnalytics component
- * - exams can be []
- * - selectedExam can be null
- * - charts render empty arrays (no crashes)
- */
+import { Sparkles, TrendingUp } from "lucide-react";
+
+
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
     const exams = dashboardUser?.exams || [];
     // const exams: any[] = [];
 
-    // store selectedExam as the full exam object or null
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
     const [deleting, setDeleting] = useState(false);
@@ -69,11 +60,14 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const milestones = roadmap?.milestones || [];
 
     // Chart data (always arrays)
+
+    // for phase progress bar chart
     const phaseProgressData = phases.map((p: any) => ({
         name: p.phase_name ?? "Phase",
         progress: Math.round(p.progress ?? 0),
     }));
 
+    // for weekly progress area chart - flatten all weeks from all phases into one array
     const weekProgressData = phases
         .flatMap((p: any) =>
             (p.weeks || []).map((w: any) => ({
@@ -86,6 +80,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     console.log("week progress data:", weekProgressData);
 
+    // safe values for top cards
     const totalUserExams = exams.length;
 
     const overallProgress = Math.round(
@@ -96,7 +91,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const selectedProgress = exam?.progress_percent ?? 0;
     const selectedId = exam?.id ?? null;
     const roadmapStatus = exam?.roadmap_status;
-    console.log("Selected Exam:", exam);
 
     // Chart config (labels, colors, etc.)
     const chartConfig = {
@@ -495,13 +489,70 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         <CardTitle>Milestone Chart</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <ResponsiveContainer width="100%" height={250}>
-                                            <BarChart data={[]}>
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
+                                        <ChartContainer
+                                            config={{
+                                                achieved: {
+                                                    label: "Achieved",
+                                                    color: "#22c55e",
+                                                },
+                                                pending: {
+                                                    label: "Pending",
+                                                    color: "#e5e7eb",
+                                                },
+                                            }}
+                                            className="aspect-auto h-62.5 w-full"
+                                        >
+                                            <BarChart
+                                                data={milestones.map((m: any) => ({
+                                                    name: m.name ?? "Milestone",
+                                                    achieved: m.achieved ? 100 : 0,
+                                                    pending: m.achieved ? 0 : 100,
+                                                }))}
+                                                margin={{
+                                                    left: 12,
+                                                    right: 12,
+                                                }}
+                                            >
+                                                <CartesianGrid vertical={false} />
+
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+
+                                                />
+
+                                                <YAxis
+                                                    domain={[0, 100]}
+                                                    tickLine={true}
+                                                    axisLine={true}
+                                                    tickMargin={8}
+                                                />
+
+                                                <ChartTooltip
+                                                    cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
+                                                    content={
+                                                        <ChartTooltipContent
+                                                            className="w-37.5"
+                                                            nameKey="name"
+                                                            formatter={(value) => `${value} milestone`}
+                                                        />
+                                                    }
+                                                />
+
+                                                <Bar
+                                                    dataKey="achieved"
+                                                    fill="#22c55e"
+                                                    radius={8}
+                                                />
+                                                <Bar
+                                                    dataKey="pending"
+                                                    fill="#e5e7eb"
+                                                    radius={8}
+                                                />
                                             </BarChart>
-                                        </ResponsiveContainer>
+                                        </ChartContainer>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -764,7 +815,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     </Card>
 
 
-
                                     {/* Weekly area chart */}
                                     <Card className="col-span-2">
                                         <CardHeader>
@@ -828,36 +878,95 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             </div>
                                         </CardFooter>
                                     </Card>
+
+                                    <Card className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
+
+                                        <CardHeader className="col-span-3">
+                                            <CardTitle>Milestones</CardTitle>
+                                            <CardDescription>Track your key achievements</CardDescription>
+                                        </CardHeader>
+
+                                        {milestones.map((m: any) => {
+                                            const isDone = m.achieved;
+
+                                            return (
+                                                <Card
+                                                    key={m.id}
+                                                    className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1
+        ${isDone
+                                                            ? "border-green-200 bg-green-50/60"
+                                                            : "border-gray-200 bg-white"
+                                                        }`}
+                                                >
+                                                    {/* Top Accent Glow */}
+                                                    <div
+                                                        className={`absolute top-0 left-0 h-1 w-full ${isDone ? "bg-green-500" : "bg-gray-300"
+                                                            }`}
+                                                    />
+
+                                                    <CardHeader className="pb-2">
+                                                        <CardTitle className="text-base flex items-center justify-between">
+                                                            <span className="line-clamp-1">{m.name}</span>
+
+                                                            {/* Emoji Badge */}
+                                                            <span className="text-lg">
+                                                                {isDone ? "🏆" : "🎯"}
+                                                            </span>
+                                                        </CardTitle>
+                                                    </CardHeader>
+
+                                                    <CardContent className="space-y-2">
+                                                        {/* Status */}
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <span className="text-lg">
+                                                                {isDone ? "✅" : "⏳"}
+                                                            </span>
+
+                                                            <span
+                                                                className={`font-medium ${isDone ? "text-green-700" : "text-gray-600"
+                                                                    }`}
+                                                            >
+                                                                {isDone ? "Completed" : "In Progress"}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Goal */}
+                                                        {m.goal && (
+                                                            <p className="text-sm text-muted-foreground line-clamp-2">
+                                                                {m.goal}
+                                                            </p>
+                                                        )}
+
+                                                        {/* Date */}
+                                                        {m.target_date && (
+                                                            <p className="text-xs text-muted-foreground">
+                                                                📅 {new Date(m.target_date).toLocaleDateString()}
+                                                            </p>
+                                                        )}
+                                                    </CardContent>
+
+
+                                                </Card>
+                                            );
+
+                                        })}
+                                        <CardFooter className="col-span-2 flex-col items-start gap-2 mt-4 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                Milestones are your stepping stones to success <Sparkles className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                Celebrate each achievement as you progress through your exam journey
+                                            </div>
+                                        </CardFooter>
+
+                                    </Card>
+
+
                                 </div>
 
-                                {/* ✅ MILESTONES (DESKTOP ONLY) */}
-                                <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                                    {(milestones.length ? milestones : []).map((m: any) => (
-                                        <Card key={m.id}>
-                                            <CardHeader>
-                                                <CardTitle>{m.name}</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-2">
-                                                <p><span className="font-semibold">Goal:</span> {m.goal ?? "—"}</p>
-                                                <p>
-                                                    <span className="font-semibold">Target:</span>{" "}
-                                                    {m.target_date ? new Date(m.target_date).toLocaleDateString() : "N/A"}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                                    {m.achieved ? "✅ Achieved" : "⏳ Pending"}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-
-                                    {milestones.length === 0 && (
-                                        <div className="text-sm text-muted-foreground">No milestones yet.</div>
-                                    )}
-                                </div>
                                 {/* DELETE EXAM */}
-                                <div className=" border-t pt-8">
+                                <div className=" border-t mt-8 pt-8">
                                     <h2 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
 
                                     <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">

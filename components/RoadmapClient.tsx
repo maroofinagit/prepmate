@@ -450,19 +450,19 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                         <p className="text-sm text-gray-600">
                             Track your key milestones here. Check the box when you achieve them and click "Update Milestone" to see your progress reflected in the roadmap!
                         </p>
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-6 md:grid-cols-3">
                             {localRoadmap.milestones.map((m) => (
-                                <Card key={m.id} className="border shadow-sm">
+                                <Card key={m.id} className={`border shadow-sm hover:shadow-md transition hover:border-green-700` + (m.achieved ? " bg-green-50 border-green-300" : " bg-white")}>
                                     <CardHeader className="flex flex-row justify-between items-center">
                                         <CardTitle className="text-base font-semibold">
                                             {m.name}
                                         </CardTitle>
 
                                         {m.achieved ? (
-                                            <CheckCircle2 className="text-green-700" size={20} />
+                                            <CheckCircle2 className="text-green-700" size={24} />
                                         ) : (
                                             <Checkbox
-                                                className="border-2 border-green-700 hover:ring-2 hover:ring-offset-2 hover:ring-green-500"
+                                                className="border-2 h-5 w-5 border-green-700 hover:ring-2 hover:ring-offset-2 hover:ring-green-500"
                                                 checked={!!checkedMilestones[m.id]}
                                                 onCheckedChange={() => handleMilestoneChange(m.id)}
                                             />
@@ -471,7 +471,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
                                     <CardContent>
                                         <p className=" text-gray-600">{m.goal}</p>
-                                        <p className="text-sm mt-4 text-black">
+                                        <p className="text-sm mt-4 text-black font-medium">
                                             🎯 Target: {m.target_date
                                                 ? formatDate(m.target_date.toDateString())
                                                 : "Not specified"}

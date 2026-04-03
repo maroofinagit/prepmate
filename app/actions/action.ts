@@ -172,6 +172,7 @@ export async function getDashboardUser(userId: string) {
                                 name: true,
                                 description: true,
                             },
+                            
                         },
 
                         roadmap: {
@@ -189,11 +190,13 @@ export async function getDashboardUser(userId: string) {
                                         achieved: true,
                                         target_date: true,
                                         created_at: true,
-                                    }
+                                    },
+                                    orderBy: { target_date: "asc" }
                                 },
 
                                 // Phases, Weeks, Tasks
                                 phases: {
+                                    orderBy: { order_index: "asc" },
                                     select: {
                                         id: true,
                                         phase_name: true,
@@ -202,6 +205,7 @@ export async function getDashboardUser(userId: string) {
                                         progress: true,
 
                                         weeks: {
+                                            orderBy: { order_index: "asc" },
                                             select: {
                                                 id: true,
                                                 week_number: true,
@@ -209,6 +213,7 @@ export async function getDashboardUser(userId: string) {
                                                 progress: true,
 
                                                 tasks: {
+                                                    orderBy: { order_index: "asc" },
                                                     select: {
                                                         id: true,
                                                         title: true,
