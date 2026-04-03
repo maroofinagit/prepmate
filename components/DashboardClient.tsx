@@ -225,7 +225,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         <CardTitle>{currentSelectedExam?.exam.name || "Selected"} Progress</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Progress value={selectedProgress || 0} className="h-3" />
+                        <Progress value={selectedProgress || 0} className="h-3 [&>div]:bg-green-600" />
                         <p className="text-center mt-2 font-semibold">{selectedProgress || 0}%</p>
                     </CardContent>
                 </Card>
@@ -275,12 +275,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     const found = exams.find((ex) => ex.id === id);
                     setSelectedExam(found || null);
                 }}
-                className="mt-6"
+                className="mt-6 p-4 "
             >
-                <TabsList className="flex flex-wrap gap-3 mb-4">
+                <TabsList className="flex flex-wrap gap-3 mb-4 bg-gray-200">
                     {exams.length > 0 ? (
                         exams.map((ex) => (
-                            <TabsTrigger key={ex.id} value={String(ex.id)}>
+                            <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
                                 {ex.exam?.name ?? `Exam ${ex.id}`}
                             </TabsTrigger>
                         ))
