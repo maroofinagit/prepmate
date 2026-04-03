@@ -33,7 +33,7 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { Sparkles, TrendingUp } from "lucide-react";
 
 
@@ -71,14 +71,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const weekProgressData = phases
         .flatMap((p: any) =>
             (p.weeks || []).map((w: any) => ({
-                name: `W${w.week_number ?? "?"}`,
+                week: `W${w.week_number ?? "?"}`, // 👈 display
                 progress: Math.round(w.progress ?? 0),
-                order: typeof w.week_number === "number" ? w.week_number : Infinity,
+                weekNumber: typeof w.week_number === "number" ? w.week_number : Infinity, // 👈 logic
             }))
         )
-        .sort((a: any, b: any) => (a.order ?? Infinity) - (b.order ?? Infinity));
-
-    console.log("week progress data:", weekProgressData);
+        .sort((a, b) => a.weekNumber - b.weekNumber)
 
     // safe values for top cards
     const totalUserExams = exams.length;
@@ -841,7 +839,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     <CartesianGrid vertical={false} />
 
                                                     <XAxis
-                                                        dataKey="name"
+                                                        dataKey="week"
                                                         tickLine={false}
                                                         axisLine={false}
                                                         tickMargin={8}
@@ -849,16 +847,20 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                                     <YAxis
                                                         domain={[0, 100]}
-                                                        tickLine={false}
-                                                        axisLine={false}
+                                                        tickLine={true}
+                                                        axisLine={true}
                                                         tickMargin={8}
                                                     />
 
                                                     <ChartTooltip
-                                                        cursor={false}
-                                                        content={<ChartTooltipContent indicator="dot" />}
+                                                        cursor={true}
+                                                        content={<ChartTooltipContent
+                                                            indicator="dot"
+                                                            labelFormatter={(value) => `Week: ${value.replace("W", "")}`}
+                                                        />
+                                                        }
                                                     />
-
+                                                    <ChartLegend content={<ChartLegendContent />} />
                                                     <Area
                                                         dataKey="progress"
                                                         type="natural"
@@ -879,6 +881,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </CardFooter>
                                     </Card>
 
+                                    {/* Milestones Cards */}
                                     <Card className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
 
                                         <CardHeader className="col-span-3">
@@ -892,17 +895,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             return (
                                                 <Card
                                                     key={m.id}
-                                                    className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1
-        ${isDone
-                                                            ? "border-green-200 bg-green-50/60"
-                                                            : "border-gray-200 bg-white"
+                                                    className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-[1.5px] ${isDone
+                                                        ? "border-green-600 bg-green-50"
+                                                        : "border-gray-300 bg-white"
                                                         }`}
                                                 >
-                                                    {/* Top Accent Glow */}
+                                                    {/* Top Accent Glow
                                                     <div
-                                                        className={`absolute top-0 left-0 h-1 w-full ${isDone ? "bg-green-500" : "bg-gray-300"
+                                                        className={`absolute top-0 bg left-0 h-1 w-full ${isDone ? "bg-green-500" : "bg-gray-300"
                                                             }`}
-                                                    />
+                                                    /> */}
 
                                                     <CardHeader className="pb-2">
                                                         <CardTitle className="text-base flex items-center justify-between">

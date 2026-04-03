@@ -452,7 +452,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                         </p>
                         <div className="grid gap-6 md:grid-cols-3">
                             {localRoadmap.milestones.map((m) => (
-                                <Card key={m.id} className={`border shadow-sm hover:shadow-md transition hover:border-green-700` + (m.achieved ? " bg-green-50 border-green-300" : " bg-white")}>
+                                <Card key={m.id} className={`border-[1.5px] shadow-sm hover:shadow-md transition hover:border-green-700` + (m.achieved ? " bg-green-50 border-green-600" : " bg-white")}>
                                     <CardHeader className="flex flex-row justify-between items-center">
                                         <CardTitle className="text-base font-semibold">
                                             {m.name}
