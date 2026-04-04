@@ -50,7 +50,7 @@ export async function sendAdminNotificationEmail(to: string, name: string) {
     try {
         await resend.emails.send({
             from: "PrepMate <onboarding@resend.dev>",
-            to: [to],
+            to: process.env.NEXT_PUBLIC_GMAIL_USER!, // Admin email address from environment variable
             subject: "New User Signup Notification - PrepMate 🚀",
             html: `
 <div style="font-family:Arial,sans-serif;background-color:#f4f6f8;padding:30px;">

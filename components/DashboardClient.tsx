@@ -275,7 +275,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 }}
                 className="mt-6 p-4 "
             >
-                <TabsList className="flex flex-wrap gap-3 mb-4 bg-gray-200">
+                <TabsList className="flex flex-wrap gap-2 mb-4 bg-gray-200">
                     {exams.length > 0 ? (
                         exams.map((ex) => (
                             <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
