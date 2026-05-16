@@ -203,7 +203,7 @@ export type ExamGroupByOutputType = {
   _max: ExamMaxAggregateOutputType | null
 }
 
-type GetExamGroupByPayload<T extends ExamGroupByArgs> = Prisma.PrismaPromise<
+export type GetExamGroupByPayload<T extends ExamGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ExamGroupByOutputType, T['by']> &
       {

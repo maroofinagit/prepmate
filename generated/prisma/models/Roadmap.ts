@@ -253,7 +253,7 @@ export type RoadmapGroupByOutputType = {
   _max: RoadmapMaxAggregateOutputType | null
 }
 
-type GetRoadmapGroupByPayload<T extends RoadmapGroupByArgs> = Prisma.PrismaPromise<
+export type GetRoadmapGroupByPayload<T extends RoadmapGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RoadmapGroupByOutputType, T['by']> &
       {

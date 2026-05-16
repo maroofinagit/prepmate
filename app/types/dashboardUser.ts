@@ -14,6 +14,8 @@ export interface DashboardUserExam {
     end_date: Date;
     current_stage: string | null;
     progress_percent: number | null;
+    performanceScore: number | null;
+
     exam: DashboardExam;
     roadmap: DashboardRoadmap | null;
     roadmap_status: RoadmapStatus 

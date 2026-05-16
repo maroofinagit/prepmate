@@ -5,6 +5,8 @@ import { addYears, format, addMonths, subYears } from 'date-fns';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
+import { createUserExam } from '@/app/actions/action';
+import { generateRoadmap } from '@/app/actions/roadmap';
 
 export default function ClientExamStart({ exam }: { exam: any }) {
     const [loading, setLoading] = useState(false);
@@ -42,27 +44,25 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const endDate = formData.get('end_date') as string;
 
             console.log("Form Data:", { startDate, endDate });
-            
 
             // Step 1: Create User Exam
             setLoadingMessage('Creating your user exam...');
-            const userExamRes = await fetch(`/api/createUserExam`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    examId: exam.id,
-                    start_date: startDate,
-                    end_date: endDate,
-                }),
+            const userExamRes = await createUserExam({
+                examId: exam.id,
+                start_date: startDate,
+                end_date: endDate,
             })
 
-            const userExamJson = await userExamRes.json();
-
-            if (!userExamJson.success) {
+            if (!userExamRes.success) {
                 throw new Error('Failed to create user exam');
             }
 
-            const { user_exam_id } = userExamJson;
+            const { user_exam_id } = userExamRes;
+
+            if (user_exam_id === undefined) {
+                throw new Error('User exam ID is undefined');
+            }
+
 
             setLoadingMessage('✅ User exam created successfully!');
             await new Promise((r) => setTimeout(r, 1000));
@@ -72,22 +72,18 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                 "Generating your roadmap... please wait ⏳",
                 "Aligning tasks with your strategy…",
                 "Calculating your weekly milestones…",
+                "Creating Tests and Resources…",
                 "Almost there… sprinkling the final touches ✨"
             ];
 
             const loopId = startMessageLoop(loadingMessages, 5000);
 
             // Step 2: Generate Roadmap
-            const roadmapRes = await fetch(`/api/roadmap`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_exam_id }),
-            });
+            const roadmapRes = await generateRoadmap(user_exam_id);
 
             clearInterval(loopId);
 
-            const roadmapJson = await roadmapRes.json();
-            if (!roadmapJson.success) {
+            if (!roadmapRes.success) {
                 toast.error('Failed to generate roadmap. You can create one later from your dashboard.');
                 setLoadingMessage('Failed to generate roadmap. Redirecting to dashboard...');
                 await new Promise((r) => setTimeout(r, 2000));
@@ -96,9 +92,10 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             }
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
-            await new Promise((r) => setTimeout(r, 1000));
-            // Redirect to dashboard
-            // redirect(`/dashboard/exam/${user_exam_id}`);
+            await new Promise((r) => setTimeout(r, 1000));  
+            setLoading(false);
+
+            // Redirect to roadmap page
             router.push(`/dashboard/roadmap/${user_exam_id}`);
 
         } catch (err: any) {
@@ -109,7 +106,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
     }
 
     return (
-        <div className="relative min-h-screen flex-col flex items-center justify-center overflow-hidden bg-[#ffffff]">
+        <div className="relative min-h-screen pt-16 flex-col flex items-center justify-center overflow-hidden bg-[#ffffff]">
 
             {/* 🌤️ Soft Glow Background */}
             <div className="absolute inset-0">
@@ -204,7 +201,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                             className="w-full py-3 rounded-xl font-semibold 
                                bg-black text-white 
                                transition-all duration-300 
-                               hover:bg-emerald-400 hover:text-black 
+                               hover:bg-emerald-500 hover:text-black 
                                hover:shadow-lg hover:shadow-emerald-200
                                active:scale-[0.98] disabled:opacity-60 cursor-pointer mt-4 text-sm md:text-base"
                         >

@@ -229,7 +229,7 @@ export type RoadmapWeekGroupByOutputType = {
   _max: RoadmapWeekMaxAggregateOutputType | null
 }
 
-type GetRoadmapWeekGroupByPayload<T extends RoadmapWeekGroupByArgs> = Prisma.PrismaPromise<
+export type GetRoadmapWeekGroupByPayload<T extends RoadmapWeekGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RoadmapWeekGroupByOutputType, T['by']> &
       {
@@ -258,6 +258,7 @@ export type RoadmapWeekWhereInput = {
   progress?: Prisma.FloatFilter<"RoadmapWeek"> | number
   tasks?: Prisma.RoadmapTaskListRelationFilter
   phase?: Prisma.XOR<Prisma.RoadmapPhaseScalarRelationFilter, Prisma.RoadmapPhaseWhereInput>
+  tests?: Prisma.TestListRelationFilter
 }
 
 export type RoadmapWeekOrderByWithRelationInput = {
@@ -271,6 +272,7 @@ export type RoadmapWeekOrderByWithRelationInput = {
   progress?: Prisma.SortOrder
   tasks?: Prisma.RoadmapTaskOrderByRelationAggregateInput
   phase?: Prisma.RoadmapPhaseOrderByWithRelationInput
+  tests?: Prisma.TestOrderByRelationAggregateInput
 }
 
 export type RoadmapWeekWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type RoadmapWeekWhereUniqueInput = Prisma.AtLeast<{
   progress?: Prisma.FloatFilter<"RoadmapWeek"> | number
   tasks?: Prisma.RoadmapTaskListRelationFilter
   phase?: Prisma.XOR<Prisma.RoadmapPhaseScalarRelationFilter, Prisma.RoadmapPhaseWhereInput>
+  tests?: Prisma.TestListRelationFilter
 }, "id">
 
 export type RoadmapWeekOrderByWithAggregationInput = {
@@ -328,6 +331,7 @@ export type RoadmapWeekCreateInput = {
   progress?: number
   tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutWeekInput
   phase: Prisma.RoadmapPhaseCreateNestedOneWithoutWeeksInput
+  tests?: Prisma.TestCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekUncheckedCreateInput = {
@@ -340,6 +344,7 @@ export type RoadmapWeekUncheckedCreateInput = {
   order_index?: number
   progress?: number
   tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutWeekInput
+  tests?: Prisma.TestUncheckedCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekUpdateInput = {
@@ -351,6 +356,7 @@ export type RoadmapWeekUpdateInput = {
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
   tasks?: Prisma.RoadmapTaskUpdateManyWithoutWeekNestedInput
   phase?: Prisma.RoadmapPhaseUpdateOneRequiredWithoutWeeksNestedInput
+  tests?: Prisma.TestUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekUncheckedUpdateInput = {
@@ -363,6 +369,7 @@ export type RoadmapWeekUncheckedUpdateInput = {
   order_index?: Prisma.IntFieldUpdateOperationsInput | number
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
   tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutWeekNestedInput
+  tests?: Prisma.TestUncheckedUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekCreateManyInput = {
@@ -460,6 +467,11 @@ export type RoadmapWeekScalarRelationFilter = {
   isNot?: Prisma.RoadmapWeekWhereInput
 }
 
+export type RoadmapWeekNullableScalarRelationFilter = {
+  is?: Prisma.RoadmapWeekWhereInput | null
+  isNot?: Prisma.RoadmapWeekWhereInput | null
+}
+
 export type RoadmapWeekCreateNestedManyWithoutPhaseInput = {
   create?: Prisma.XOR<Prisma.RoadmapWeekCreateWithoutPhaseInput, Prisma.RoadmapWeekUncheckedCreateWithoutPhaseInput> | Prisma.RoadmapWeekCreateWithoutPhaseInput[] | Prisma.RoadmapWeekUncheckedCreateWithoutPhaseInput[]
   connectOrCreate?: Prisma.RoadmapWeekCreateOrConnectWithoutPhaseInput | Prisma.RoadmapWeekCreateOrConnectWithoutPhaseInput[]
@@ -516,6 +528,22 @@ export type RoadmapWeekUpdateOneRequiredWithoutTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoadmapWeekUpdateToOneWithWhereWithoutTasksInput, Prisma.RoadmapWeekUpdateWithoutTasksInput>, Prisma.RoadmapWeekUncheckedUpdateWithoutTasksInput>
 }
 
+export type RoadmapWeekCreateNestedOneWithoutTestsInput = {
+  create?: Prisma.XOR<Prisma.RoadmapWeekCreateWithoutTestsInput, Prisma.RoadmapWeekUncheckedCreateWithoutTestsInput>
+  connectOrCreate?: Prisma.RoadmapWeekCreateOrConnectWithoutTestsInput
+  connect?: Prisma.RoadmapWeekWhereUniqueInput
+}
+
+export type RoadmapWeekUpdateOneWithoutTestsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoadmapWeekCreateWithoutTestsInput, Prisma.RoadmapWeekUncheckedCreateWithoutTestsInput>
+  connectOrCreate?: Prisma.RoadmapWeekCreateOrConnectWithoutTestsInput
+  upsert?: Prisma.RoadmapWeekUpsertWithoutTestsInput
+  disconnect?: Prisma.RoadmapWeekWhereInput | boolean
+  delete?: Prisma.RoadmapWeekWhereInput | boolean
+  connect?: Prisma.RoadmapWeekWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoadmapWeekUpdateToOneWithWhereWithoutTestsInput, Prisma.RoadmapWeekUpdateWithoutTestsInput>, Prisma.RoadmapWeekUncheckedUpdateWithoutTestsInput>
+}
+
 export type RoadmapWeekCreateWithoutPhaseInput = {
   week_number: number
   start_date?: Date | string | null
@@ -524,6 +552,7 @@ export type RoadmapWeekCreateWithoutPhaseInput = {
   order_index?: number
   progress?: number
   tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutWeekInput
+  tests?: Prisma.TestCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekUncheckedCreateWithoutPhaseInput = {
@@ -535,6 +564,7 @@ export type RoadmapWeekUncheckedCreateWithoutPhaseInput = {
   order_index?: number
   progress?: number
   tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutWeekInput
+  tests?: Prisma.TestUncheckedCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekCreateOrConnectWithoutPhaseInput = {
@@ -585,6 +615,7 @@ export type RoadmapWeekCreateWithoutTasksInput = {
   order_index?: number
   progress?: number
   phase: Prisma.RoadmapPhaseCreateNestedOneWithoutWeeksInput
+  tests?: Prisma.TestCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekUncheckedCreateWithoutTasksInput = {
@@ -596,6 +627,7 @@ export type RoadmapWeekUncheckedCreateWithoutTasksInput = {
   focus: string
   order_index?: number
   progress?: number
+  tests?: Prisma.TestUncheckedCreateNestedManyWithoutWeekInput
 }
 
 export type RoadmapWeekCreateOrConnectWithoutTasksInput = {
@@ -622,6 +654,7 @@ export type RoadmapWeekUpdateWithoutTasksInput = {
   order_index?: Prisma.IntFieldUpdateOperationsInput | number
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
   phase?: Prisma.RoadmapPhaseUpdateOneRequiredWithoutWeeksNestedInput
+  tests?: Prisma.TestUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekUncheckedUpdateWithoutTasksInput = {
@@ -633,6 +666,69 @@ export type RoadmapWeekUncheckedUpdateWithoutTasksInput = {
   focus?: Prisma.StringFieldUpdateOperationsInput | string
   order_index?: Prisma.IntFieldUpdateOperationsInput | number
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
+  tests?: Prisma.TestUncheckedUpdateManyWithoutWeekNestedInput
+}
+
+export type RoadmapWeekCreateWithoutTestsInput = {
+  week_number: number
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  focus: string
+  order_index?: number
+  progress?: number
+  tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutWeekInput
+  phase: Prisma.RoadmapPhaseCreateNestedOneWithoutWeeksInput
+}
+
+export type RoadmapWeekUncheckedCreateWithoutTestsInput = {
+  id?: number
+  phase_id: number
+  week_number: number
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  focus: string
+  order_index?: number
+  progress?: number
+  tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutWeekInput
+}
+
+export type RoadmapWeekCreateOrConnectWithoutTestsInput = {
+  where: Prisma.RoadmapWeekWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoadmapWeekCreateWithoutTestsInput, Prisma.RoadmapWeekUncheckedCreateWithoutTestsInput>
+}
+
+export type RoadmapWeekUpsertWithoutTestsInput = {
+  update: Prisma.XOR<Prisma.RoadmapWeekUpdateWithoutTestsInput, Prisma.RoadmapWeekUncheckedUpdateWithoutTestsInput>
+  create: Prisma.XOR<Prisma.RoadmapWeekCreateWithoutTestsInput, Prisma.RoadmapWeekUncheckedCreateWithoutTestsInput>
+  where?: Prisma.RoadmapWeekWhereInput
+}
+
+export type RoadmapWeekUpdateToOneWithWhereWithoutTestsInput = {
+  where?: Prisma.RoadmapWeekWhereInput
+  data: Prisma.XOR<Prisma.RoadmapWeekUpdateWithoutTestsInput, Prisma.RoadmapWeekUncheckedUpdateWithoutTestsInput>
+}
+
+export type RoadmapWeekUpdateWithoutTestsInput = {
+  week_number?: Prisma.IntFieldUpdateOperationsInput | number
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  focus?: Prisma.StringFieldUpdateOperationsInput | string
+  order_index?: Prisma.IntFieldUpdateOperationsInput | number
+  progress?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasks?: Prisma.RoadmapTaskUpdateManyWithoutWeekNestedInput
+  phase?: Prisma.RoadmapPhaseUpdateOneRequiredWithoutWeeksNestedInput
+}
+
+export type RoadmapWeekUncheckedUpdateWithoutTestsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  phase_id?: Prisma.IntFieldUpdateOperationsInput | number
+  week_number?: Prisma.IntFieldUpdateOperationsInput | number
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  focus?: Prisma.StringFieldUpdateOperationsInput | string
+  order_index?: Prisma.IntFieldUpdateOperationsInput | number
+  progress?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekCreateManyPhaseInput = {
@@ -653,6 +749,7 @@ export type RoadmapWeekUpdateWithoutPhaseInput = {
   order_index?: Prisma.IntFieldUpdateOperationsInput | number
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
   tasks?: Prisma.RoadmapTaskUpdateManyWithoutWeekNestedInput
+  tests?: Prisma.TestUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekUncheckedUpdateWithoutPhaseInput = {
@@ -664,6 +761,7 @@ export type RoadmapWeekUncheckedUpdateWithoutPhaseInput = {
   order_index?: Prisma.IntFieldUpdateOperationsInput | number
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
   tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutWeekNestedInput
+  tests?: Prisma.TestUncheckedUpdateManyWithoutWeekNestedInput
 }
 
 export type RoadmapWeekUncheckedUpdateManyWithoutPhaseInput = {
@@ -683,10 +781,12 @@ export type RoadmapWeekUncheckedUpdateManyWithoutPhaseInput = {
 
 export type RoadmapWeekCountOutputType = {
   tasks: number
+  tests: number
 }
 
 export type RoadmapWeekCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | RoadmapWeekCountOutputTypeCountTasksArgs
+  tests?: boolean | RoadmapWeekCountOutputTypeCountTestsArgs
 }
 
 /**
@@ -706,6 +806,13 @@ export type RoadmapWeekCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Typ
   where?: Prisma.RoadmapTaskWhereInput
 }
 
+/**
+ * RoadmapWeekCountOutputType without action
+ */
+export type RoadmapWeekCountOutputTypeCountTestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TestWhereInput
+}
+
 
 export type RoadmapWeekSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -718,6 +825,7 @@ export type RoadmapWeekSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   progress?: boolean
   tasks?: boolean | Prisma.RoadmapWeek$tasksArgs<ExtArgs>
   phase?: boolean | Prisma.RoadmapPhaseDefaultArgs<ExtArgs>
+  tests?: boolean | Prisma.RoadmapWeek$testsArgs<ExtArgs>
   _count?: boolean | Prisma.RoadmapWeekCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roadmapWeek"]>
 
@@ -760,6 +868,7 @@ export type RoadmapWeekOmit<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type RoadmapWeekInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | Prisma.RoadmapWeek$tasksArgs<ExtArgs>
   phase?: boolean | Prisma.RoadmapPhaseDefaultArgs<ExtArgs>
+  tests?: boolean | Prisma.RoadmapWeek$testsArgs<ExtArgs>
   _count?: boolean | Prisma.RoadmapWeekCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoadmapWeekIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -774,6 +883,7 @@ export type $RoadmapWeekPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     tasks: Prisma.$RoadmapTaskPayload<ExtArgs>[]
     phase: Prisma.$RoadmapPhasePayload<ExtArgs>
+    tests: Prisma.$TestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1180,6 +1290,7 @@ export interface Prisma__RoadmapWeekClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tasks<T extends Prisma.RoadmapWeek$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoadmapWeek$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   phase<T extends Prisma.RoadmapPhaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoadmapPhaseDefaultArgs<ExtArgs>>): Prisma.Prisma__RoadmapPhaseClient<runtime.Types.Result.GetResult<Prisma.$RoadmapPhasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tests<T extends Prisma.RoadmapWeek$testsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoadmapWeek$testsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1639,6 +1750,30 @@ export type RoadmapWeek$tasksArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.RoadmapTaskScalarFieldEnum | Prisma.RoadmapTaskScalarFieldEnum[]
+}
+
+/**
+ * RoadmapWeek.tests
+ */
+export type RoadmapWeek$testsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Test
+   */
+  select?: Prisma.TestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Test
+   */
+  omit?: Prisma.TestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TestInclude<ExtArgs> | null
+  where?: Prisma.TestWhereInput
+  orderBy?: Prisma.TestOrderByWithRelationInput | Prisma.TestOrderByWithRelationInput[]
+  cursor?: Prisma.TestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TestScalarFieldEnum | Prisma.TestScalarFieldEnum[]
 }
 
 /**

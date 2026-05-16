@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -42,8 +41,8 @@ model Account {
   updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("account")
   @@index([userId])
+  @@map("account")
 }
 
 model Session {
@@ -57,9 +56,9 @@ model Session {
   userAgent String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("session")
   @@index([userId])
   @@index([token])
+  @@map("session")
 }
 
 model VerificationToken {
@@ -107,18 +106,21 @@ model Topic {
 }
 
 model UserExam {
-  id               Int      @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   user_id          String
   exam_id          Int
   start_date       DateTime
   end_date         DateTime
   current_stage    String?
-  progress_percent Float?   @default(0)
-  created_at       DateTime @default(now())
+  progress_percent Float?        @default(0)
+  performanceScore Float?        @default(0)
+  testsGiven       Int?          @default(0)
+  created_at       DateTime      @default(now())
   roadmap          Roadmap?
-  roadmap_status RoadmapStatus @default(pending)
-  exam             Exam     @relation(fields: [exam_id], references: [id], onDelete: Cascade)
-  user             User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  roadmap_status   RoadmapStatus @default(pending)
+  exam             Exam          @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  tests            Test[]
 }
 
 model Roadmap {
@@ -151,6 +153,8 @@ model RoadmapPhase {
   progress    Float         @default(0)
   roadmap     Roadmap       @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
   weeks       RoadmapWeek[]
+
+  tests Test[]
 }
 
 model RoadmapWeek {
@@ -164,6 +168,8 @@ model RoadmapWeek {
   progress    Float         @default(0)
   tasks       RoadmapTask[]
   phase       RoadmapPhase  @relation(fields: [phase_id], references: [id], onDelete: Cascade)
+
+  tests Test[]
 }
 
 model RoadmapTask {
@@ -189,6 +195,75 @@ model Milestone {
   target_date DateTime?
   created_at  DateTime  @default(now())
   roadmap     Roadmap   @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
+}
+
+model Test {
+  id Int @id @default(autoincrement())
+
+  title String
+  type  TestType // WEEKLY | PHASE | FINAL
+  description String?
+
+  userExamId Int
+
+  weekId Int?
+  phaseId Int? 
+
+  totalMarks Int
+  duration   Int? // in minutes
+  nOfFinalTests Int? // only for final test to determine how many weekly/phase tests it covers
+  isGenerated Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  questions Question[]
+  
+  attempt   TestAttempt?
+
+  // relations
+  userExam UserExam   @relation(fields: [userExamId], references: [id], onDelete: Cascade)
+  week     RoadmapWeek?  @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  phase    RoadmapPhase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+
+  @@unique([userExamId, weekId]) // ensures only one test per week per user exam
+  @@unique([userExamId, phaseId]) // ensures only one test per phase per user exam
+  @@unique([userExamId, nOfFinalTests]) // ensures only few final test per user exam
+}
+
+model Question {
+  id Int @id @default(autoincrement())
+
+  testId Int
+
+  question   String
+  options    Json
+  correctAns String
+
+  topic      String
+  difficulty Difficulty
+
+  marks Int @default(1)
+
+  createdAt DateTime @default(now())
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+model TestAttempt {
+  id Int @id @default(autoincrement())
+
+  userId String
+  testId Int    @unique // 🔥 ensures ONLY ONE attempt
+
+  score      Int
+  totalMarks Int
+  percentage Float
+
+  responses Json // { questionId: selectedOption }
+
+  completedAt DateTime @default(now())
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -218,8 +293,8 @@ model Verification {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
 
-  @@map("verification")
   @@index([identifier])
+  @@map("verification")
 }
 
 enum UserRole {
@@ -231,6 +306,12 @@ enum Difficulty {
   easy
   medium
   hard
+}
+
+enum TestType {
+  WEEKLY
+  PHASE
+  FINAL
 }
 
 enum ResourceType {

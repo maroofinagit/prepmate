@@ -2,6 +2,8 @@
 
 import { Resend } from "resend";
 import { db } from "../lib/db";
+import { auth } from "../lib/auth";
+import { headers } from "next/headers";
 
 export async function getAdminDashboardData() {
     const totalUsers = await db.user.count();
@@ -93,6 +95,54 @@ export async function sendAdminNotificationEmail(to: string, name: string) {
         console.error("Error sending admin notification email:", error);
         return { success: false };
 
+    }
+}
+
+
+export async function deleteAccount() {
+    try {
+
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.session) {
+            return {
+                success: false,
+                message: "Unauthorized",
+            };
+        }
+
+        const userId = session.session.userId;
+
+        // delete user
+        await db.user.delete({
+            where: {
+                id: userId,
+            },
+        });
+
+        // sign out
+        await auth.api.signOut({
+            headers: await headers(),
+        });
+
+        return {
+            success: true,
+            message: "Account deleted successfully",
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Delete account error:",
+            error
+        );
+
+        return {
+            success: false,
+            message: "Something went wrong",
+        };
     }
 }
 

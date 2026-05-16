@@ -107,6 +107,21 @@ export type RoadmapTask = Prisma.RoadmapTaskModel
  */
 export type Milestone = Prisma.MilestoneModel
 /**
+ * Model Test
+ * 
+ */
+export type Test = Prisma.TestModel
+/**
+ * Model Question
+ * 
+ */
+export type Question = Prisma.QuestionModel
+/**
+ * Model TestAttempt
+ * 
+ */
+export type TestAttempt = Prisma.TestAttemptModel
+/**
  * Model Notification
  * 
  */

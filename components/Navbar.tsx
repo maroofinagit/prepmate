@@ -71,6 +71,8 @@ export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
                         alt="PrepMate Logo"
                         width={36}
                         height={36}
+                        loading="eager"
+                        fill={false}
                         className="hidden md:block object-cover rounded-full"
                     />
                     PrepMate

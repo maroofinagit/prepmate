@@ -26,6 +26,15 @@ export const Difficulty = {
 export type Difficulty = (typeof Difficulty)[keyof typeof Difficulty]
 
 
+export const TestType = {
+  WEEKLY: 'WEEKLY',
+  PHASE: 'PHASE',
+  FINAL: 'FINAL'
+} as const
+
+export type TestType = (typeof TestType)[keyof typeof TestType]
+
+
 export const ResourceType = {
   video: 'video',
   pdf: 'pdf',

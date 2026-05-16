@@ -203,7 +203,7 @@ export type ResourceGroupByOutputType = {
   _max: ResourceMaxAggregateOutputType | null
 }
 
-type GetResourceGroupByPayload<T extends ResourceGroupByArgs> = Prisma.PrismaPromise<
+export type GetResourceGroupByPayload<T extends ResourceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ResourceGroupByOutputType, T['by']> &
       {

@@ -64,6 +64,9 @@ export const ModelName = {
   RoadmapWeek: 'RoadmapWeek',
   RoadmapTask: 'RoadmapTask',
   Milestone: 'Milestone',
+  Test: 'Test',
+  Question: 'Question',
+  TestAttempt: 'TestAttempt',
   Notification: 'Notification',
   Resource: 'Resource',
   Verification: 'Verification'
@@ -183,6 +186,8 @@ export const UserExamScalarFieldEnum = {
   end_date: 'end_date',
   current_stage: 'current_stage',
   progress_percent: 'progress_percent',
+  performanceScore: 'performanceScore',
+  testsGiven: 'testsGiven',
   created_at: 'created_at',
   roadmap_status: 'roadmap_status'
 } as const
@@ -266,6 +271,53 @@ export const MilestoneScalarFieldEnum = {
 export type MilestoneScalarFieldEnum = (typeof MilestoneScalarFieldEnum)[keyof typeof MilestoneScalarFieldEnum]
 
 
+export const TestScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  type: 'type',
+  description: 'description',
+  userExamId: 'userExamId',
+  weekId: 'weekId',
+  phaseId: 'phaseId',
+  totalMarks: 'totalMarks',
+  duration: 'duration',
+  nOfFinalTests: 'nOfFinalTests',
+  isGenerated: 'isGenerated',
+  createdAt: 'createdAt'
+} as const
+
+export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
+
+
+export const QuestionScalarFieldEnum = {
+  id: 'id',
+  testId: 'testId',
+  question: 'question',
+  options: 'options',
+  correctAns: 'correctAns',
+  topic: 'topic',
+  difficulty: 'difficulty',
+  marks: 'marks',
+  createdAt: 'createdAt'
+} as const
+
+export type QuestionScalarFieldEnum = (typeof QuestionScalarFieldEnum)[keyof typeof QuestionScalarFieldEnum]
+
+
+export const TestAttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  testId: 'testId',
+  score: 'score',
+  totalMarks: 'totalMarks',
+  percentage: 'percentage',
+  responses: 'responses',
+  completedAt: 'completedAt'
+} as const
+
+export type TestAttemptScalarFieldEnum = (typeof TestAttemptScalarFieldEnum)[keyof typeof TestAttemptScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
@@ -309,6 +361,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -323,4 +382,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

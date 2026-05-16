@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { deleteAccount } from "@/app/actions/admin";
 
 export function DeleteAccountDialog() {
     const [loading, setLoading] = useState(false);
@@ -23,18 +24,14 @@ export function DeleteAccountDialog() {
         try {
             setLoading(true);
 
-            const res = await fetch("/api/delete-account", {
-                method: "DELETE",
-            });
+            const res = await deleteAccount();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast.error(data.error || "Failed to delete account. Please try again.");
+            if (!res.success) {
+                toast.error(res.message || "Failed to delete account. Please try again.");
                 return;
             }
 
-            toast.success(data.message || "Account deleted successfully.");
+            toast.success(res.message || "Account deleted successfully.");
             router.push("/");
         } catch (err) {
             console.error(err);

@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dialog";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { Sparkles, TrendingUp } from "lucide-react";
+import { generateRoadmap } from "@/app/actions/roadmap";
+import { deleteUserExam } from "@/app/actions/action";
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
@@ -80,10 +82,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     // safe values for top cards
     const totalUserExams = exams.length;
-
-    const overallProgress = Math.round(
-        exams.reduce((acc, e) => acc + (e.progress_percent ?? 0), 0) / (exams.length || 1)
-    );
 
     // safe values for top cards
     const selectedProgress = exam?.progress_percent ?? 0;
@@ -136,12 +134,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const handleRegenerate = async () => {
         if (!selectedId) return;
         setRegenerating(true);
-        const roadmapRes = await fetch(`/api/roadmap`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_exam_id: selectedId }),
-        });
-        if (!roadmapRes.ok) {
+        const roadmapRes = await generateRoadmap(selectedId);
+        if (!roadmapRes.success) {
             toast.error('Failed to regenerate roadmap. Please try again later.');
             setRegenerating(false);
             return;
@@ -155,12 +149,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         try {
             setDeleting(true);
-            await fetch(`/api/deleteUserExam`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_exam_id: selectedId }),
-            });
-            toast.success("Exam deleted successfully.");
+            const res = await deleteUserExam(selectedId);
+            if (res.success) {
+                toast.success("Exam deleted successfully.");
+            } else {
+                toast.error("Failed to delete exam.");
+            }
             setDltDialogOpen(false);
             setDeleting(false);
             setSelectedExam(null);
@@ -210,16 +204,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Overall Progress</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Progress value={overallProgress} className="h-3" />
-                        <p className="text-center mt-2 font-semibold">{overallProgress}%</p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
                         <CardTitle>{currentSelectedExam?.exam.name || "Selected"} Progress</CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -257,6 +241,19 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 </Button>
                             )
                         }
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Give Tests</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Link href={`/user-exam/${selectedId}/tests`}>
+                            <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">
+                                Give Tests
+                            </Button>
+                        </Link>
                     </CardContent>
                 </Card>
             </div>
@@ -942,7 +939,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         {/* Date */}
                                                         {m.target_date && (
                                                             <p className="text-xs text-muted-foreground">
-                                                                📅 {new Date(m.target_date).toLocaleDateString()}
+                                                                📅 {m.target_date instanceof Date ? m.target_date.toLocaleDateString() : m.target_date}
                                                             </p>
                                                         )}
                                                     </CardContent>
@@ -994,7 +991,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     <DialogDescription>
                                                         {deleting ? (
                                                             <span className="font-medium text-black flex items-center gap-2">
-                                                                <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                                                <span className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
 
                                                                 Deleting {exam?.exam?.name ?? "this exam"}...
                                                             </span>

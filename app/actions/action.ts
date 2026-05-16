@@ -1,5 +1,7 @@
-
+"use server";
 import { db } from "@/app/lib/db";
+import { auth } from "../lib/auth";
+import { headers } from "next/headers";
 
 
 
@@ -103,6 +105,78 @@ export async function getUserExams(userId: string) {
     }
 }
 
+interface CreateUserExamProps {
+    examId: number;
+    start_date: string;
+    end_date: string;
+}
+
+export async function createUserExam({
+    examId,
+    start_date,
+    end_date,
+}: CreateUserExamProps) {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session) {
+            return {
+                success: false,
+                message: "Not authenticated",
+            };
+        }
+
+        if (!examId || !start_date || !end_date) {
+            return {
+                success: false,
+                message: "Missing required fields",
+            };
+        }
+
+        const userId = session.user.id;
+
+        const existingUserExam = await db.userExam.findFirst({
+            where: {
+                user_id: userId,
+                exam_id: Number(examId),
+            },
+        });
+
+        if (existingUserExam) {
+            return {
+                success: true,
+                message: "UserExam already exists",
+                user_exam_id: existingUserExam.id,
+            };
+        }
+
+        const userExam = await db.userExam.create({
+            data: {
+                user_id: userId,
+                exam_id: Number(examId),
+                start_date: new Date(start_date),
+                end_date: new Date(end_date),
+                current_stage: "Not Started",
+                progress_percent: 0,
+            },
+        });
+
+        return {
+            success: true,
+            user_exam_id: userExam.id,
+        };
+    } catch (error) {
+        console.error("❌ Error creating UserExam:", error);
+
+        return {
+            success: false,
+            message: "Internal server error",
+        };
+    }
+}
+
 export async function getRoadmapByUserExamId(user_exam_id: number) {
     try {
         const roadmap = await db.roadmap.findUnique({
@@ -163,6 +237,7 @@ export async function getDashboardUser(userId: string) {
                         end_date: true,
                         current_stage: true,
                         progress_percent: true,
+                        performanceScore: true,
                         roadmap_status: true,
 
                         // UserExam → Exam Details
@@ -172,7 +247,7 @@ export async function getDashboardUser(userId: string) {
                                 name: true,
                                 description: true,
                             },
-                            
+
                         },
 
                         roadmap: {
@@ -241,6 +316,35 @@ export async function getDashboardUser(userId: string) {
     catch (err) {
         console.error("❌ Error fetching DashboardUser:", err);
         return null;
+    }
+}
+
+
+export async function deleteUserExam(user_exam_id: number) {
+    try {
+
+        await db.userExam.delete({
+            where: {
+                id: user_exam_id,
+            },
+        });
+
+        return {
+            success: true,
+            message: "User exam deleted successfully",
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting user exam:",
+            error
+        );
+
+        return {
+            success: false,
+            message: "Failed to delete user exam",
+        };
     }
 }
 
