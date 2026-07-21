@@ -13,6 +13,7 @@ export async function getFullExams() {
                 name: true,
                 description: true,
                 imageUrl: true,
+                aiContext: true,
                 subjects: {
                     select: {
                         id: true,
@@ -48,6 +49,7 @@ export async function getExamById(id: number) {
                 id: true,
                 name: true,
                 description: true,
+                aiContext: true,
                 subjects: {
                     select: {
                         id: true,
@@ -79,6 +81,8 @@ export async function getShortExams() {
                 id: true,
                 name: true,
                 description: true,
+                imageUrl: true,
+                aiContext: true,
             },
         });
 

@@ -1927,6 +1927,7 @@ export const ExamScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  aiContext: 'aiContext',
   imageUrl: 'imageUrl',
   default_duration_weeks: 'default_duration_weeks',
   created_at: 'created_at'

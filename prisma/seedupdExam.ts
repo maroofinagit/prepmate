@@ -15,8 +15,6 @@ async function main() {
     await db.exam.update({
         where: { id: exam.id },
         data: {
-            description:
-                'Advanced practical roadmap for integrating Generative AI into real-world web applications, covering LLMs, RAG, vector databases, and scalable AI systems.',
             default_duration_weeks: 12,
         },
     })
@@ -26,26 +24,66 @@ async function main() {
         where: { exam_id: exam.id },
     })
 
-    await db.resource.deleteMany({
-        where: { exam_id: exam.id },
-    })
-
     // ================= SUBJECTS (UPDATED FLOW) =================
     const subjects = [
         {
-            name: 'Foundations of Generative AI',
+            name: 'AI Fundamentals for Developers',
             topics: [
                 {
-                    name: 'What are LLMs & How They Work',
-                    description:
-                        'Deep understanding of transformers, tokens, embeddings, and how modern LLMs generate text.',
+                    name: 'What is Generative AI?',
+                    description: 'Understand how Generative AI is transforming modern software development.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Prompt Engineering Fundamentals',
-                    description:
-                        'Zero-shot, few-shot, structured prompting, and controlling LLM outputs effectively.',
+                    name: 'How Large Language Models (LLMs) Work',
+                    description: 'Learn how LLMs process, understand, and generate natural language.',
                     difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Prompt Engineering',
+                    description: 'Write effective prompts to produce accurate and reliable AI outputs.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Tokens & Context Windows',
+                    description: 'Understand token limits, context management, and API pricing.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Structured Outputs',
+                    description: 'Generate predictable JSON and schema-based AI responses.',
+                    difficulty: Difficulty.medium,
+                },
+            ],
+        },
+
+        {
+            name: 'Integrating AI into Applications',
+            topics: [
+                {
+                    name: 'Integrating LLM APIs',
+                    description: 'Connect AI models to web applications using modern APIs.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Chat Completions & Responses API',
+                    description: 'Build conversational experiences using chat-based APIs.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Streaming AI Responses',
+                    description: 'Deliver AI responses progressively for better user experience.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Rate Limits & Error Handling',
+                    description: 'Handle failures, retries, and API limitations effectively.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Cost Optimization',
+                    description: 'Reduce AI costs through efficient token and request management.',
+                    difficulty: Difficulty.medium,
                 },
             ],
         },
@@ -54,51 +92,239 @@ async function main() {
             name: 'Building AI Features',
             topics: [
                 {
-                    name: 'Integrating OpenAI APIs',
-                    description:
-                        'Making API calls, handling responses, streaming outputs, and managing errors.',
+                    name: 'AI Chat Applications',
+                    description: 'Build production-ready conversational interfaces.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Chat Systems & Memory',
-                    description:
-                        'Designing chat interfaces with memory, context handling, and UX patterns.',
+                    name: 'AI Content Generation',
+                    description: 'Generate text, emails, summaries, and other dynamic content.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'AI Search & Recommendations',
+                    description: 'Create intelligent search and recommendation experiences.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'AI Assistants & Copilots',
+                    description: 'Develop AI assistants that improve user productivity.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'AI Features for SaaS',
+                    description: 'Integrate AI capabilities into real-world software products.',
                     difficulty: Difficulty.medium,
                 },
             ],
         },
 
         {
-            name: 'Advanced AI Systems',
+            name: 'Context & Knowledge Retrieval',
             topics: [
                 {
-                    name: 'RAG (Retrieval Augmented Generation)',
-                    description:
-                        'Combining LLMs with external data using embeddings and vector databases.',
+                    name: 'Embeddings',
+                    description: 'Represent text semantically for intelligent retrieval.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Semantic Search',
+                    description: 'Search based on meaning rather than keyword matching.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Vector Databases',
+                    description: 'Store and retrieve embeddings efficiently.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Chunking & Retrieval',
+                    description: 'Prepare and retrieve documents for AI applications.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Retrieval-Augmented Generation (RAG)',
+                    description: 'Enhance AI responses with external knowledge sources.',
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
+
+        {
+            name: 'AI Workflows & Agents',
+            topics: [
+                {
+                    name: 'Function Calling',
+                    description: 'Allow AI models to invoke application functions.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Tool Calling',
+                    description: 'Connect AI with external APIs and services.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Workflow Automation',
+                    description: 'Automate business workflows using AI.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'AI Agents',
+                    description: 'Build autonomous AI systems capable of planning and execution.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Model Context Protocol (MCP)',
+                    description: 'Enable standardized communication between AI models and tools.',
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'Vector Databases & Search',
-                    description:
-                        'Using Pinecone, Supabase, and similarity search for semantic retrieval.',
+                    name: 'Multi-Agent Systems',
+                    description: 'Coordinate multiple AI agents to solve complex tasks.',
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
+
+        {
+            name: 'Production AI Architecture',
+            topics: [
+                {
+                    name: 'Designing AI Services',
+                    description: 'Architect scalable backend services for AI workloads.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Queues & Background Jobs',
+                    description: 'Process AI tasks asynchronously for better scalability.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Conversation Memory',
+                    description: 'Maintain context across multiple user interactions.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Caching AI Responses',
+                    description: 'Reduce latency and API costs using caching strategies.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Session Management',
+                    description: 'Manage conversations and user-specific AI state.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'AI Cost Optimization',
+                    description: 'Optimize infrastructure and API usage for production.',
                     difficulty: Difficulty.medium,
                 },
             ],
         },
 
         {
-            name: 'Scaling & Production',
+            name: 'Frontend AI Experience',
             topics: [
                 {
-                    name: 'AI System Architecture',
-                    description:
-                        'Designing scalable backend systems for AI apps with queues and caching.',
+                    name: 'AI Chat Interfaces',
+                    description: 'Design intuitive conversational user interfaces.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Streaming UI',
+                    description: 'Display streamed AI responses with smooth interactions.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Security & Guardrails',
-                    description:
-                        'Preventing prompt injection, ensuring moderation, and safe AI usage.',
+                    name: 'Markdown & Rich Responses',
+                    description: 'Render AI-generated rich content effectively.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Voice & Image Interfaces',
+                    description: 'Integrate speech, vision, and multimodal AI experiences.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Loading States & Error Handling',
+                    description: 'Provide responsive feedback during AI interactions.',
+                    difficulty: Difficulty.easy,
+                },
+            ],
+        },
+
+        {
+            name: 'Production, Security & Deployment',
+            topics: [
+                {
+                    name: 'Prompt Injection & AI Security',
+                    description: 'Protect AI applications against prompt-based attacks.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Content Moderation',
+                    description: 'Ensure safe and compliant AI-generated content.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Model Selection',
+                    description: 'Choose the right AI model for different use cases.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Testing AI Applications',
+                    description: 'Evaluate AI quality, reliability, and correctness.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Monitoring & Observability',
+                    description: 'Track AI performance and production health.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Deploying & Scaling AI',
+                    description: 'Deploy AI-powered applications for production environments.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Cloud AI Platforms',
+                    description: 'Build and deploy AI solutions using leading cloud providers.',
+                    difficulty: Difficulty.medium,
+                },
+            ],
+        },
+
+        {
+            name: 'Real-World AI Projects',
+            topics: [
+                {
+                    name: 'AI Chatbot',
+                    description: 'Build a production-ready conversational assistant.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Document Q&A System',
+                    description: 'Create a RAG-powered document question-answering application.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'AI PDF Chat',
+                    description: 'Build an AI assistant capable of chatting with PDF documents.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'AI Coding Assistant',
+                    description: 'Develop an AI-powered coding companion for developers.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'AI SaaS Application',
+                    description: 'Build and deploy a complete AI-powered SaaS product.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'AI Agent with MCP',
+                    description: 'Develop an intelligent agent using the Model Context Protocol.',
                     difficulty: Difficulty.hard,
                 },
             ],
@@ -156,7 +382,7 @@ async function main() {
         ],
     })
 
-    console.log('✅ Exam updated successfully!')
+    console.log(`${exam.name} updated successfully!`)
 }
 
 main()

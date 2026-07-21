@@ -40,6 +40,7 @@ export type ExamMinAggregateOutputType = {
   id: number | null
   name: string | null
   description: string | null
+  aiContext: string | null
   imageUrl: string | null
   default_duration_weeks: number | null
   created_at: Date | null
@@ -49,6 +50,7 @@ export type ExamMaxAggregateOutputType = {
   id: number | null
   name: string | null
   description: string | null
+  aiContext: string | null
   imageUrl: string | null
   default_duration_weeks: number | null
   created_at: Date | null
@@ -58,6 +60,7 @@ export type ExamCountAggregateOutputType = {
   id: number
   name: number
   description: number
+  aiContext: number
   imageUrl: number
   default_duration_weeks: number
   created_at: number
@@ -79,6 +82,7 @@ export type ExamMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  aiContext?: true
   imageUrl?: true
   default_duration_weeks?: true
   created_at?: true
@@ -88,6 +92,7 @@ export type ExamMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  aiContext?: true
   imageUrl?: true
   default_duration_weeks?: true
   created_at?: true
@@ -97,6 +102,7 @@ export type ExamCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  aiContext?: true
   imageUrl?: true
   default_duration_weeks?: true
   created_at?: true
@@ -193,6 +199,7 @@ export type ExamGroupByOutputType = {
   id: number
   name: string
   description: string | null
+  aiContext: string
   imageUrl: string
   default_duration_weeks: number | null
   created_at: Date
@@ -225,6 +232,7 @@ export type ExamWhereInput = {
   id?: Prisma.IntFilter<"Exam"> | number
   name?: Prisma.StringFilter<"Exam"> | string
   description?: Prisma.StringNullableFilter<"Exam"> | string | null
+  aiContext?: Prisma.StringFilter<"Exam"> | string
   imageUrl?: Prisma.StringFilter<"Exam"> | string
   default_duration_weeks?: Prisma.IntNullableFilter<"Exam"> | number | null
   created_at?: Prisma.DateTimeFilter<"Exam"> | Date | string
@@ -237,6 +245,7 @@ export type ExamOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiContext?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   default_duration_weeks?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -252,6 +261,7 @@ export type ExamWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ExamWhereInput[]
   NOT?: Prisma.ExamWhereInput | Prisma.ExamWhereInput[]
   description?: Prisma.StringNullableFilter<"Exam"> | string | null
+  aiContext?: Prisma.StringFilter<"Exam"> | string
   imageUrl?: Prisma.StringFilter<"Exam"> | string
   default_duration_weeks?: Prisma.IntNullableFilter<"Exam"> | number | null
   created_at?: Prisma.DateTimeFilter<"Exam"> | Date | string
@@ -264,6 +274,7 @@ export type ExamOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiContext?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   default_duration_weeks?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -281,6 +292,7 @@ export type ExamScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Exam"> | number
   name?: Prisma.StringWithAggregatesFilter<"Exam"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Exam"> | string | null
+  aiContext?: Prisma.StringWithAggregatesFilter<"Exam"> | string
   imageUrl?: Prisma.StringWithAggregatesFilter<"Exam"> | string
   default_duration_weeks?: Prisma.IntNullableWithAggregatesFilter<"Exam"> | number | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Exam"> | Date | string
@@ -289,6 +301,7 @@ export type ExamScalarWhereWithAggregatesInput = {
 export type ExamCreateInput = {
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -301,6 +314,7 @@ export type ExamUncheckedCreateInput = {
   id?: number
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -312,6 +326,7 @@ export type ExamUncheckedCreateInput = {
 export type ExamUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -324,6 +339,7 @@ export type ExamUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -336,6 +352,7 @@ export type ExamCreateManyInput = {
   id?: number
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -344,6 +361,7 @@ export type ExamCreateManyInput = {
 export type ExamUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -353,6 +371,7 @@ export type ExamUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,6 +381,7 @@ export type ExamCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  aiContext?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   default_duration_weeks?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -376,6 +396,7 @@ export type ExamMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  aiContext?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   default_duration_weeks?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -385,6 +406,7 @@ export type ExamMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  aiContext?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   default_duration_weeks?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -461,6 +483,7 @@ export type ExamUpdateOneRequiredWithoutResourcesNestedInput = {
 export type ExamCreateWithoutSubjectsInput = {
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -472,6 +495,7 @@ export type ExamUncheckedCreateWithoutSubjectsInput = {
   id?: number
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -498,6 +522,7 @@ export type ExamUpdateToOneWithWhereWithoutSubjectsInput = {
 export type ExamUpdateWithoutSubjectsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -509,6 +534,7 @@ export type ExamUncheckedUpdateWithoutSubjectsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -519,6 +545,7 @@ export type ExamUncheckedUpdateWithoutSubjectsInput = {
 export type ExamCreateWithoutUserExamsInput = {
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -530,6 +557,7 @@ export type ExamUncheckedCreateWithoutUserExamsInput = {
   id?: number
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -556,6 +584,7 @@ export type ExamUpdateToOneWithWhereWithoutUserExamsInput = {
 export type ExamUpdateWithoutUserExamsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -567,6 +596,7 @@ export type ExamUncheckedUpdateWithoutUserExamsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -577,6 +607,7 @@ export type ExamUncheckedUpdateWithoutUserExamsInput = {
 export type ExamCreateWithoutResourcesInput = {
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -588,6 +619,7 @@ export type ExamUncheckedCreateWithoutResourcesInput = {
   id?: number
   name: string
   description?: string | null
+  aiContext?: string
   imageUrl?: string
   default_duration_weeks?: number | null
   created_at?: Date | string
@@ -614,6 +646,7 @@ export type ExamUpdateToOneWithWhereWithoutResourcesInput = {
 export type ExamUpdateWithoutResourcesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -625,6 +658,7 @@ export type ExamUncheckedUpdateWithoutResourcesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiContext?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   default_duration_weeks?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -685,6 +719,7 @@ export type ExamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   name?: boolean
   description?: boolean
+  aiContext?: boolean
   imageUrl?: boolean
   default_duration_weeks?: boolean
   created_at?: boolean
@@ -698,6 +733,7 @@ export type ExamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   description?: boolean
+  aiContext?: boolean
   imageUrl?: boolean
   default_duration_weeks?: boolean
   created_at?: boolean
@@ -707,6 +743,7 @@ export type ExamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   description?: boolean
+  aiContext?: boolean
   imageUrl?: boolean
   default_duration_weeks?: boolean
   created_at?: boolean
@@ -716,12 +753,13 @@ export type ExamSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
+  aiContext?: boolean
   imageUrl?: boolean
   default_duration_weeks?: boolean
   created_at?: boolean
 }
 
-export type ExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "default_duration_weeks" | "created_at", ExtArgs["result"]["exam"]>
+export type ExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "aiContext" | "imageUrl" | "default_duration_weeks" | "created_at", ExtArgs["result"]["exam"]>
 export type ExamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resources?: boolean | Prisma.Exam$resourcesArgs<ExtArgs>
   subjects?: boolean | Prisma.Exam$subjectsArgs<ExtArgs>
@@ -742,6 +780,7 @@ export type $ExamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: number
     name: string
     description: string | null
+    aiContext: string
     imageUrl: string
     default_duration_weeks: number | null
     created_at: Date
@@ -1174,6 +1213,7 @@ export interface ExamFieldRefs {
   readonly id: Prisma.FieldRef<"Exam", 'Int'>
   readonly name: Prisma.FieldRef<"Exam", 'String'>
   readonly description: Prisma.FieldRef<"Exam", 'String'>
+  readonly aiContext: Prisma.FieldRef<"Exam", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Exam", 'String'>
   readonly default_duration_weeks: Prisma.FieldRef<"Exam", 'Int'>
   readonly created_at: Prisma.FieldRef<"Exam", 'DateTime'>

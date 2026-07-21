@@ -47,7 +47,7 @@ export async function generateRoadmap(user_exam_id: number) {
         const prompt = `
 You are an expert academic planner.
 
-Create a study roadmap for the exam "${exam.name}".
+Create a study roadmap for the exam "${exam.name} taking context about the exam as ${exam.aiContext} which is out objective".
 
 The roadmap should help a student prepare effectively by breaking down the syllabus into manageable phases, weeks, and tasks.
 
@@ -361,7 +361,7 @@ Output ONLY valid JSON in this exact structure:
             });
 
             return createdRoadmap;
-        },{
+        }, {
             timeout: 60000 // 60 seconds
         });
 

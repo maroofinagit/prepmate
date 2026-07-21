@@ -1,560 +1,418 @@
-// run this file with `npx prisma db seed` to seed the database with CA Intermediate subjects, topics, and resources
-
-import { Difficulty, ResourceType } from '../generated/prisma/enums'
 import { db } from '@/app/lib/db'
 
+import { Difficulty, ResourceType } from '@/generated/prisma/enums';
+
 async function main() {
-    // ================= CREATE EXAM =================
-    const exam = await db.exam.upsert({
-        where: {
-            id: 9, // 👈 replace with your placement exam id
-        },
-        update: {
-            name: 'GenAI for Web Developers',
-            description:
-                'Practical application of Generative AI in modern web and full-stack development including LLM integration, AI-powered features, and production deployment.',
-            default_duration_weeks: 12,
-        },
-        create: {
-            name: 'GenAI for Web Developers',
-            description:
-                'Practical application of Generative AI in modern web and full-stack development including LLM integration, AI-powered features, and production deployment.',
-            default_duration_weeks: 12,
-        },
-    })
 
-    // ================= CLEAN OLD DATA (IMPORTANT) =================
-    
-    await db.topic.deleteMany({
-        where: {
-            subject: {
-                exam_id: exam.id,
-            },
-        },
-    })
-    
-    await db.subject.deleteMany({
-        where: { exam_id: exam.id },
-    })
-
-
-    await db.resource.deleteMany({
-        where: { exam_id: exam.id },
-    })
-
-    // ================= SUBJECTS DATA =================
-    const subjects: any[] = [
+    const subjects = [
         {
-            name: 'Foundations of Generative AI',
+            name: 'Computer Networking Fundamentals',
             topics: [
                 {
-                    name: 'What is Generative AI?',
-                    description: `
-Start your journey by understanding what Generative AI really is.
-
-In this topic, you will:
-- Understand how Large Language Models (LLMs) like GPT work
-- Learn how text is broken into tokens and processed
-- Understand probability-based text generation
-- Explore real-world use cases (chatbots, copilots, automation)
-
-Goal: Build a strong mental model of how AI generates responses.
-        `,
+                    name: 'Client-Server Architecture',
+                    description: 'Understand how clients and servers communicate over a network.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Prompt Engineering Fundamentals',
-                    description: `
-Learn how to communicate effectively with AI models.
-
-You will learn:
-- Zero-shot vs Few-shot prompting
-- Role-based prompting (system/user)
-- Controlling output format (JSON, structured data)
-- Avoiding vague prompts
-
-Goal: Write prompts that produce consistent and reliable outputs.
-        `,
+                    name: 'OSI Model & TCP/IP',
+                    description: 'Learn the networking layers and how internet communication works.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Tokens, Context Window & Cost Optimization',
-                    description: `
-Understand the hidden mechanics that affect performance and cost.
+                    name: 'HTTP, HTTPS & TLS',
+                    description: 'Understand web communication, encryption, and secure data transfer.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'DNS & Domain Resolution',
+                    description: 'Learn how domain names are translated into IP addresses.',
+                    difficulty: Difficulty.easy,
+                },
+            ],
+        },
 
-Covers:
-- What tokens are and how they are counted
-- Context window limitations
-- How long conversations impact cost
-- Techniques to optimize token usage
-
-Goal: Build cost-efficient and scalable AI features.
-        `,
+        {
+            name: 'API Design & Communication',
+            topics: [
+                {
+                    name: 'REST APIs',
+                    description: 'Design scalable RESTful APIs using HTTP principles.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'GraphQL',
+                    description: 'Build flexible APIs that return exactly the requested data.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'gRPC',
+                    description: 'Learn high-performance communication between distributed services.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'API Security',
+                    description: 'Secure APIs using authentication and authorization techniques.',
                     difficulty: Difficulty.medium,
                 },
             ],
         },
 
         {
-            name: 'LLM Integration in Web Apps',
+            name: 'Backend Architecture Fundamentals',
             topics: [
                 {
-                    name: 'Integrating LLM APIs (OpenAI & Others)',
-                    description: `
-Learn how to connect AI models with your backend.
-
-You will:
-- Make API calls using SDKs
-- Handle responses and errors
-- Understand request/response lifecycle
-- Secure API keys properly
-
-Goal: Successfully integrate AI into any web application.
-        `,
+                    name: 'Monolith vs Microservices',
+                    description: 'Compare monolithic and microservice architectures and their trade-offs.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Building Chat-Based Interfaces',
-                    description: `
-Design and implement real chat systems like ChatGPT.
-
-Covers:
-- Message history management
-- Conversation memory handling
-- UX patterns for chat apps
-- Structuring backend + frontend flow
-
-Goal: Build a fully functional AI chat system.
-        `,
+                    name: 'Reverse Proxies',
+                    description: 'Understand how reverse proxies manage and route incoming traffic.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Streaming & Real-Time AI Responses',
-                    description: `
-Improve user experience with real-time AI responses.
-
-Learn:
-- Streaming responses using SSE/WebSockets
-- Typing indicators and partial outputs
-- Handling long responses efficiently
-
-Goal: Make AI feel fast, alive, and interactive.
-        `,
+                    name: 'Load Balancers',
+                    description: 'Distribute traffic efficiently across multiple application servers.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Rate Limits, Retries & Optimization',
-                    description: `
-Make your system production-ready.
+                    name: 'Content Delivery Networks (CDNs)',
+                    description: 'Deliver static content faster using globally distributed edge servers.',
+                    difficulty: Difficulty.medium,
+                },
+            ],
+        },
+        {
+            name: 'Databases & Data Storage',
+            topics: [
+                {
+                    name: 'Relational Databases (SQL)',
+                    description: 'Learn relational database design, normalization, and SQL fundamentals.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'NoSQL Databases',
+                    description: 'Understand document, key-value, graph, and column-oriented databases.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Database Indexing',
+                    description: 'Optimize query performance using appropriate indexing strategies.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Transactions & ACID',
+                    description: 'Ensure data consistency with transactions and ACID properties.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Database Replication',
+                    description: 'Improve availability and read scalability through replication.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Database Sharding',
+                    description: 'Scale databases horizontally by partitioning data across servers.',
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
 
-Includes:
-- Handling API rate limits
-- Retry mechanisms and fallbacks
-- Caching responses
-- Reducing latency
-
-Goal: Build stable and reliable AI-powered systems.
-        `,
+        {
+            name: 'Caching & Performance',
+            topics: [
+                {
+                    name: 'Caching Fundamentals',
+                    description: 'Reduce latency by serving frequently accessed data from cache.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Redis',
+                    description: 'Use Redis for caching, sessions, counters, and real-time features.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Cache Invalidation',
+                    description: 'Maintain data consistency with effective cache invalidation strategies.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Read Replicas',
+                    description: 'Scale read-heavy workloads using replicated database instances.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Performance Optimization',
+                    description: 'Improve system performance by eliminating common bottlenecks.',
                     difficulty: Difficulty.medium,
                 },
             ],
         },
 
         {
-            name: 'Building Real AI Features',
+            name: 'Asynchronous Communication',
             topics: [
                 {
-                    name: 'Text Generation Systems',
-                    description: `
-Build practical AI features used in real products.
-
-Examples:
-- Blog generators
-- Email writers
-- Resume builders
-- Caption generators
-
-Goal: Create reusable AI-powered utilities for applications.
-        `,
+                    name: 'Synchronous vs Asynchronous Systems',
+                    description: 'Compare blocking and background processing approaches.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Semantic Search with Embeddings',
-                    description: `
-Go beyond keyword search and build intelligent search systems.
-
-You will:
-- Understand embeddings deeply
-- Implement similarity search
-- Rank results based on meaning
-
-Goal: Build Google-like smart search features.
-        `,
+                    name: 'Message Queues',
+                    description: 'Process background jobs reliably using messaging systems.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'RAG (Retrieval Augmented Generation)',
-                    description: `
-Combine your own data with AI responses.
-
-Covers:
-- How RAG works step-by-step
-- Connecting vector DB + LLM
-- Query → Retrieve → Generate flow
-
-Goal: Build AI that answers based on your custom data.
-        `,
+                    name: 'Event-Driven Architecture',
+                    description: 'Build loosely coupled systems using event-based communication.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Kafka',
+                    description: 'Handle high-throughput event streaming with Apache Kafka.',
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'AI Assistants & Copilots',
-                    description: `
-Embed AI inside your product as a smart assistant.
-
-Includes:
-- Form autofill
-- Inline suggestions
-- AI copilots (like GitHub Copilot)
-
-Goal: Make your app intelligent and interactive.
-        `,
+                    name: 'RabbitMQ & BullMQ',
+                    description: 'Implement reliable task queues and background job processing.',
                     difficulty: Difficulty.medium,
                 },
             ],
         },
-
         {
-            name: 'Vector Databases & Data Handling',
+            name: 'Distributed Systems',
             topics: [
                 {
-                    name: 'Embeddings Deep Dive',
-                    description: `
-Understand how text is converted into vectors.
-
-You will:
-- Learn embedding generation
-- Compare similarity techniques
-- Store and retrieve embeddings
-
-Goal: Build the foundation for intelligent data systems.
-        `,
+                    name: 'CAP Theorem',
+                    description: 'Understand the trade-offs between consistency, availability, and partition tolerance.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Working with Vector Databases',
-                    description: `
-Use tools like Pinecone, Weaviate, or Supabase.
-
-Covers:
-- Storing vectors
-- Querying similar data
-- Performance optimization
-
-Goal: Build scalable AI search systems.
-        `,
+                    name: 'Consistency Models',
+                    description: 'Learn strong, eventual, and causal consistency in distributed systems.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Chunking, Indexing & Data Pipelines',
-                    description: `
-Prepare data properly for AI usage.
-
-Includes:
-- Document chunking strategies
-- Preprocessing text
-- Efficient indexing
-
-Goal: Improve retrieval quality in AI systems.
-        `,
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
-
-        {
-            name: 'Backend Architecture for GenAI',
-            topics: [
-                {
-                    name: 'Designing AI Middleware',
-                    description: `
-Structure your backend for AI workflows.
-
-You will:
-- Handle prompts centrally
-- Log responses
-- Manage retries and failures
-
-Goal: Build maintainable and scalable AI backends.
-        `,
+                    name: 'Fault Tolerance',
+                    description: 'Design systems that continue operating despite failures.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Queues & Async Processing',
-                    description: `
-Handle heavy AI tasks efficiently.
-
-Covers:
-- Background jobs
-- Queue systems (BullMQ)
-- Worker architecture
-
-Goal: Prevent blocking and improve performance.
-        `,
+                    name: 'High Availability',
+                    description: 'Build systems that remain accessible with minimal downtime.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Caching AI Responses',
-                    description: `
-Reduce cost and speed up responses.
-
-Learn:
-- When to cache
-- Cache invalidation strategies
-- Redis-based caching
-
-Goal: Optimize performance and reduce API costs.
-        `,
-                    difficulty: Difficulty.easy,
-                },
-            ],
-        },
-
-        {
-            name: 'Frontend UX for AI Apps',
-            topics: [
-                {
-                    name: 'Designing AI-First UX',
-                    description: `
-Design interfaces that feel intelligent.
-
-Includes:
-- Loading states
-- Streaming UI
-- Trust indicators
-
-Goal: Build delightful AI experiences.
-        `,
+                    name: 'Scalability',
+                    description: 'Scale applications efficiently using vertical and horizontal scaling.',
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Handling Errors & Edge Cases',
-                    description: `
-Prepare for real-world failures.
-
-You will:
-- Handle API failures
-- Show fallback responses
-- Improve user trust
-
-Goal: Make your app resilient and user-friendly.
-        `,
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Interactive AI Components',
-                    description: `
-Build reusable AI UI components.
-
-Examples:
-- Chat widgets
-- Inline assistants
-- Smart inputs
-
-Goal: Create modular AI UI systems.
-        `,
-                    difficulty: Difficulty.medium,
+                    name: 'Distributed Locks',
+                    description: 'Coordinate concurrent operations safely across multiple servers.',
+                    difficulty: Difficulty.hard,
                 },
             ],
         },
 
         {
-            name: 'Security, Limits & Guardrails',
+            name: 'Cloud Infrastructure & DevOps',
             topics: [
                 {
-                    name: 'Prompt Injection & AI Security',
-                    description: `
-Protect your system from misuse.
-
-Covers:
-- Prompt injection attacks
-- Input sanitization
-- Secure AI design
-
-Goal: Build safe AI applications.
-        `,
+                    name: 'Virtual Machines & Cloud Computing',
+                    description: 'Understand cloud infrastructure and virtualized computing environments.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Docker',
+                    description: 'Package applications into portable and reproducible containers.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Kubernetes',
+                    description: 'Deploy, scale, and manage containerized applications automatically.',
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'Content Moderation',
-                    description: `
-Ensure safe and appropriate outputs.
-
-Includes:
-- Moderation APIs
-- Filtering harmful content
-- User safety systems
-
-Goal: Maintain ethical AI usage.
-        `,
+                    name: 'CI/CD Pipelines',
+                    description: 'Automate building, testing, and deploying software changes.',
                     difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'User Limits & Cost Control',
-                    description: `
-Control usage and prevent abuse.
-
-You will:
-- Implement quotas
-- Track usage per user
-- Prevent excessive API usage
-
-Goal: Build sustainable AI systems.
-        `,
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
-
-        {
-            name: 'Deployment & Scaling AI Apps',
-            topics: [
-                {
-                    name: 'Deploying AI Applications',
-                    description: `
-Take your app live.
-
-Covers:
-- Vercel deployment
-- Environment variables
-- Serverless AI functions
-
-Goal: Launch production-ready AI apps.
-        `,
-                    difficulty: Difficulty.easy,
                 },
                 {
                     name: 'Monitoring & Logging',
-                    description: `
-Track everything happening in your system.
-
-Includes:
-- Logging prompts and responses
-- Error tracking
-- Performance monitoring
-
-Goal: Debug and improve your AI system.
-        `,
+                    description: 'Monitor application health and analyze logs for troubleshooting.',
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Scaling AI Systems',
-                    description: `
-Handle real-world traffic and growth.
+                    name: 'Observability',
+                    description: 'Gain deep insights into system behavior using metrics, logs, and traces.',
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
 
-You will:
-- Optimize performance
-- Handle high load
-- Scale backend systems
-
-Goal: Build AI systems that handle thousands of users.
-        `,
+        {
+            name: 'System Design Patterns',
+            topics: [
+                {
+                    name: 'Rate Limiting',
+                    description: 'Protect services by controlling request rates.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Circuit Breaker',
+                    description: 'Prevent cascading failures between dependent services.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'API Gateway',
+                    description: 'Centralize routing, authentication, and request handling.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Service Discovery',
+                    description: 'Enable services to locate and communicate with each other dynamically.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Leader Election',
+                    description: 'Coordinate distributed systems by selecting a single coordinator.',
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
+        {
+            name: 'System Design Case Studies',
+            topics: [
+                {
+                    name: 'URL Shortener',
+                    description: 'Design a scalable URL shortening service like Bitly.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Pastebin',
+                    description: 'Design a service for storing and sharing text snippets.',
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: 'Chat Application',
+                    description: 'Design a real-time messaging platform like WhatsApp.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Social Media Feed',
+                    description: 'Design a scalable news feed like Instagram or X.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Video Streaming Platform',
+                    description: 'Design a large-scale video platform like YouTube or Netflix.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Ride Sharing System',
+                    description: 'Design a real-time ride matching system like Uber.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Food Delivery Platform',
+                    description: 'Design a scalable food ordering and delivery system.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Cloud File Storage',
+                    description: 'Design a distributed file storage system like Google Drive.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Notification Service',
+                    description: 'Design a reliable service for email, SMS, and push notifications.',
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: 'Search Autocomplete',
+                    description: 'Design a fast and scalable search suggestion system.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Distributed Cache',
+                    description: 'Design a highly available distributed caching system.',
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: 'Payment System',
+                    description: 'Design a secure and fault-tolerant payment processing platform.',
                     difficulty: Difficulty.hard,
                 },
             ],
         },
     ]
 
-    // ================= RESOURCES =================
     const resources = [
-        // 🔹 CORE DOCUMENTATION (Start Here)
         {
-            title: 'OpenAI API Documentation (Core LLM Concepts & Usage)',
+            title: 'System Design Primer',
             type: ResourceType.article,
-            url: 'https://platform.openai.com/docs',
+            url: 'https://github.com/donnemartin/system-design-primer',
         },
         {
-            title: 'Vercel AI SDK (Streaming, Chat & UI Integration)',
+            title: 'MDN HTTP Guide',
             type: ResourceType.article,
-            url: 'https://sdk.vercel.ai/',
+            url: 'https://developer.mozilla.org/docs/Web/HTTP',
         },
         {
-            title: 'LangChain Documentation (Advanced LLM Workflows)',
-            type: ResourceType.article,
-            url: 'https://docs.langchain.com/',
-        },
-
-        // 🔹 LEARNING + UNDERSTANDING (Concept Clarity)
-        {
-            title: 'Full Stack LLM App Tutorial (FreeCodeCamp)',
-            type: ResourceType.video,
-            url: 'https://www.youtube.com/watch?v=...',
-        },
-        {
-            title: 'Prompt Engineering Guide (DeepLearning.AI)',
-            type: ResourceType.article,
-            url: 'https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/',
-        },
-        {
-            title: 'Generative AI for Developers (Google)',
-            type: ResourceType.article,
-            url: 'https://developers.google.com/machine-learning/resources',
-        },
-
-        // 🔹 VECTOR DATABASES & RAG
-        {
-            title: 'Pinecone Vector Database Guide',
-            type: ResourceType.article,
-            url: 'https://docs.pinecone.io/',
-        },
-        {
-            title: 'Supabase Vector Embeddings Guide',
-            type: ResourceType.article,
-            url: 'https://supabase.com/docs/guides/ai',
-        },
-        {
-            title: 'RAG Explained (Practical Guide)',
-            type: ResourceType.article,
-            url: 'https://www.pinecone.io/learn/retrieval-augmented-generation/',
-        },
-
-        // 🔹 REAL PROJECT BUILDING
-        {
-            title: 'Build ChatGPT Clone (End-to-End Project)',
-            type: ResourceType.video,
-            url: 'https://www.youtube.com/watch?v=...',
-        },
-        {
-            title: 'AI SaaS App Architecture Guide',
-            type: ResourceType.article,
-            url: 'https://vercel.com/blog/ai',
-        },
-
-        // 🔹 BACKEND & SCALING
-        {
-            title: 'BullMQ Queue System (Async Processing)',
-            type: ResourceType.article,
-            url: 'https://docs.bullmq.io/',
-        },
-        {
-            title: 'Redis Caching Strategies',
+            title: 'Redis Documentation',
             type: ResourceType.article,
             url: 'https://redis.io/docs/',
         },
-
-        // 🔹 SECURITY & BEST PRACTICES
         {
-            title: 'OpenAI Safety & Best Practices',
+            title: 'Docker Documentation',
             type: ResourceType.article,
-            url: 'https://platform.openai.com/docs/guides/safety-best-practices',
+            url: 'https://docs.docker.com/',
         },
         {
-            title: 'Prompt Injection Explained',
+            title: 'Kubernetes Documentation',
             type: ResourceType.article,
-            url: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/',
+            url: 'https://kubernetes.io/docs/',
+        },
+        {
+            title: 'AWS Architecture Center',
+            type: ResourceType.article,
+            url: 'https://aws.amazon.com/architecture/',
+        },
+        {
+            title: 'System Design Interview (freeCodeCamp)',
+            type: ResourceType.video,
+            url: 'https://www.youtube.com/watch?v=bUHFg8CZFws',
+        },
+        {
+            title: 'ByteByteGo',
+            type: ResourceType.video,
+            url: 'https://www.youtube.com/@ByteByteGo',
+        },
+        {
+            title: 'Gaurav Sen System Design',
+            type: ResourceType.video,
+            url: 'https://www.youtube.com/@gkcs',
         },
     ]
 
-    // ================= INSERT SUBJECTS + TOPICS =================
+    const exam = await db.exam.create({
+        data: {
+            name: 'System Design',
+            description:
+                'Master High-Level Design (HLD) and Low-Level Design (LLD) by learning scalable architectures, distributed systems, databases, networking, caching, cloud infrastructure, and real-world system design.',
+
+            default_duration_weeks: 14,
+
+            aiContext: `This roadmap is designed for software engineers who want to master System Design for both technical interviews and real-world software development. The learning path should emphasize conceptual clarity, practical thinking, and understanding the trade-offs behind architectural decisions rather than memorizing technologies. Every concept should explain why it exists, what problem it solves, when it should be used, and what alternatives exist. Learners should develop the ability to design scalable, reliable, highly available, fault-tolerant, secure, and maintainable systems while considering performance, latency, throughput, consistency, and cost. The roadmap should prepare students to confidently tackle High-Level Design (HLD) interviews at top technology companies, make informed architecture decisions in production environments, and build modern internet-scale applications by applying industry best practices and sound engineering principles.`,
+
+            imageUrl:
+                'https://images.pexels.com/photos/27141314/pexels-photo-27141314.jpeg',
+        },
+    })
+
+    // ================= CREATE SUBJECTS & TOPICS =================
+
     for (const subject of subjects) {
         const createdSubject = await db.subject.create({
             data: {
@@ -575,30 +433,25 @@ Goal: Build AI systems that handle thousands of users.
         }
     }
 
-    // ================= RESOURCES =================
-    await db.resource.createMany({
-        data: [
-            {
-                title: 'ICAI CA Intermediate Study Material',
-                type: ResourceType.pdf,
-                url: 'https://www.icai.org/post/study-material-nset',
-                exam_id: exam.id,
-            },
-            {
-                title: 'ICAI BOS Portal',
-                type: ResourceType.article,
-                url: 'https://boslive.icai.org/',
-                exam_id: exam.id,
-            },
-        ],
-    })
+    // ================= CREATE RESOURCES =================
 
-    console.log('✅ GenAI for Web Developers exam seeded successfully!')
+    for (const resource of resources) {
+        await db.resource.create({
+            data: {
+                title: resource.title,
+                type: resource.type,
+                url: resource.url,
+                exam_id: exam.id,
+            },
+        })
+    }
+
+    console.log(`✅ ${exam.name} exam created / updated successfully!`)
 }
 
 main()
     .catch((e) => {
-        console.error('❌ Error seeding:', e)
+        console.error(e)
         process.exit(1)
     })
     .finally(async () => {
