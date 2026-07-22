@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaGithub } from "react-icons/fa";
@@ -10,6 +10,7 @@ import { CiMail } from "react-icons/ci";
 import { FiLoader } from "react-icons/fi";
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "sonner";
+import { se } from "date-fns/locale";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -25,20 +26,20 @@ export default function SignInPage() {
     useEffect(() => {
         const fetchSession = async () => {
             const { data } = await authClient.getSession();
-            if (data?.session) redirect("/");
+            if (data?.session) router.push("/");
         };
         fetchSession();
     }, []);
 
     // Email Sign-In
-    const handleEmailSignIn = async (e: React.FormEvent) => {
+    const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const { error } = await authClient.signIn.email(
             {
                 email,
                 password,
-                rememberMe: true,
+                rememberMe: false,
             },
             {
                 onRequest: () => {
@@ -47,7 +48,7 @@ export default function SignInPage() {
                 },
                 onSuccess: () => {
                     toast.success("Signed in successfully!");
-                    redirect("/");
+                    router.push("/");
                 },
                 onError: (ctx) => {
                     setError(ctx.error?.message || "Something went wrong.");
@@ -62,7 +63,7 @@ export default function SignInPage() {
     const handleSocialSignIn = async (provider: "google" | "github") => {
         setOauthLoading(provider);
 
-        const res = await authClient.signIn.social(
+        const { data, error } = await authClient.signIn.social(
             {
                 provider,
                 callbackURL: "/",
@@ -71,22 +72,19 @@ export default function SignInPage() {
                 disableRedirect: false,
             },
             {
-                onRequest: () => {
+                onRequest: (ctx) => {
                     setOauthLoading(provider);
                     setError("");
-                },
-                onSuccess: () => {
-                    setOauthLoading(null);
-                    toast.success("Signed in successfully!");
-                    redirect("/");
+
                 },
                 onError: (ctx) => {
                     setError(ctx.error?.message || "Something went wrong.");
-                    setOauthLoading(null);
                     toast.error(ctx.error?.message || "Something went wrong.");
+                    setOauthLoading(null);
                 },
-            }
+            },
         );
+
     };
 
     return (

@@ -9,7 +9,7 @@ export const auth = betterAuth({
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
     advanced:{
-        disableOriginCheck: process.env.NODE_ENV === "development", // Disable origin check in development for easier testing
+        // disableOriginCheck: process.env.NODE_ENV === "development", // Disable origin check in development for easier testing
     },
     emailAndPassword: { enabled: true},
     socialProviders: {
@@ -22,6 +22,7 @@ export const auth = betterAuth({
             prompt: "select_account consent",
             clientId: process.env.GOOGLE_CLIENT_ID as string || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string || "",
+
         }
     },
     secret: process.env.BETTER_AUTH_SECRET || "",

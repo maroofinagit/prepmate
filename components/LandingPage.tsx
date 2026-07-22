@@ -5,11 +5,17 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import VisitMobile from "./VisitMobile";
+import { toast } from "sonner";
 
 export default async function LandingPage() {
     const headersData = await headers();
     const data = await auth.api.getSession({ headers: headersData });
     const user = data?.session?.userId ? data.user : null;
+
+    if (!user) {
+       toast.success("Welcome back! Please sign in to continue your preparation journey.", { duration: 3000 });
+       console.log("User is not logged in.");
+    }
 
     const exams = await getShortExams();
     let userExams: any[] = user ? await getUserExams(user.id) : [];

@@ -173,9 +173,9 @@ export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                     onClick={handleLogout}
-                                    className="text-red-600 focus:text-red-600"
+                                    className="text-red-600 focus:text-red-600 cursor-pointer"
                                 >
-                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <LogOut className="mr-2 h-4 w-4 cursor-pointer" />
                                     Logout
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
