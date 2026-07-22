@@ -47,7 +47,6 @@ export default function SignInPage() {
                     setError("");
                 },
                 onSuccess: () => {
-                    toast.success("Signed in successfully!");
                     sessionStorage.setItem("show-login-toast", "true");
                     router.push("/");
                 },
