@@ -58,8 +58,8 @@ export default function Navbar({ isAdmin }: { isAdmin: boolean }) {
         await authClient.signOut();
         router.push("/");
         setIsLoggedIn(false);
+        sessionStorage.removeItem("show-login-toast");
         toast.success("Logged out successfully.", { duration: 1500 });
-
     };
 
     return (

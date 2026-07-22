@@ -48,6 +48,7 @@ export default function SignInPage() {
                 },
                 onSuccess: () => {
                     toast.success("Signed in successfully!");
+                    sessionStorage.setItem("show-login-toast", "true");
                     router.push("/");
                 },
                 onError: (ctx) => {
@@ -76,6 +77,9 @@ export default function SignInPage() {
                     setOauthLoading(provider);
                     setError("");
 
+                },
+                onSuccess: (ctx) => {
+                    sessionStorage.setItem("show-login-toast", "true");
                 },
                 onError: (ctx) => {
                     setError(ctx.error?.message || "Something went wrong.");
