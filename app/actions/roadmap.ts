@@ -62,6 +62,16 @@ ${subjects
                 )
                 .join("\n")}
 
+                Roadmap Rules (VERY IMPORTANT):
+
+1. Every week should contain 2-5 tasks depending on difficulty.
+2. Task descriptions must be ONE SHORT SENTENCE (10-20 words maximum).
+3. Do NOT write paragraphs.
+4. Keep titles short (2-6 words).
+5. Spread difficult topics across multiple weeks instead of merging them.
+6. Phases should group related subjects, not individual topics.
+7. The roadmap should feel like a university course with incremental progression.
+
 Output ONLY valid JSON in this exact structure:
 
 {
