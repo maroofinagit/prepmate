@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Roadmap } from "@/app/types/roadmap";
+import { completeMilestone, completeRoadmapTask } from "@/app/actions/action";
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const [localRoadmap, setLocalRoadmap] = useState(roadmap);
@@ -89,14 +90,9 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setUpdatingTasks((prev) => ({ ...prev, [taskId]: true }));
 
-            const res = await fetch("/api/updateTask", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ taskId }),
-            });
+            const res = await completeRoadmapTask(taskId);
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Failed to update task");
+            if (!res.success) throw new Error("Failed to update task");
 
             toast.success("Task completed!");
 
@@ -135,16 +131,11 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: true }));
 
-            const res = await fetch("/api/updateMilestone", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ milestoneId }),
-            });
+            const res = await completeMilestone(milestoneId);
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Failed updating milestone");
+            if (!res.success) throw new Error("Failed updating milestone");
 
-            toast.success(data.message || "Milestone updated!", { duration: 1500 });
+            toast.success("Milestone updated!", { duration: 1500 });
 
             // Instant UI update
             setLocalRoadmap((prev) => ({

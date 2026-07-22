@@ -352,6 +352,180 @@ export async function deleteUserExam(user_exam_id: number) {
     }
 }
 
+export async function markNotificationAsRead(notificationId: number) {
+    try {
+        const updatedNotification = await db.notification.update({
+            where: { id: notificationId },
+            data: { is_read: true },
+        });
+
+        return {
+            success: true,
+            notification: updatedNotification,
+        };
+    } catch (error) {
+        console.error("❌ Error marking notification as read:", error);
+        return {
+            success: false,
+            message: "Failed to mark notification as read",
+        };
+    }
+}
+
+
+export async function completeRoadmapTask(taskId: number): Promise<{ success: boolean }> {
+    if (!taskId) {
+        throw new Error("Task ID is required.");
+    }
+
+    try {
+        await db.$transaction(async (tx) => {
+            // 1️⃣ Mark task as completed and fetch hierarchy
+            const task = await tx.roadmapTask.update({
+                where: { id: taskId },
+                data: { is_completed: true },
+                include: {
+                    week: {
+                        include: {
+                            phase: {
+                                include: {
+                                    roadmap: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            const weekId = task.week_id;
+            const phaseId = task.week.phase_id;
+            const roadmapId = task.week.phase.roadmap_id;
+            const userExamId = task.week.phase.roadmap.user_exam_id;
+
+            // 2️⃣ Week Progress
+            const weekTasks = await tx.roadmapTask.findMany({
+                where: { week_id: weekId },
+                select: {
+                    is_completed: true,
+                },
+            });
+
+            const weekProgress = weekTasks.length
+                ? Math.round(
+                    (weekTasks.filter((t) => t.is_completed).length /
+                        weekTasks.length) *
+                    100
+                )
+                : 0;
+
+            await tx.roadmapWeek.update({
+                where: { id: weekId },
+                data: {
+                    progress: weekProgress,
+                },
+            });
+
+            // 3️⃣ Phase Progress
+            const phaseWeeks = await tx.roadmapWeek.findMany({
+                where: { phase_id: phaseId },
+                select: {
+                    progress: true,
+                },
+            });
+
+            const phaseProgress = phaseWeeks.length
+                ? Math.round(
+                    phaseWeeks.reduce((sum, week) => sum + week.progress, 0) /
+                    phaseWeeks.length
+                )
+                : 0;
+
+            await tx.roadmapPhase.update({
+                where: { id: phaseId },
+                data: {
+                    progress: phaseProgress,
+                },
+            });
+
+            // 4️⃣ Roadmap Progress
+            const roadmapPhases = await tx.roadmapPhase.findMany({
+                where: { roadmap_id: roadmapId },
+                select: {
+                    progress: true,
+                },
+            });
+
+            const roadmapProgress = roadmapPhases.length
+                ? Math.round(
+                    roadmapPhases.reduce((sum, phase) => sum + phase.progress, 0) /
+                    roadmapPhases.length
+                )
+                : 0;
+
+            await tx.roadmap.update({
+                where: { id: roadmapId },
+                data: {
+                    progress: roadmapProgress,
+                },
+            });
+
+            // 5️⃣ User Exam Progress
+            await tx.userExam.update({
+                where: { id: userExamId },
+                data: {
+                    progress_percent: roadmapProgress,
+                },
+            });
+        });
+        return {
+            success: true,
+        };
+    } catch (error) {
+        console.error("❌ Error completing roadmap task:", error);
+        return {
+            success: false,
+        };
+    }
+}
+
+export async function completeMilestone(
+    milestoneId: number
+): Promise<{ success: boolean }> {
+    try {
+        if (!milestoneId || Number.isNaN(milestoneId)) {
+            return { success: false };
+        }
+
+        const milestone = await db.milestone.findUnique({
+            where: { id: milestoneId },
+            select: {
+                achieved: true,
+            },
+        });
+
+        if (!milestone) {
+            return { success: false };
+        }
+
+        // Already completed
+        if (milestone.achieved) {
+            return { success: true };
+        }
+
+        await db.milestone.update({
+            where: { id: milestoneId },
+            data: {
+                achieved: true,
+            },
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error completing milestone:", error);
+        return { success: false };
+    }
+}
+
 
 
 

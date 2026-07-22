@@ -6,6 +6,11 @@ import ProfileImageUploader from "@/components/ProfilePicUpdater";
 import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
 import { DeleteAccountDialog } from "./DeleteAccountDialoge";
+import { CheckCircle, CheckCircle2 } from "lucide-react";
+import { Checkbox } from "./ui/checkbox";
+import { Button } from "./ui/button";
+import { markNotificationAsRead } from "@/app/actions/action";
+import { toast } from "sonner";
 
 export default function ProfilePage({ user }: { user: any }) {
 
@@ -15,7 +20,20 @@ export default function ProfilePage({ user }: { user: any }) {
         return <div className="text-center mt-20 text-gray-500">User not found.</div>;
     }
 
-    const [loading, setLoading] = useState(false);
+    const [notifications, setNotifications] = useState(user.notifications);
+
+    const handleNotification = async (id: number) => {
+        try {
+            await markNotificationAsRead(id);
+            setNotifications((prev: any) =>
+                prev.map((n: any) => (n.id === id ? { ...n, is_read: true } : n))
+            );
+            toast.success("Notification marked as read");
+        } catch (error) {
+            console.error("Error marking notification as read:", error);
+            toast.error("Failed to mark notification as read");
+        }
+    }
 
     return (
         <div className="max-w-5xl mx-auto py-12 px-6 mt-16">
@@ -50,9 +68,6 @@ export default function ProfilePage({ user }: { user: any }) {
                                 className="bg-white border rounded-xl p-5 hover:shadow-md transition"
                             >
                                 <h3 className="font-semibold text-lg">{ue.exam.name}</h3>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    {ue.exam.description}
-                                </p>
 
                                 {/* Progress Bar */}
                                 <div className="mt-3">
@@ -62,12 +77,12 @@ export default function ProfilePage({ user }: { user: any }) {
                                             style={{ width: `${ue.progress_percent || 0}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs md:text-sm text-gray-500 mt-2">
                                         {ue.progress_percent?.toFixed(1) || 0}% completed
                                     </p>
                                 </div>
 
-                                <p className="text-xs text-gray-400 mt-3">
+                                <p className="text-xs md:text-sm text-gray-600 mt-3 text-right">
                                     {format(new Date(ue.start_date), "dd MMM yyyy")} →{" "}
                                     {format(new Date(ue.end_date), "dd MMM yyyy")}
                                 </p>
@@ -85,17 +100,34 @@ export default function ProfilePage({ user }: { user: any }) {
 
                 {user.notifications.length > 0 ? (
                     <div className="space-y-3">
-                        {user.notifications.map((n: any) => (
+                        {notifications.map((n: any) => (
                             <div
                                 key={n.id}
-                                className="flex items-center gap-3 bg-white border p-4 rounded-xl hover:shadow-sm"
+                                className="flex items-center gap-3 bg-white border py-4 px-6 rounded-xl hover:shadow-sm"
                             >
-                                <IoIosNotifications size={24} className="text-blue-600" />
+                                <IoIosNotifications size={44} className="text-blue-600 mr-2" />
                                 <div>
-                                    <p className="text-sm">{n.message}</p>
-                                    <span className="text-xs text-gray-500">
+                                    <p className="text-sm md:text-base">{n.message}</p>
+                                    <span className="text-sm text-gray-500">
                                         {format(new Date(n.created_at), "dd MMM yyyy")}
                                     </span>
+                                </div>
+                                <div className="flex justify-end w-full">
+                                    {n.is_read ? (
+                                        <CheckCircle2
+                                            size={22}
+                                            className="text-green-600"
+                                        />
+                                    ) : (
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="hover:bg-blue-500 hover:text-white cursor-pointer"
+                                            onClick={() => handleNotification(n.id)}
+                                        >
+                                            Mark as Read
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -121,5 +153,5 @@ export default function ProfilePage({ user }: { user: any }) {
                 </div>
             </section >
         </div >
-    );
-}
+    )
+};

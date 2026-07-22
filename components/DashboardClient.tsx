@@ -186,7 +186,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     className="rounded-full aspect-square w-15 object-cover object-center"
                 />
                 <div>
-                    <h1 className="md:text-2xl text-xl font-bold">Welcome, {dashboardUser?.name ?? "Student"}</h1>
+                    <h1 className="md:text-2xl tracking-wide text-xl font-bold">Welcome, <span className="text-emerald-600">{dashboardUser?.name ?? "Student"}</span></h1>
                     <p className="text-muted-foreground md:text-base text-sm">Your Exam Analytics Dashboard</p>
                 </div>
             </div>
