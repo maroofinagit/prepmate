@@ -321,7 +321,9 @@ export type TestAttemptScalarFieldEnum = (typeof TestAttemptScalarFieldEnum)[key
 
 export const NotificationScalarFieldEnum = {
   id: 'id',
+  roadmap_id: 'roadmap_id',
   user_id: 'user_id',
+  user_exam_id: 'user_exam_id',
   message: 'message',
   is_read: 'is_read',
   created_at: 'created_at'

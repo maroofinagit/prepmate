@@ -287,6 +287,7 @@ export type RoadmapWhereInput = {
   milestones?: Prisma.MilestoneListRelationFilter
   userExam?: Prisma.XOR<Prisma.UserExamScalarRelationFilter, Prisma.UserExamWhereInput>
   phases?: Prisma.RoadmapPhaseListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type RoadmapOrderByWithRelationInput = {
@@ -305,6 +306,7 @@ export type RoadmapOrderByWithRelationInput = {
   milestones?: Prisma.MilestoneOrderByRelationAggregateInput
   userExam?: Prisma.UserExamOrderByWithRelationInput
   phases?: Prisma.RoadmapPhaseOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type RoadmapWhereUniqueInput = Prisma.AtLeast<{
@@ -326,6 +328,7 @@ export type RoadmapWhereUniqueInput = Prisma.AtLeast<{
   milestones?: Prisma.MilestoneListRelationFilter
   userExam?: Prisma.XOR<Prisma.UserExamScalarRelationFilter, Prisma.UserExamWhereInput>
   phases?: Prisma.RoadmapPhaseListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "user_exam_id">
 
 export type RoadmapOrderByWithAggregationInput = {
@@ -380,6 +383,7 @@ export type RoadmapCreateInput = {
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
   userExam: Prisma.UserExamCreateNestedOneWithoutRoadmapInput
   phases?: Prisma.RoadmapPhaseCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapUncheckedCreateInput = {
@@ -397,6 +401,7 @@ export type RoadmapUncheckedCreateInput = {
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
   phases?: Prisma.RoadmapPhaseUncheckedCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapUpdateInput = {
@@ -413,6 +418,7 @@ export type RoadmapUpdateInput = {
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutRoadmapNestedInput
   phases?: Prisma.RoadmapPhaseUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapUncheckedUpdateInput = {
@@ -430,6 +436,7 @@ export type RoadmapUncheckedUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
   phases?: Prisma.RoadmapPhaseUncheckedUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapCreateManyInput = {
@@ -616,6 +623,22 @@ export type RoadmapUpdateOneRequiredWithoutMilestonesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoadmapUpdateToOneWithWhereWithoutMilestonesInput, Prisma.RoadmapUpdateWithoutMilestonesInput>, Prisma.RoadmapUncheckedUpdateWithoutMilestonesInput>
 }
 
+export type RoadmapCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.RoadmapCreateWithoutNotificationsInput, Prisma.RoadmapUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.RoadmapCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.RoadmapWhereUniqueInput
+}
+
+export type RoadmapUpdateOneWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoadmapCreateWithoutNotificationsInput, Prisma.RoadmapUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.RoadmapCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.RoadmapUpsertWithoutNotificationsInput
+  disconnect?: Prisma.RoadmapWhereInput | boolean
+  delete?: Prisma.RoadmapWhereInput | boolean
+  connect?: Prisma.RoadmapWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoadmapUpdateToOneWithWhereWithoutNotificationsInput, Prisma.RoadmapUpdateWithoutNotificationsInput>, Prisma.RoadmapUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type RoadmapCreateWithoutUserExamInput = {
   title: string
   description?: string | null
@@ -629,6 +652,7 @@ export type RoadmapCreateWithoutUserExamInput = {
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
   phases?: Prisma.RoadmapPhaseCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapUncheckedCreateWithoutUserExamInput = {
@@ -645,6 +669,7 @@ export type RoadmapUncheckedCreateWithoutUserExamInput = {
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
   phases?: Prisma.RoadmapPhaseUncheckedCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapCreateOrConnectWithoutUserExamInput = {
@@ -676,6 +701,7 @@ export type RoadmapUpdateWithoutUserExamInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
   phases?: Prisma.RoadmapPhaseUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapUncheckedUpdateWithoutUserExamInput = {
@@ -692,6 +718,7 @@ export type RoadmapUncheckedUpdateWithoutUserExamInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
   phases?: Prisma.RoadmapPhaseUncheckedUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapCreateWithoutPhasesInput = {
@@ -707,6 +734,7 @@ export type RoadmapCreateWithoutPhasesInput = {
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
   userExam: Prisma.UserExamCreateNestedOneWithoutRoadmapInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapUncheckedCreateWithoutPhasesInput = {
@@ -723,6 +751,7 @@ export type RoadmapUncheckedCreateWithoutPhasesInput = {
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapCreateOrConnectWithoutPhasesInput = {
@@ -754,6 +783,7 @@ export type RoadmapUpdateWithoutPhasesInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapUncheckedUpdateWithoutPhasesInput = {
@@ -770,6 +800,7 @@ export type RoadmapUncheckedUpdateWithoutPhasesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapCreateWithoutMilestonesInput = {
@@ -785,6 +816,7 @@ export type RoadmapCreateWithoutMilestonesInput = {
   version?: number
   userExam: Prisma.UserExamCreateNestedOneWithoutRoadmapInput
   phases?: Prisma.RoadmapPhaseCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapUncheckedCreateWithoutMilestonesInput = {
@@ -801,6 +833,7 @@ export type RoadmapUncheckedCreateWithoutMilestonesInput = {
   updated_at?: Date | string
   version?: number
   phases?: Prisma.RoadmapPhaseUncheckedCreateNestedManyWithoutRoadmapInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRoadmapInput
 }
 
 export type RoadmapCreateOrConnectWithoutMilestonesInput = {
@@ -832,6 +865,7 @@ export type RoadmapUpdateWithoutMilestonesInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutRoadmapNestedInput
   phases?: Prisma.RoadmapPhaseUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRoadmapNestedInput
 }
 
 export type RoadmapUncheckedUpdateWithoutMilestonesInput = {
@@ -848,6 +882,89 @@ export type RoadmapUncheckedUpdateWithoutMilestonesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   phases?: Prisma.RoadmapPhaseUncheckedUpdateManyWithoutRoadmapNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRoadmapNestedInput
+}
+
+export type RoadmapCreateWithoutNotificationsInput = {
+  title: string
+  description?: string | null
+  generated_by_ai?: boolean
+  created_at?: Date | string
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  progress?: number
+  summary?: string | null
+  updated_at?: Date | string
+  version?: number
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
+  userExam: Prisma.UserExamCreateNestedOneWithoutRoadmapInput
+  phases?: Prisma.RoadmapPhaseCreateNestedManyWithoutRoadmapInput
+}
+
+export type RoadmapUncheckedCreateWithoutNotificationsInput = {
+  id?: number
+  user_exam_id: number
+  title: string
+  description?: string | null
+  generated_by_ai?: boolean
+  created_at?: Date | string
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  progress?: number
+  summary?: string | null
+  updated_at?: Date | string
+  version?: number
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
+  phases?: Prisma.RoadmapPhaseUncheckedCreateNestedManyWithoutRoadmapInput
+}
+
+export type RoadmapCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.RoadmapWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoadmapCreateWithoutNotificationsInput, Prisma.RoadmapUncheckedCreateWithoutNotificationsInput>
+}
+
+export type RoadmapUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.RoadmapUpdateWithoutNotificationsInput, Prisma.RoadmapUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.RoadmapCreateWithoutNotificationsInput, Prisma.RoadmapUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.RoadmapWhereInput
+}
+
+export type RoadmapUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.RoadmapWhereInput
+  data: Prisma.XOR<Prisma.RoadmapUpdateWithoutNotificationsInput, Prisma.RoadmapUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type RoadmapUpdateWithoutNotificationsInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generated_by_ai?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  progress?: Prisma.FloatFieldUpdateOperationsInput | number
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
+  userExam?: Prisma.UserExamUpdateOneRequiredWithoutRoadmapNestedInput
+  phases?: Prisma.RoadmapPhaseUpdateManyWithoutRoadmapNestedInput
+}
+
+export type RoadmapUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generated_by_ai?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  progress?: Prisma.FloatFieldUpdateOperationsInput | number
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
+  phases?: Prisma.RoadmapPhaseUncheckedUpdateManyWithoutRoadmapNestedInput
 }
 
 
@@ -858,11 +975,13 @@ export type RoadmapUncheckedUpdateWithoutMilestonesInput = {
 export type RoadmapCountOutputType = {
   milestones: number
   phases: number
+  notifications: number
 }
 
 export type RoadmapCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   milestones?: boolean | RoadmapCountOutputTypeCountMilestonesArgs
   phases?: boolean | RoadmapCountOutputTypeCountPhasesArgs
+  notifications?: boolean | RoadmapCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -889,6 +1008,13 @@ export type RoadmapCountOutputTypeCountPhasesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.RoadmapPhaseWhereInput
 }
 
+/**
+ * RoadmapCountOutputType without action
+ */
+export type RoadmapCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type RoadmapSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -906,6 +1032,7 @@ export type RoadmapSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   milestones?: boolean | Prisma.Roadmap$milestonesArgs<ExtArgs>
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
   phases?: boolean | Prisma.Roadmap$phasesArgs<ExtArgs>
+  notifications?: boolean | Prisma.Roadmap$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.RoadmapCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roadmap"]>
 
@@ -961,6 +1088,7 @@ export type RoadmapInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   milestones?: boolean | Prisma.Roadmap$milestonesArgs<ExtArgs>
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
   phases?: boolean | Prisma.Roadmap$phasesArgs<ExtArgs>
+  notifications?: boolean | Prisma.Roadmap$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.RoadmapCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoadmapIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -976,6 +1104,7 @@ export type $RoadmapPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     milestones: Prisma.$MilestonePayload<ExtArgs>[]
     userExam: Prisma.$UserExamPayload<ExtArgs>
     phases: Prisma.$RoadmapPhasePayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1387,6 +1516,7 @@ export interface Prisma__RoadmapClient<T, Null = never, ExtArgs extends runtime.
   milestones<T extends Prisma.Roadmap$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Roadmap$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userExam<T extends Prisma.UserExamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserExamDefaultArgs<ExtArgs>>): Prisma.Prisma__UserExamClient<runtime.Types.Result.GetResult<Prisma.$UserExamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   phases<T extends Prisma.Roadmap$phasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Roadmap$phasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoadmapPhasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Roadmap$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Roadmap$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1874,6 +2004,30 @@ export type Roadmap$phasesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.RoadmapPhaseScalarFieldEnum | Prisma.RoadmapPhaseScalarFieldEnum[]
+}
+
+/**
+ * Roadmap.notifications
+ */
+export type Roadmap$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

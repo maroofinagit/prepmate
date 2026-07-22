@@ -28,15 +28,21 @@ export type AggregateNotification = {
 
 export type NotificationAvgAggregateOutputType = {
   id: number | null
+  roadmap_id: number | null
+  user_exam_id: number | null
 }
 
 export type NotificationSumAggregateOutputType = {
   id: number | null
+  roadmap_id: number | null
+  user_exam_id: number | null
 }
 
 export type NotificationMinAggregateOutputType = {
   id: number | null
+  roadmap_id: number | null
   user_id: string | null
+  user_exam_id: number | null
   message: string | null
   is_read: boolean | null
   created_at: Date | null
@@ -44,7 +50,9 @@ export type NotificationMinAggregateOutputType = {
 
 export type NotificationMaxAggregateOutputType = {
   id: number | null
+  roadmap_id: number | null
   user_id: string | null
+  user_exam_id: number | null
   message: string | null
   is_read: boolean | null
   created_at: Date | null
@@ -52,7 +60,9 @@ export type NotificationMaxAggregateOutputType = {
 
 export type NotificationCountAggregateOutputType = {
   id: number
+  roadmap_id: number
   user_id: number
+  user_exam_id: number
   message: number
   is_read: number
   created_at: number
@@ -62,15 +72,21 @@ export type NotificationCountAggregateOutputType = {
 
 export type NotificationAvgAggregateInputType = {
   id?: true
+  roadmap_id?: true
+  user_exam_id?: true
 }
 
 export type NotificationSumAggregateInputType = {
   id?: true
+  roadmap_id?: true
+  user_exam_id?: true
 }
 
 export type NotificationMinAggregateInputType = {
   id?: true
+  roadmap_id?: true
   user_id?: true
+  user_exam_id?: true
   message?: true
   is_read?: true
   created_at?: true
@@ -78,7 +94,9 @@ export type NotificationMinAggregateInputType = {
 
 export type NotificationMaxAggregateInputType = {
   id?: true
+  roadmap_id?: true
   user_id?: true
+  user_exam_id?: true
   message?: true
   is_read?: true
   created_at?: true
@@ -86,7 +104,9 @@ export type NotificationMaxAggregateInputType = {
 
 export type NotificationCountAggregateInputType = {
   id?: true
+  roadmap_id?: true
   user_id?: true
+  user_exam_id?: true
   message?: true
   is_read?: true
   created_at?: true
@@ -181,7 +201,9 @@ export type NotificationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type NotificationGroupByOutputType = {
   id: number
+  roadmap_id: number
   user_id: string
+  user_exam_id: number
   message: string
   is_read: boolean
   created_at: Date
@@ -212,20 +234,28 @@ export type NotificationWhereInput = {
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   id?: Prisma.IntFilter<"Notification"> | number
+  roadmap_id?: Prisma.IntFilter<"Notification"> | number
   user_id?: Prisma.StringFilter<"Notification"> | string
+  user_exam_id?: Prisma.IntFilter<"Notification"> | number
   message?: Prisma.StringFilter<"Notification"> | string
   is_read?: Prisma.BoolFilter<"Notification"> | boolean
   created_at?: Prisma.DateTimeFilter<"Notification"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
+  userExam?: Prisma.XOR<Prisma.UserExamNullableScalarRelationFilter, Prisma.UserExamWhereInput> | null
 }
 
 export type NotificationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
   message?: Prisma.SortOrder
   is_read?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  roadmap?: Prisma.RoadmapOrderByWithRelationInput
+  userExam?: Prisma.UserExamOrderByWithRelationInput
 }
 
 export type NotificationWhereUniqueInput = Prisma.AtLeast<{
@@ -233,16 +263,22 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
+  roadmap_id?: Prisma.IntFilter<"Notification"> | number
   user_id?: Prisma.StringFilter<"Notification"> | string
+  user_exam_id?: Prisma.IntFilter<"Notification"> | number
   message?: Prisma.StringFilter<"Notification"> | string
   is_read?: Prisma.BoolFilter<"Notification"> | boolean
   created_at?: Prisma.DateTimeFilter<"Notification"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
+  userExam?: Prisma.XOR<Prisma.UserExamNullableScalarRelationFilter, Prisma.UserExamWhereInput> | null
 }, "id">
 
 export type NotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
   message?: Prisma.SortOrder
   is_read?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -258,7 +294,9 @@ export type NotificationScalarWhereWithAggregatesInput = {
   OR?: Prisma.NotificationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NotificationScalarWhereWithAggregatesInput | Prisma.NotificationScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Notification"> | number
+  roadmap_id?: Prisma.IntWithAggregatesFilter<"Notification"> | number
   user_id?: Prisma.StringWithAggregatesFilter<"Notification"> | string
+  user_exam_id?: Prisma.IntWithAggregatesFilter<"Notification"> | number
   message?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   is_read?: Prisma.BoolWithAggregatesFilter<"Notification"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Notification"> | Date | string
@@ -269,11 +307,15 @@ export type NotificationCreateInput = {
   is_read?: boolean
   created_at?: Date | string
   user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  roadmap?: Prisma.RoadmapCreateNestedOneWithoutNotificationsInput
+  userExam?: Prisma.UserExamCreateNestedOneWithoutNotificationsInput
 }
 
 export type NotificationUncheckedCreateInput = {
   id?: number
+  roadmap_id: number
   user_id: string
+  user_exam_id: number
   message: string
   is_read?: boolean
   created_at?: Date | string
@@ -284,11 +326,15 @@ export type NotificationUpdateInput = {
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  roadmap?: Prisma.RoadmapUpdateOneWithoutNotificationsNestedInput
+  userExam?: Prisma.UserExamUpdateOneWithoutNotificationsNestedInput
 }
 
 export type NotificationUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   message?: Prisma.StringFieldUpdateOperationsInput | string
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -296,7 +342,9 @@ export type NotificationUncheckedUpdateInput = {
 
 export type NotificationCreateManyInput = {
   id?: number
+  roadmap_id: number
   user_id: string
+  user_exam_id: number
   message: string
   is_read?: boolean
   created_at?: Date | string
@@ -310,7 +358,9 @@ export type NotificationUpdateManyMutationInput = {
 
 export type NotificationUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   message?: Prisma.StringFieldUpdateOperationsInput | string
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -328,7 +378,9 @@ export type NotificationOrderByRelationAggregateInput = {
 
 export type NotificationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
   message?: Prisma.SortOrder
   is_read?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -336,11 +388,15 @@ export type NotificationCountOrderByAggregateInput = {
 
 export type NotificationAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
 }
 
 export type NotificationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
   message?: Prisma.SortOrder
   is_read?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -348,7 +404,9 @@ export type NotificationMaxOrderByAggregateInput = {
 
 export type NotificationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
   message?: Prisma.SortOrder
   is_read?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -356,6 +414,8 @@ export type NotificationMinOrderByAggregateInput = {
 
 export type NotificationSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  roadmap_id?: Prisma.SortOrder
+  user_exam_id?: Prisma.SortOrder
 }
 
 export type NotificationCreateNestedManyWithoutUserInput = {
@@ -400,14 +460,102 @@ export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
 }
 
+export type NotificationCreateNestedManyWithoutUserExamInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput> | Prisma.NotificationCreateWithoutUserExamInput[] | Prisma.NotificationUncheckedCreateWithoutUserExamInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutUserExamInput | Prisma.NotificationCreateOrConnectWithoutUserExamInput[]
+  createMany?: Prisma.NotificationCreateManyUserExamInputEnvelope
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+}
+
+export type NotificationUncheckedCreateNestedManyWithoutUserExamInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput> | Prisma.NotificationCreateWithoutUserExamInput[] | Prisma.NotificationUncheckedCreateWithoutUserExamInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutUserExamInput | Prisma.NotificationCreateOrConnectWithoutUserExamInput[]
+  createMany?: Prisma.NotificationCreateManyUserExamInputEnvelope
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+}
+
+export type NotificationUpdateManyWithoutUserExamNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput> | Prisma.NotificationCreateWithoutUserExamInput[] | Prisma.NotificationUncheckedCreateWithoutUserExamInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutUserExamInput | Prisma.NotificationCreateOrConnectWithoutUserExamInput[]
+  upsert?: Prisma.NotificationUpsertWithWhereUniqueWithoutUserExamInput | Prisma.NotificationUpsertWithWhereUniqueWithoutUserExamInput[]
+  createMany?: Prisma.NotificationCreateManyUserExamInputEnvelope
+  set?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  disconnect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  delete?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  update?: Prisma.NotificationUpdateWithWhereUniqueWithoutUserExamInput | Prisma.NotificationUpdateWithWhereUniqueWithoutUserExamInput[]
+  updateMany?: Prisma.NotificationUpdateManyWithWhereWithoutUserExamInput | Prisma.NotificationUpdateManyWithWhereWithoutUserExamInput[]
+  deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
+}
+
+export type NotificationUncheckedUpdateManyWithoutUserExamNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput> | Prisma.NotificationCreateWithoutUserExamInput[] | Prisma.NotificationUncheckedCreateWithoutUserExamInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutUserExamInput | Prisma.NotificationCreateOrConnectWithoutUserExamInput[]
+  upsert?: Prisma.NotificationUpsertWithWhereUniqueWithoutUserExamInput | Prisma.NotificationUpsertWithWhereUniqueWithoutUserExamInput[]
+  createMany?: Prisma.NotificationCreateManyUserExamInputEnvelope
+  set?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  disconnect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  delete?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  update?: Prisma.NotificationUpdateWithWhereUniqueWithoutUserExamInput | Prisma.NotificationUpdateWithWhereUniqueWithoutUserExamInput[]
+  updateMany?: Prisma.NotificationUpdateManyWithWhereWithoutUserExamInput | Prisma.NotificationUpdateManyWithWhereWithoutUserExamInput[]
+  deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
+}
+
+export type NotificationCreateNestedManyWithoutRoadmapInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput> | Prisma.NotificationCreateWithoutRoadmapInput[] | Prisma.NotificationUncheckedCreateWithoutRoadmapInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutRoadmapInput | Prisma.NotificationCreateOrConnectWithoutRoadmapInput[]
+  createMany?: Prisma.NotificationCreateManyRoadmapInputEnvelope
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+}
+
+export type NotificationUncheckedCreateNestedManyWithoutRoadmapInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput> | Prisma.NotificationCreateWithoutRoadmapInput[] | Prisma.NotificationUncheckedCreateWithoutRoadmapInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutRoadmapInput | Prisma.NotificationCreateOrConnectWithoutRoadmapInput[]
+  createMany?: Prisma.NotificationCreateManyRoadmapInputEnvelope
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+}
+
+export type NotificationUpdateManyWithoutRoadmapNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput> | Prisma.NotificationCreateWithoutRoadmapInput[] | Prisma.NotificationUncheckedCreateWithoutRoadmapInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutRoadmapInput | Prisma.NotificationCreateOrConnectWithoutRoadmapInput[]
+  upsert?: Prisma.NotificationUpsertWithWhereUniqueWithoutRoadmapInput | Prisma.NotificationUpsertWithWhereUniqueWithoutRoadmapInput[]
+  createMany?: Prisma.NotificationCreateManyRoadmapInputEnvelope
+  set?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  disconnect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  delete?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  update?: Prisma.NotificationUpdateWithWhereUniqueWithoutRoadmapInput | Prisma.NotificationUpdateWithWhereUniqueWithoutRoadmapInput[]
+  updateMany?: Prisma.NotificationUpdateManyWithWhereWithoutRoadmapInput | Prisma.NotificationUpdateManyWithWhereWithoutRoadmapInput[]
+  deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
+}
+
+export type NotificationUncheckedUpdateManyWithoutRoadmapNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput> | Prisma.NotificationCreateWithoutRoadmapInput[] | Prisma.NotificationUncheckedCreateWithoutRoadmapInput[]
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutRoadmapInput | Prisma.NotificationCreateOrConnectWithoutRoadmapInput[]
+  upsert?: Prisma.NotificationUpsertWithWhereUniqueWithoutRoadmapInput | Prisma.NotificationUpsertWithWhereUniqueWithoutRoadmapInput[]
+  createMany?: Prisma.NotificationCreateManyRoadmapInputEnvelope
+  set?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  disconnect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  delete?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  connect?: Prisma.NotificationWhereUniqueInput | Prisma.NotificationWhereUniqueInput[]
+  update?: Prisma.NotificationUpdateWithWhereUniqueWithoutRoadmapInput | Prisma.NotificationUpdateWithWhereUniqueWithoutRoadmapInput[]
+  updateMany?: Prisma.NotificationUpdateManyWithWhereWithoutRoadmapInput | Prisma.NotificationUpdateManyWithWhereWithoutRoadmapInput[]
+  deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
+}
+
 export type NotificationCreateWithoutUserInput = {
   message: string
   is_read?: boolean
   created_at?: Date | string
+  roadmap?: Prisma.RoadmapCreateNestedOneWithoutNotificationsInput
+  userExam?: Prisma.UserExamCreateNestedOneWithoutNotificationsInput
 }
 
 export type NotificationUncheckedCreateWithoutUserInput = {
   id?: number
+  roadmap_id: number
+  user_exam_id: number
   message: string
   is_read?: boolean
   created_at?: Date | string
@@ -444,14 +592,104 @@ export type NotificationScalarWhereInput = {
   OR?: Prisma.NotificationScalarWhereInput[]
   NOT?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
   id?: Prisma.IntFilter<"Notification"> | number
+  roadmap_id?: Prisma.IntFilter<"Notification"> | number
   user_id?: Prisma.StringFilter<"Notification"> | string
+  user_exam_id?: Prisma.IntFilter<"Notification"> | number
   message?: Prisma.StringFilter<"Notification"> | string
   is_read?: Prisma.BoolFilter<"Notification"> | boolean
   created_at?: Prisma.DateTimeFilter<"Notification"> | Date | string
 }
 
+export type NotificationCreateWithoutUserExamInput = {
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  roadmap?: Prisma.RoadmapCreateNestedOneWithoutNotificationsInput
+}
+
+export type NotificationUncheckedCreateWithoutUserExamInput = {
+  id?: number
+  roadmap_id: number
+  user_id: string
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+}
+
+export type NotificationCreateOrConnectWithoutUserExamInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput>
+}
+
+export type NotificationCreateManyUserExamInputEnvelope = {
+  data: Prisma.NotificationCreateManyUserExamInput | Prisma.NotificationCreateManyUserExamInput[]
+  skipDuplicates?: boolean
+}
+
+export type NotificationUpsertWithWhereUniqueWithoutUserExamInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  update: Prisma.XOR<Prisma.NotificationUpdateWithoutUserExamInput, Prisma.NotificationUncheckedUpdateWithoutUserExamInput>
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutUserExamInput, Prisma.NotificationUncheckedCreateWithoutUserExamInput>
+}
+
+export type NotificationUpdateWithWhereUniqueWithoutUserExamInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  data: Prisma.XOR<Prisma.NotificationUpdateWithoutUserExamInput, Prisma.NotificationUncheckedUpdateWithoutUserExamInput>
+}
+
+export type NotificationUpdateManyWithWhereWithoutUserExamInput = {
+  where: Prisma.NotificationScalarWhereInput
+  data: Prisma.XOR<Prisma.NotificationUpdateManyMutationInput, Prisma.NotificationUncheckedUpdateManyWithoutUserExamInput>
+}
+
+export type NotificationCreateWithoutRoadmapInput = {
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  userExam?: Prisma.UserExamCreateNestedOneWithoutNotificationsInput
+}
+
+export type NotificationUncheckedCreateWithoutRoadmapInput = {
+  id?: number
+  user_id: string
+  user_exam_id: number
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+}
+
+export type NotificationCreateOrConnectWithoutRoadmapInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput>
+}
+
+export type NotificationCreateManyRoadmapInputEnvelope = {
+  data: Prisma.NotificationCreateManyRoadmapInput | Prisma.NotificationCreateManyRoadmapInput[]
+  skipDuplicates?: boolean
+}
+
+export type NotificationUpsertWithWhereUniqueWithoutRoadmapInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  update: Prisma.XOR<Prisma.NotificationUpdateWithoutRoadmapInput, Prisma.NotificationUncheckedUpdateWithoutRoadmapInput>
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutRoadmapInput, Prisma.NotificationUncheckedCreateWithoutRoadmapInput>
+}
+
+export type NotificationUpdateWithWhereUniqueWithoutRoadmapInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  data: Prisma.XOR<Prisma.NotificationUpdateWithoutRoadmapInput, Prisma.NotificationUncheckedUpdateWithoutRoadmapInput>
+}
+
+export type NotificationUpdateManyWithWhereWithoutRoadmapInput = {
+  where: Prisma.NotificationScalarWhereInput
+  data: Prisma.XOR<Prisma.NotificationUpdateManyMutationInput, Prisma.NotificationUncheckedUpdateManyWithoutRoadmapInput>
+}
+
 export type NotificationCreateManyUserInput = {
   id?: number
+  roadmap_id: number
+  user_exam_id: number
   message: string
   is_read?: boolean
   created_at?: Date | string
@@ -461,10 +699,14 @@ export type NotificationUpdateWithoutUserInput = {
   message?: Prisma.StringFieldUpdateOperationsInput | string
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  roadmap?: Prisma.RoadmapUpdateOneWithoutNotificationsNestedInput
+  userExam?: Prisma.UserExamUpdateOneWithoutNotificationsNestedInput
 }
 
 export type NotificationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   message?: Prisma.StringFieldUpdateOperationsInput | string
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -472,6 +714,78 @@ export type NotificationUncheckedUpdateWithoutUserInput = {
 
 export type NotificationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationCreateManyUserExamInput = {
+  id?: number
+  roadmap_id: number
+  user_id: string
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+}
+
+export type NotificationUpdateWithoutUserExamInput = {
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  roadmap?: Prisma.RoadmapUpdateOneWithoutNotificationsNestedInput
+}
+
+export type NotificationUncheckedUpdateWithoutUserExamInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationUncheckedUpdateManyWithoutUserExamInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  roadmap_id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationCreateManyRoadmapInput = {
+  id?: number
+  user_id: string
+  user_exam_id: number
+  message: string
+  is_read?: boolean
+  created_at?: Date | string
+}
+
+export type NotificationUpdateWithoutRoadmapInput = {
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  userExam?: Prisma.UserExamUpdateOneWithoutNotificationsNestedInput
+}
+
+export type NotificationUncheckedUpdateWithoutRoadmapInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NotificationUncheckedUpdateManyWithoutRoadmapInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  user_exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   message?: Prisma.StringFieldUpdateOperationsInput | string
   is_read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,58 +795,82 @@ export type NotificationUncheckedUpdateManyWithoutUserInput = {
 
 export type NotificationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  roadmap_id?: boolean
   user_id?: boolean
+  user_exam_id?: boolean
   message?: boolean
   is_read?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  roadmap_id?: boolean
   user_id?: boolean
+  user_exam_id?: boolean
   message?: boolean
   is_read?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  roadmap_id?: boolean
   user_id?: boolean
+  user_exam_id?: boolean
   message?: boolean
   is_read?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectScalar = {
   id?: boolean
+  roadmap_id?: boolean
   user_id?: boolean
+  user_exam_id?: boolean
   message?: boolean
   is_read?: boolean
   created_at?: boolean
 }
 
-export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "message" | "is_read" | "created_at", ExtArgs["result"]["notification"]>
+export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roadmap_id" | "user_id" | "user_exam_id" | "message" | "is_read" | "created_at", ExtArgs["result"]["notification"]>
 export type NotificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }
 export type NotificationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }
 export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  roadmap?: boolean | Prisma.Notification$roadmapArgs<ExtArgs>
+  userExam?: boolean | Prisma.Notification$userExamArgs<ExtArgs>
 }
 
 export type $NotificationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Notification"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    roadmap: Prisma.$RoadmapPayload<ExtArgs> | null
+    userExam: Prisma.$UserExamPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
+    roadmap_id: number
     user_id: string
+    user_exam_id: number
     message: string
     is_read: boolean
     created_at: Date
@@ -931,6 +1269,8 @@ readonly fields: NotificationFieldRefs;
 export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  roadmap<T extends Prisma.Notification$roadmapArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notification$roadmapArgs<ExtArgs>>): Prisma.Prisma__RoadmapClient<runtime.Types.Result.GetResult<Prisma.$RoadmapPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  userExam<T extends Prisma.Notification$userExamArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notification$userExamArgs<ExtArgs>>): Prisma.Prisma__UserExamClient<runtime.Types.Result.GetResult<Prisma.$UserExamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -961,7 +1301,9 @@ export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends run
  */
 export interface NotificationFieldRefs {
   readonly id: Prisma.FieldRef<"Notification", 'Int'>
+  readonly roadmap_id: Prisma.FieldRef<"Notification", 'Int'>
   readonly user_id: Prisma.FieldRef<"Notification", 'String'>
+  readonly user_exam_id: Prisma.FieldRef<"Notification", 'Int'>
   readonly message: Prisma.FieldRef<"Notification", 'String'>
   readonly is_read: Prisma.FieldRef<"Notification", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"Notification", 'DateTime'>
@@ -1363,6 +1705,44 @@ export type NotificationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Notifications to delete.
    */
   limit?: number
+}
+
+/**
+ * Notification.roadmap
+ */
+export type Notification$roadmapArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Roadmap
+   */
+  select?: Prisma.RoadmapSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Roadmap
+   */
+  omit?: Prisma.RoadmapOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoadmapInclude<ExtArgs> | null
+  where?: Prisma.RoadmapWhereInput
+}
+
+/**
+ * Notification.userExam
+ */
+export type Notification$userExamArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserExam
+   */
+  select?: Prisma.UserExamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserExam
+   */
+  omit?: Prisma.UserExamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserExamInclude<ExtArgs> | null
+  where?: Prisma.UserExamWhereInput
 }
 
 /**

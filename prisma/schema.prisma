@@ -74,7 +74,7 @@ model Exam {
   id                     Int        @id @default(autoincrement())
   name                   String     @unique
   description            String?
-  aiContext              String @default("")
+  aiContext              String     @default("")
   imageUrl               String     @default("")
   default_duration_weeks Int?
   created_at             DateTime   @default(now())
@@ -107,21 +107,22 @@ model Topic {
 }
 
 model UserExam {
-  id               Int           @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   user_id          String
   exam_id          Int
   start_date       DateTime
   end_date         DateTime
   current_stage    String?
-  progress_percent Float?        @default(0)
-  performanceScore Float?        @default(0)
-  testsGiven       Int?          @default(0)
-  created_at       DateTime      @default(now())
+  progress_percent Float?         @default(0)
+  performanceScore Float?         @default(0)
+  testsGiven       Int?           @default(0)
+  created_at       DateTime       @default(now())
   roadmap          Roadmap?
-  roadmap_status   RoadmapStatus @default(pending)
-  exam             Exam          @relation(fields: [exam_id], references: [id], onDelete: Cascade)
-  user             User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  roadmap_status   RoadmapStatus  @default(pending)
+  exam             Exam           @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  user             User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tests            Test[]
+  notifications    Notification[]
 }
 
 model Roadmap {
@@ -140,6 +141,7 @@ model Roadmap {
   milestones      Milestone[]
   userExam        UserExam       @relation(fields: [user_exam_id], references: [id], onDelete: Cascade)
   phases          RoadmapPhase[]
+  notifications   Notification[]
 }
 
 model RoadmapPhase {
@@ -201,28 +203,28 @@ model Milestone {
 model Test {
   id Int @id @default(autoincrement())
 
-  title String
-  type  TestType // WEEKLY | PHASE | FINAL
+  title       String
+  type        TestType // WEEKLY | PHASE | FINAL
   description String?
 
   userExamId Int
 
-  weekId Int?
-  phaseId Int? 
+  weekId  Int?
+  phaseId Int?
 
-  totalMarks Int
-  duration   Int? // in minutes
+  totalMarks    Int
+  duration      Int? // in minutes
   nOfFinalTests Int? // only for final test to determine how many weekly/phase tests it covers
-  isGenerated Boolean @default(false)
+  isGenerated   Boolean @default(false)
 
   createdAt DateTime @default(now())
 
   questions Question[]
-  
-  attempt   TestAttempt?
+
+  attempt TestAttempt?
 
   // relations
-  userExam UserExam   @relation(fields: [userExamId], references: [id], onDelete: Cascade)
+  userExam UserExam      @relation(fields: [userExamId], references: [id], onDelete: Cascade)
   week     RoadmapWeek?  @relation(fields: [weekId], references: [id], onDelete: Cascade)
   phase    RoadmapPhase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 
@@ -268,12 +270,16 @@ model TestAttempt {
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
-  user_id    String
-  message    String
-  is_read    Boolean  @default(false)
-  created_at DateTime @default(now())
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id           Int       @id @default(autoincrement())
+  roadmap_id   Int
+  user_id      String
+  user_exam_id Int
+  message      String
+  is_read      Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  roadmap      Roadmap?  @relation(fields: [roadmap_id], references: [id], onDelete: Cascade)
+  userExam     UserExam? @relation(fields: [user_exam_id], references: [id], onDelete: Cascade)
 }
 
 model Resource {

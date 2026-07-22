@@ -388,6 +388,8 @@ Output ONLY valid JSON in this exact structure:
             data: {
                 user_id: userExam.user_id,
                 message: `Your roadmap for ${exam.name} has been generated successfully!`,
+                user_exam_id: user_exam_id,
+                roadmap_id: roadmap.id,
             },
         });
 
