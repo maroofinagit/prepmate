@@ -92,7 +92,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             }
 
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
-            await new Promise((r) => setTimeout(r, 1000));  
+            await new Promise((r) => setTimeout(r, 1000));
             setLoading(false);
 
             // Redirect to roadmap page
@@ -119,7 +119,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                 <h1 className="text-2xl font-bold text-gray-900 mb-4">Start Preparing for Your Exam</h1>
                 {loading ? (
                     <p className="text-gray-700 text-sm md:text-base">
-                        We are setting up everything for you. This may take a minute, so grab a coffee ☕ and get ready to crush your preparation!
+                        Please don't refresh or close the page or navigate anywhere.<br />
+                        We are setting up everything for you,<br />
+                        This may take a few moments, grab a cup of coffee while we prepare your personalized roadmap.
                     </p>
                 ) : error ? (
                     <p className="text-gray-700 text-sm md:text-base">

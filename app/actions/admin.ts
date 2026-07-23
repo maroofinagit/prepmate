@@ -106,6 +106,8 @@ export async function deleteAccount() {
             headers: await headers(),
         });
 
+        console.log("Session data:", session);
+
         if (!session?.session) {
             return {
                 success: false,

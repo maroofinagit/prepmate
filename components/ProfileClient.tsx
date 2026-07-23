@@ -11,6 +11,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import { markNotificationAsRead } from "@/app/actions/action";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ProfilePage({ user }: { user: any }) {
 
@@ -138,7 +139,7 @@ export default function ProfilePage({ user }: { user: any }) {
             </section>
 
             {/* Danger Zone */}
-            <section className="mt-16 border-t pt-8">
+            {/* <section className="mt-16 border-t pt-8">
                 <h2 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
 
                 <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -151,7 +152,28 @@ export default function ProfilePage({ user }: { user: any }) {
 
                     <DeleteAccountDialog />
                 </div>
-            </section >
+            </section > */}
+            {/* Security */}
+            <section className="mt-16 border-t pt-8">
+                <h2 className="text-lg font-semibold mb-3">Security</h2>
+
+                <div className="bg-gray-50 border rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <p className="font-medium">Manage your account security</p>
+                        <p className="text-sm text-gray-500">
+                            Change your password, manage sign-in methods, and delete your account.
+                        </p>
+                    </div>
+
+                    <Button asChild
+                        className="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition cursor-pointer"
+                    >
+                        <Link href="/profile/security">
+                            Open Security
+                        </Link>
+                    </Button>
+                </div>
+            </section>
         </div >
     )
 };

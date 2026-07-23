@@ -567,6 +567,126 @@ export async function checkEmailExistsLogin(email: string) {
     };
 }
 
+export async function profileSecurityCheck(userId: string) {
+    const user = await db.user.findUnique({
+        where: { id: userId },
+        include: {
+            accounts: true,
+        },
+    });
+
+    if (!user) {
+        return null;
+    }
+
+    const hasGoogle = user.accounts.some(
+        (account) => account.providerId === "google"
+    );
+
+    const hasGithub = user.accounts.some(
+        (account) => account.providerId === "github"
+    );
+
+    const hasCredentials = user.accounts.some(
+        (account) => account.providerId === "credential"
+    );
+
+    return {
+        hasGoogle,
+        hasGithub,
+        hasCredentials,
+    };
+}
+
+export async function setPassword(newPassword: string) {
+    try {
+
+        const hasCredentialAccount = await auth.api.listUserAccounts({
+            headers: await headers(),
+        }).then((accounts) => {
+            return accounts.some(
+                (account) => account.providerId === "credential"
+            );
+        });
+
+        if (hasCredentialAccount) {
+            return {
+                success: false,
+                message: "Password already set.",
+            };
+        }
+
+        await auth.api.setPassword({
+            headers: await headers(),
+            body: {
+                newPassword,
+            },
+        });
+
+        return {
+            success: true,
+            message: "Password set successfully.",
+        };
+    } catch (error: any) {
+        console.error(error);
+
+        return {
+            success: false,
+            message:
+                error?.body?.message ||
+                error?.message ||
+                "Failed to set password.",
+        };
+    }
+}
+
+export async function changePassword(
+    currentPassword: string,
+    newPassword: string
+) {
+    try {
+
+        await auth.api.listUserAccounts({
+            headers: await headers(),
+        }).then((accounts) => {
+            const hasCredentialAccount = accounts.some(
+                (account) => account.providerId === "credential"
+            );
+
+            if (!hasCredentialAccount) {
+                return {
+                    success: false,
+                    message: "No credential account found.",
+                };
+            }
+        });
+
+        await auth.api.changePassword({
+            headers: await headers(),
+            body: {
+                currentPassword,
+                newPassword,
+                revokeOtherSessions: true,
+            },
+        });
+
+        return {
+            success: true,
+            message: "Password changed successfully.",
+        };
+    } catch (error: any) {
+        console.error(error);
+
+        return {
+            success: false,
+            message:
+                error?.body?.message ||
+                error?.message ||
+                "Failed to change password.",
+        };
+    }
+}
+
 
 
 

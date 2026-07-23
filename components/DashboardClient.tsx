@@ -41,7 +41,6 @@ import { deleteUserExam } from "@/app/actions/action";
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
     const exams = dashboardUser?.exams || [];
-    // const exams: any[] = [];
 
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
@@ -171,8 +170,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-8xl mx-auto">
             {
                 regenerating && (
-                    <div className="p-4 mb-4 text-sm text-blue-700 bg-blue-100 rounded-lg" role="alert">
-                        <span className="font-medium">Regenerating roadmap...</span> This may take a moment. Please wait.
+                    <div className="p-4 mb-8 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-lg" role="alert">
+                        <span className="font-medium">Regenerating roadmap...</span> This may take a moment.<br />
+                        Please do not refresh or navigate away from this page.
                     </div>
                 )
             }
@@ -221,16 +221,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                             <Link href="/onboarding">
                                 <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Create Roadmap</Button>
                             </Link>
-                        ) : roadmapStatus === RoadmapStatus.completed ? (
+                        ) : roadmapStatus === RoadmapStatus.completed && !regenerating ? (
                             <Link href={`/dashboard/roadmap/${selectedId}`}>
                                 <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Open Roadmap</Button>
                             </Link>
-                        ) : roadmapStatus === RoadmapStatus.in_progress ? (
+                        ) : roadmapStatus === RoadmapStatus.in_progress && !regenerating ? (
                             <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50 md:text-base text-sm" disabled>
                                 ⏳ Generating Roadmap...
                             </Button>
                         ) : regenerating ? (
-                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50 md:text-base text-sm" disabled>
+                            <Button className="w-full bg-green-600 disabled:cursor-not-allowed md:text-base text-sm" disabled>
                                 🔁 Regenerating...
                             </Button>
                         ) :
