@@ -526,6 +526,47 @@ export async function completeMilestone(
     }
 }
 
+export async function checkEmailExistsLogin(email: string) {
+    const user = await db.user.findUnique({
+        where: { email },
+        include: {
+            accounts: true,
+        },
+    });
+
+    if (!user) {
+        return {
+            exists: false,
+            provider: null,
+        };
+    }
+
+    console.log("User accounts:", user.accounts);
+
+    const hasGoogle = user.accounts.some(
+        (account) => account.providerId === "google"
+    );
+
+    const hasGithub = user.accounts.some(
+        (account) => account.providerId === "github"
+    );
+
+    const hasCredentials = user.accounts.some(
+        (account) => account.providerId === "credential"
+    );
+
+    return {
+        exists: true,
+        provider: hasCredentials
+            ? "credentials"
+            : hasGoogle
+                ? "google"
+                : hasGithub
+                    ? "github"
+                    : null,
+    };
+}
+
 
 
 

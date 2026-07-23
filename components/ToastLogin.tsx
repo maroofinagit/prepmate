@@ -12,7 +12,9 @@ export default function ToastLogin() {
             session &&
             sessionStorage.getItem("show-login-toast") === "true"
         ) {
-            toast.success("Signed in successfully!");
+            toast.success("Signed in successfully!" ,{
+                duration: 500,
+            });
             sessionStorage.removeItem("show-login-toast");
         }
     }, [session]);

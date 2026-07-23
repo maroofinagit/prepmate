@@ -6,343 +6,548 @@ async function main() {
 
     const subjects = [
         {
-            name: 'Computer Networking Fundamentals',
+            name: "Data Analysis Fundamentals",
+            description:
+                "Build a strong foundation in data analytics by understanding the analytics lifecycle, business problems, and the role of data in decision-making.",
+
             topics: [
                 {
-                    name: 'Client-Server Architecture',
-                    description: 'Understand how clients and servers communicate over a network.',
+                    name: "Introduction to Data Analytics",
+                    description: "Understand what data analytics is and its importance in modern businesses.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'OSI Model & TCP/IP',
-                    description: 'Learn the networking layers and how internet communication works.',
+                    name: "Role of a Data Analyst",
+                    description: "Learn the responsibilities, skills, and daily workflow of a data analyst.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'HTTP, HTTPS & TLS',
-                    description: 'Understand web communication, encryption, and secure data transfer.',
+                    name: "Data Analytics Lifecycle",
+                    description: "Explore the complete process from data collection to business insights.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'DNS & Domain Resolution',
-                    description: 'Learn how domain names are translated into IP addresses.',
+                    name: "Types of Data",
+                    description: "Differentiate between structured, semi-structured, and unstructured data.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Types of Analytics",
+                    description: "Understand descriptive, diagnostic, predictive, and prescriptive analytics.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Data Collection Methods",
+                    description: "Learn how organizations gather data from multiple sources.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Data Quality & Cleaning",
+                    description: "Identify and resolve missing, duplicate, and inconsistent data.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Business Problem Solving",
+                    description: "Translate business questions into measurable data analysis tasks.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Ethics & Privacy",
+                    description: "Understand responsible data handling, privacy, and ethical practices.",
                     difficulty: Difficulty.easy,
                 },
             ],
         },
 
         {
-            name: 'API Design & Communication',
-            topics: [
-                {
-                    name: 'REST APIs',
-                    description: 'Design scalable RESTful APIs using HTTP principles.',
-                    difficulty: Difficulty.easy,
-                },
-                {
-                    name: 'GraphQL',
-                    description: 'Build flexible APIs that return exactly the requested data.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'gRPC',
-                    description: 'Learn high-performance communication between distributed services.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'API Security',
-                    description: 'Secure APIs using authentication and authorization techniques.',
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
+            name: "SQL for Data Analysis",
+            description:
+                "Master SQL for querying, analyzing, and manipulating data to solve real-world business problems.",
 
-        {
-            name: 'Backend Architecture Fundamentals',
             topics: [
                 {
-                    name: 'Monolith vs Microservices',
-                    description: 'Compare monolithic and microservice architectures and their trade-offs.',
+                    name: "Database Fundamentals",
+                    description: "Understand databases, tables, rows, columns, and relationships.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Reverse Proxies',
-                    description: 'Understand how reverse proxies manage and route incoming traffic.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Load Balancers',
-                    description: 'Distribute traffic efficiently across multiple application servers.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Content Delivery Networks (CDNs)',
-                    description: 'Deliver static content faster using globally distributed edge servers.',
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
-        {
-            name: 'Databases & Data Storage',
-            topics: [
-                {
-                    name: 'Relational Databases (SQL)',
-                    description: 'Learn relational database design, normalization, and SQL fundamentals.',
+                    name: "SQL Basics",
+                    description: "Retrieve and filter data using fundamental SQL statements.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'NoSQL Databases',
-                    description: 'Understand document, key-value, graph, and column-oriented databases.',
+                    name: "Filtering & Sorting Data",
+                    description: "Use filtering, ordering, and limiting techniques to refine query results.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Aggregate Functions",
+                    description: "Summarize data using COUNT, SUM, AVG, MIN, and MAX.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "GROUP BY & HAVING",
+                    description: "Group records and filter aggregated results effectively.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Database Indexing',
-                    description: 'Optimize query performance using appropriate indexing strategies.',
+                    name: "SQL Joins",
+                    description: "Combine data from multiple tables using different join types.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Transactions & ACID',
-                    description: 'Ensure data consistency with transactions and ACID properties.',
+                    name: "Subqueries",
+                    description: "Write nested queries to solve complex analytical problems.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Database Replication',
-                    description: 'Improve availability and read scalability through replication.',
+                    name: "Common Table Expressions (CTEs)",
+                    description: "Organize complex SQL queries using reusable query blocks.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Database Sharding',
-                    description: 'Scale databases horizontally by partitioning data across servers.',
+                    name: "Window Functions",
+                    description: "Perform advanced analytical calculations across rows of data.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "Views & Stored Procedures",
+                    description: "Simplify data access and automate common database operations.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Query Optimization",
+                    description: "Write efficient SQL queries for faster data retrieval.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "SQL Interview Patterns",
+                    description: "Practice common SQL problems frequently asked in data analyst interviews.",
                     difficulty: Difficulty.hard,
                 },
             ],
         },
-
         {
-            name: 'Caching & Performance',
+            name: "Statistics & Mathematics for Data Analysis",
+            description:
+                "Learn the essential statistical concepts required to analyze data, identify trends, and make data-driven business decisions.",
+
             topics: [
                 {
-                    name: 'Caching Fundamentals',
-                    description: 'Reduce latency by serving frequently accessed data from cache.',
+                    name: "Descriptive Statistics",
+                    description: "Summarize datasets using measures of central tendency and dispersion.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Redis',
-                    description: 'Use Redis for caching, sessions, counters, and real-time features.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Cache Invalidation',
-                    description: 'Maintain data consistency with effective cache invalidation strategies.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Read Replicas',
-                    description: 'Scale read-heavy workloads using replicated database instances.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Performance Optimization',
-                    description: 'Improve system performance by eliminating common bottlenecks.',
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
-
-        {
-            name: 'Asynchronous Communication',
-            topics: [
-                {
-                    name: 'Synchronous vs Asynchronous Systems',
-                    description: 'Compare blocking and background processing approaches.',
+                    name: "Probability Fundamentals",
+                    description: "Understand probability concepts used in data analysis.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Message Queues',
-                    description: 'Process background jobs reliably using messaging systems.',
+                    name: "Data Distributions",
+                    description: "Explore common data distributions and their characteristics.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Sampling Techniques",
+                    description: "Learn how representative samples are collected from large datasets.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Event-Driven Architecture',
-                    description: 'Build loosely coupled systems using event-based communication.',
+                    name: "Central Limit Theorem",
+                    description: "Understand why sampling distributions become approximately normal.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Kafka',
-                    description: 'Handle high-throughput event streaming with Apache Kafka.',
+                    name: "Correlation Analysis",
+                    description: "Measure relationships between variables using correlation techniques.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Regression Basics",
+                    description: "Use regression to identify trends and predict relationships between variables.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Hypothesis Testing",
+                    description: "Validate assumptions using statistical significance testing.",
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'RabbitMQ & BullMQ',
-                    description: 'Implement reliable task queues and background job processing.',
-                    difficulty: Difficulty.medium,
-                },
-            ],
-        },
-        {
-            name: 'Distributed Systems',
-            topics: [
-                {
-                    name: 'CAP Theorem',
-                    description: 'Understand the trade-offs between consistency, availability, and partition tolerance.',
-                    difficulty: Difficulty.medium,
+                    name: "Confidence Intervals",
+                    description: "Estimate population values using sample statistics.",
+                    difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'Consistency Models',
-                    description: 'Learn strong, eventual, and causal consistency in distributed systems.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Fault Tolerance',
-                    description: 'Design systems that continue operating despite failures.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'High Availability',
-                    description: 'Build systems that remain accessible with minimal downtime.',
-                    difficulty: Difficulty.medium,
-                },
-                {
-                    name: 'Scalability',
-                    description: 'Scale applications efficiently using vertical and horizontal scaling.',
-                    difficulty: Difficulty.easy,
-                },
-                {
-                    name: 'Distributed Locks',
-                    description: 'Coordinate concurrent operations safely across multiple servers.',
+                    name: "A/B Testing",
+                    description: "Compare different business strategies using controlled experiments.",
                     difficulty: Difficulty.hard,
                 },
             ],
         },
 
         {
-            name: 'Cloud Infrastructure & DevOps',
+            name: "Excel for Data Analysis",
+            description:
+                "Master Microsoft Excel for cleaning, analyzing, and presenting business data efficiently.",
+
             topics: [
                 {
-                    name: 'Virtual Machines & Cloud Computing',
-                    description: 'Understand cloud infrastructure and virtualized computing environments.',
+                    name: "Excel Fundamentals",
+                    description: "Navigate worksheets, formulas, and essential Excel features.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Docker',
-                    description: 'Package applications into portable and reproducible containers.',
+                    name: "Data Cleaning in Excel",
+                    description: "Prepare datasets by removing duplicates and fixing inconsistencies.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Formulas & Functions",
+                    description: "Perform calculations using common Excel functions.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Lookup Functions",
+                    description: "Retrieve related data using XLOOKUP, VLOOKUP, and INDEX-MATCH.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Kubernetes',
-                    description: 'Deploy, scale, and manage containerized applications automatically.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'CI/CD Pipelines',
-                    description: 'Automate building, testing, and deploying software changes.',
+                    name: "Pivot Tables",
+                    description: "Summarize and analyze large datasets efficiently.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Monitoring & Logging',
-                    description: 'Monitor application health and analyze logs for troubleshooting.',
+                    name: "Charts & Visualizations",
+                    description: "Create charts to communicate insights effectively.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Conditional Formatting",
+                    description: "Highlight trends and anomalies using formatting rules.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Power Query",
+                    description: "Import, clean, and transform data from multiple sources.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Observability',
-                    description: 'Gain deep insights into system behavior using metrics, logs, and traces.',
+                    name: "Power Pivot",
+                    description: "Build data models and perform advanced analytical calculations.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Excel Dashboards",
+                    description: "Design interactive dashboards for business reporting.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Excel Automation",
+                    description: "Automate repetitive tasks using advanced Excel features.",
+                    difficulty: Difficulty.medium,
+                },
+            ],
+        },
+        {
+            name: "Python for Data Analysis",
+            description:
+                "Learn Python to clean, analyze, transform, and visualize datasets efficiently for real-world business analytics.",
+
+            topics: [
+                {
+                    name: "Python Fundamentals",
+                    description: "Learn Python syntax, variables, data types, loops, and functions.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "NumPy",
+                    description: "Perform efficient numerical computations using NumPy arrays.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Pandas Fundamentals",
+                    description: "Load, inspect, and manipulate structured datasets using Pandas.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Data Cleaning with Pandas",
+                    description: "Handle missing values, duplicates, and inconsistent data efficiently.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Transformation",
+                    description: "Filter, merge, reshape, and aggregate datasets for analysis.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Exploratory Data Analysis (EDA)",
+                    description: "Discover trends, patterns, and anomalies through exploratory analysis.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Visualization with Matplotlib",
+                    description: "Create basic charts and plots to visualize analytical insights.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Visualization with Seaborn",
+                    description: "Build attractive statistical visualizations using Seaborn.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Working with CSV, Excel & JSON",
+                    description: "Read, write, and process data from common file formats.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Working with APIs",
+                    description: "Fetch and analyze data from REST APIs using Python.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Python Data Analysis Project",
+                    description: "Apply Python skills to clean, analyze, and visualize a real-world dataset.",
                     difficulty: Difficulty.hard,
                 },
             ],
         },
 
         {
-            name: 'System Design Patterns',
+            name: "Data Visualization & Business Intelligence",
+            description:
+                "Learn to communicate insights through dashboards, reports, and visualizations using modern BI tools.",
+
             topics: [
                 {
-                    name: 'Rate Limiting',
-                    description: 'Protect services by controlling request rates.',
+                    name: "Data Visualization Principles",
+                    description: "Understand best practices for presenting data effectively.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Choosing the Right Chart",
+                    description: "Select appropriate visualizations based on data and business goals.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Tableau Fundamentals",
+                    description: "Build interactive dashboards and reports using Tableau.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Circuit Breaker',
-                    description: 'Prevent cascading failures between dependent services.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'API Gateway',
-                    description: 'Centralize routing, authentication, and request handling.',
+                    name: "Power BI Fundamentals",
+                    description: "Create business intelligence reports using Microsoft Power BI.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Service Discovery',
-                    description: 'Enable services to locate and communicate with each other dynamically.',
+                    name: "Interactive Dashboards",
+                    description: "Design dashboards with filters, drill-downs, and user interactions.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Leader Election',
-                    description: 'Coordinate distributed systems by selecting a single coordinator.',
+                    name: "Key Performance Indicators (KPIs)",
+                    description: "Track and visualize business performance using meaningful metrics.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Business Storytelling",
+                    description: "Present analytical insights through clear and compelling narratives.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Dashboard Optimization",
+                    description: "Improve dashboard usability, performance, and readability.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Business Reporting",
+                    description: "Create professional reports that support data-driven decision making.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "BI Dashboard Project",
+                    description: "Build an end-to-end interactive business dashboard using real-world data.",
                     difficulty: Difficulty.hard,
                 },
             ],
         },
         {
-            name: 'System Design Case Studies',
+            name: "Data Processing & Analytics Workflow",
+            description:
+                "Learn how organizations collect, transform, store, and manage data for reliable analysis and reporting.",
+
             topics: [
                 {
-                    name: 'URL Shortener',
-                    description: 'Design a scalable URL shortening service like Bitly.',
+                    name: "ETL Fundamentals",
+                    description: "Understand the process of extracting, transforming, and loading data.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Pastebin',
-                    description: 'Design a service for storing and sharing text snippets.',
+                    name: "Data Warehousing",
+                    description: "Learn how centralized data warehouses support business analytics.",
                     difficulty: Difficulty.easy,
                 },
                 {
-                    name: 'Chat Application',
-                    description: 'Design a real-time messaging platform like WhatsApp.',
+                    name: "Data Lakes",
+                    description: "Understand how raw and structured data are stored for analysis.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Social Media Feed',
-                    description: 'Design a scalable news feed like Instagram or X.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'Video Streaming Platform',
-                    description: 'Design a large-scale video platform like YouTube or Netflix.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'Ride Sharing System',
-                    description: 'Design a real-time ride matching system like Uber.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'Food Delivery Platform',
-                    description: 'Design a scalable food ordering and delivery system.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'Cloud File Storage',
-                    description: 'Design a distributed file storage system like Google Drive.',
-                    difficulty: Difficulty.hard,
-                },
-                {
-                    name: 'Notification Service',
-                    description: 'Design a reliable service for email, SMS, and push notifications.',
+                    name: "Data Modeling",
+                    description: "Design efficient data models for reporting and analytical queries.",
                     difficulty: Difficulty.medium,
                 },
                 {
-                    name: 'Search Autocomplete',
-                    description: 'Design a fast and scalable search suggestion system.',
+                    name: "Data Pipelines",
+                    description: "Build workflows that move and process data between systems.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Validation",
+                    description: "Verify data accuracy, consistency, and completeness before analysis.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Data Automation",
+                    description: "Automate repetitive data processing and reporting tasks.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Workflow Scheduling",
+                    description: "Schedule recurring data processing and reporting jobs.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Working with Large Datasets",
+                    description: "Handle and optimize analysis of large-scale datasets efficiently.",
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
+
+        {
+            name: "Business Analytics & Case Studies",
+            description:
+                "Apply analytical techniques to solve real-world business problems across different domains using data-driven decision making.",
+
+            topics: [
+                {
+                    name: "Sales Analytics",
+                    description: "Analyze sales performance, revenue trends, and business growth.",
+                    difficulty: Difficulty.easy,
+                },
+                {
+                    name: "Marketing Analytics",
+                    description: "Measure campaign performance and customer acquisition metrics.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Customer Analytics",
+                    description: "Understand customer behavior, segmentation, and lifetime value.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Financial Analytics",
+                    description: "Analyze financial data to support budgeting and profitability decisions.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Product Analytics",
+                    description: "Measure product usage, engagement, and feature performance.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "HR Analytics",
+                    description: "Use employee data to support recruitment and workforce decisions.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Cohort Analysis",
+                    description: "Track user groups over time to measure retention and behavior.",
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'Distributed Cache',
-                    description: 'Design a highly available distributed caching system.',
+                    name: "Funnel Analysis",
+                    description: "Identify conversion bottlenecks across customer journeys.",
                     difficulty: Difficulty.hard,
                 },
                 {
-                    name: 'Payment System',
-                    description: 'Design a secure and fault-tolerant payment processing platform.',
+                    name: "Retention Analysis",
+                    description: "Measure customer retention and identify churn patterns.",
                     difficulty: Difficulty.hard,
+                },
+                {
+                    name: "Business Case Studies",
+                    description: "Solve practical business problems using analytical techniques and real datasets.",
+                    difficulty: Difficulty.hard,
+                },
+            ],
+        },
+        {
+            name: "Interview Preparation & Real-World Projects",
+            description:
+                "Prepare for Data Analyst interviews by solving practical problems, building portfolio projects, and mastering technical and business interview questions.",
+
+            topics: [
+                {
+                    name: "SQL Interview Questions",
+                    description: "Practice common SQL interview problems involving joins, window functions, and data analysis.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Excel Interview Questions",
+                    description: "Solve business scenarios using formulas, pivot tables, and data analysis techniques.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Statistics Interview Questions",
+                    description: "Review frequently asked statistical concepts used in data analyst interviews.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Python Interview Questions",
+                    description: "Practice Python coding and data manipulation problems for analytics roles.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Power BI & Tableau Interview Questions",
+                    description: "Prepare dashboard, visualization, and reporting interview scenarios.",
+                    difficulty: Difficulty.medium,
+                },
+                {
+                    name: "Business Case Interview",
+                    description: "Solve real business problems using structured analytical thinking and data.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "Sales Performance Dashboard",
+                    description: "Build an interactive dashboard to analyze sales, revenue, and growth metrics.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "Customer Churn Analysis",
+                    description: "Analyze customer behavior to identify churn patterns and retention opportunities.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "E-Commerce Data Analysis",
+                    description: "Analyze orders, customers, and product performance using real-world datasets.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "HR Analytics Dashboard",
+                    description: "Create dashboards to visualize employee performance, hiring, and workforce trends.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "End-to-End Data Analytics Project",
+                    description: "Complete a production-style analytics project from data collection to business recommendations.",
+                    difficulty: Difficulty.hard,
+                },
+                {
+                    name: "Portfolio & Resume Preparation",
+                    description: "Build a professional portfolio and optimize your resume for data analyst roles.",
+                    difficulty: Difficulty.easy,
                 },
             ],
         },
@@ -350,64 +555,74 @@ async function main() {
 
     const resources = [
         {
-            title: 'System Design Primer',
-            type: ResourceType.article,
-            url: 'https://github.com/donnemartin/system-design-primer',
-        },
-        {
-            title: 'MDN HTTP Guide',
-            type: ResourceType.article,
-            url: 'https://developer.mozilla.org/docs/Web/HTTP',
-        },
-        {
-            title: 'Redis Documentation',
-            type: ResourceType.article,
-            url: 'https://redis.io/docs/',
-        },
-        {
-            title: 'Docker Documentation',
-            type: ResourceType.article,
-            url: 'https://docs.docker.com/',
-        },
-        {
-            title: 'Kubernetes Documentation',
-            type: ResourceType.article,
-            url: 'https://kubernetes.io/docs/',
-        },
-        {
-            title: 'AWS Architecture Center',
-            type: ResourceType.article,
-            url: 'https://aws.amazon.com/architecture/',
-        },
-        {
-            title: 'System Design Interview (freeCodeCamp)',
+            title: "Alex The Analyst",
             type: ResourceType.video,
-            url: 'https://www.youtube.com/watch?v=bUHFg8CZFws',
+            url: "https://www.youtube.com/@AlexTheAnalyst",
         },
         {
-            title: 'ByteByteGo',
-            type: ResourceType.video,
-            url: 'https://www.youtube.com/@ByteByteGo',
+            title: "SQLBolt",
+            type: ResourceType.article,
+            url: "https://sqlbolt.com/",
         },
         {
-            title: 'Gaurav Sen System Design',
-            type: ResourceType.video,
-            url: 'https://www.youtube.com/@gkcs',
+            title: "Mode SQL Tutorial",
+            type: ResourceType.article,
+            url: "https://mode.com/sql-tutorial/",
         },
-    ]
+        {
+            title: "Microsoft Excel Training",
+            type: ResourceType.article,
+            url: "https://support.microsoft.com/en-us/excel",
+        },
+        {
+            title: "Pandas Documentation",
+            type: ResourceType.article,
+            url: "https://pandas.pydata.org/docs/",
+        },
+        {
+            title: "NumPy Documentation",
+            type: ResourceType.article,
+            url: "https://numpy.org/doc/",
+        },
+        {
+            title: "Power BI Learning",
+            type: ResourceType.article,
+            url: "https://learn.microsoft.com/en-us/training/powerplatform/power-bi/",
+        },
+        {
+            title: "Tableau Learning",
+            type: ResourceType.article,
+            url: "https://www.tableau.com/learn/training",
+        },
+        {
+            title: "Kaggle Learn",
+            type: ResourceType.article,
+            url: "https://www.kaggle.com/learn",
+        },
+        {
+            title: "Google Data Analytics Professional Certificate",
+            type: ResourceType.link,
+            url: "https://www.coursera.org/professional-certificates/google-data-analytics",
+        },
+        {
+            title: "Python for Data Analysis (Book)",
+            type: ResourceType.pdf,
+            url: "https://wesmckinney.com/book/",
+        },
+    ];
 
     const exam = await db.exam.create({
         data: {
-            name: 'System Design',
+            name: 'Data Analyst Roadmap',
             description:
-                'Master High-Level Design (HLD) and Low-Level Design (LLD) by learning scalable architectures, distributed systems, databases, networking, caching, cloud infrastructure, and real-world system design.',
+                "Prepare for Data Analyst roles by mastering SQL, Excel, Python, statistics, business intelligence, and real-world analytics through practical projects and interview-focused learning.",
 
             default_duration_weeks: 14,
 
-            aiContext: `This roadmap is designed for software engineers who want to master System Design for both technical interviews and real-world software development. The learning path should emphasize conceptual clarity, practical thinking, and understanding the trade-offs behind architectural decisions rather than memorizing technologies. Every concept should explain why it exists, what problem it solves, when it should be used, and what alternatives exist. Learners should develop the ability to design scalable, reliable, highly available, fault-tolerant, secure, and maintainable systems while considering performance, latency, throughput, consistency, and cost. The roadmap should prepare students to confidently tackle High-Level Design (HLD) interviews at top technology companies, make informed architecture decisions in production environments, and build modern internet-scale applications by applying industry best practices and sound engineering principles.`,
+            aiContext: `This roadmap is designed for learners preparing for Data Analyst roles in the industry, focusing on the practical skills and business knowledge expected in technical interviews and day-to-day analytics work. The learning path should emphasize solving real business problems using data rather than advanced machine learning or data science concepts. Every topic should explain why it is important, when it should be applied, and how it helps transform raw data into actionable business insights. Students should develop proficiency in SQL, Excel, Python, statistics, data visualization, and business intelligence tools while learning to clean, analyze, interpret, and communicate data effectively. The roadmap should prepare learners to confidently solve analytical case studies, build professional dashboards and portfolio projects, answer interview questions, and make data-driven decisions in real-world business environments across domains such as sales, marketing, finance, product, and operations.`,
 
             imageUrl:
-                'https://images.pexels.com/photos/27141314/pexels-photo-27141314.jpeg',
+                'https://images.pexels.com/photos/7651734/pexels-photo-7651734.jpeg',
         },
     })
 

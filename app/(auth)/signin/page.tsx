@@ -11,6 +11,8 @@ import { FiLoader } from "react-icons/fi";
 import { authClient } from "@/app/lib/auth-client";
 import { toast } from "sonner";
 import { se } from "date-fns/locale";
+import { checkEmailExistsLogin } from "@/app/actions/action";
+import { s } from "framer-motion/client";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -35,6 +37,8 @@ export default function SignInPage() {
     const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+
+
         const { error } = await authClient.signIn.email(
             {
                 email,
@@ -50,10 +54,36 @@ export default function SignInPage() {
                     sessionStorage.setItem("show-login-toast", "true");
                     router.push("/");
                 },
-                onError: (ctx) => {
-                    setError(ctx.error?.message || "Something went wrong.");
-                    toast.error(ctx.error?.message || "Something went wrong.");
-                    setLoading(false);
+                onError: async (ctx) => {
+                    if (ctx.error?.code === "INVALID_EMAIL_OR_PASSWORD") {
+                        const result = await checkEmailExistsLogin(email);
+                        if (!result.exists) {
+                            setError("No account found. Please sign up first.");
+                            toast.error("No account found. Please sign up first.");
+                            setLoading(false);
+                        } else if (result.provider === "google") {
+                            setError("This account was created using Google. Please continue with Google and set a password after logging in.");
+                            toast.error(
+                                "This account was created using Google. Please continue with Google and set a password after logging in."
+                            );
+                            setLoading(false);
+                        } else if (result.provider === "github") {
+                            setError("This account was created using GitHub. Please continue with GitHub and set a password after logging in.");
+                            toast.error("This account was created using GitHub. Please continue with GitHub and set a password after logging in.");
+                            setLoading(false);
+                        }
+                        else if (result.provider === "credentials") {
+                            setError("Wrong password. Please try again.");
+                            toast.error("Wrong password. Please try again.");
+                            setLoading(false);
+                        }
+                    }
+                    else {
+                        setError(ctx.error?.message || "Something went wrong.");
+                        toast.error(ctx.error?.message || "Something went wrong.");
+                        setLoading(false);
+                    }
+
                 },
             }
         );

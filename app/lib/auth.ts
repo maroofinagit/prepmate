@@ -2,16 +2,29 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { db } from "./db";
+import { toast } from "sonner";
 
 
 export const auth = betterAuth({
     database: prismaAdapter(db, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
-    advanced:{
+    advanced: {
         // disableOriginCheck: process.env.NODE_ENV === "development", // Disable origin check in development for easier testing
     },
-    emailAndPassword: { enabled: true},
+    events: {
+        onSignIn: async (ctx: any) => {
+            toast.success(`Welcome back, ${ctx.user.name || ctx.user.email}!`);
+        },
+        onSignOut: async (ctx: any ) => {
+            console.log("User signed out:", ctx.user);
+            toast.success(`Goodbye, ${ctx.user.name || ctx.user.email}!`);
+        },
+        onSignUp: async (ctx: any) => {
+            console.log("User signed up:", ctx.user);
+        },
+    },
+    emailAndPassword: { enabled: true },
     socialProviders: {
         github: {
             prompt: "select_account consent",
@@ -26,5 +39,5 @@ export const auth = betterAuth({
         }
     },
     secret: process.env.BETTER_AUTH_SECRET || "",
-   
+
 });

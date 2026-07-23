@@ -49,10 +49,7 @@ export default function SignUpPage() {
                 toast.success("Account created successfully!");
 
                 // Send welcome email using Resend
-                const adminNotificationResult = await sendAdminNotificationEmail(email, name);
-                if (!adminNotificationResult.success) {
-                    toast.error("Failed to send admin notification email.");
-                }
+                await sendAdminNotificationEmail(email, name);
                 
                 router.push("/signin");
 
