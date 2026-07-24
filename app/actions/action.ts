@@ -2,112 +2,140 @@
 import { db } from "@/app/lib/db";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
+import { unstable_cache } from "next/cache";
 
 
 
-export async function getFullExams() {
-    try {
-        const exams = await db.exam.findMany({
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                imageUrl: true,
-                aiContext: true,
-                subjects: {
-                    select: {
-                        id: true,
-                        name: true,
-                        topics: {
-                            select: {
-                                id: true,
-                                name: true,
-                                description: true,
-                                difficulty: true,
+export const getFullExams = unstable_cache(
+    async () => {
+        try {
+            const exams = await db.exam.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    imageUrl: true,
+                    aiContext: true,
+                    subjects: {
+                        select: {
+                            id: true,
+                            name: true,
+                            topics: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    description: true,
+                                    difficulty: true,
+                                },
                             },
                         },
                     },
                 },
-            },
-            orderBy: {
-                userExams: { _count: "asc" }
-            }
-        });
+                orderBy: {
+                    userExams: { _count: "asc" }
+                }
+            });
 
-        return exams;
-    } catch (error) {
-        console.error("Error fetching exams:", error);
-        return [];
+            return exams;
+        } catch (error) {
+            console.error("Error fetching exams:", error);
+            return [];
+        }
+    },
+    ["getFullExams"], // Cache key
+    {
+        tags: ["exams"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
 
-export async function getExamById(id: number) {
-    try {
-        const exam = await db.exam.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                aiContext: true,
-                subjects: {
-                    select: {
-                        id: true,
-                        name: true,
-                        topics: {
-                            select: {
-                                id: true,
-                                name: true,
-                                description: true,
-                                difficulty: true,
+export const getExamById = unstable_cache(
+    async (id: number) => {
+        try {
+            const exam = await db.exam.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    aiContext: true,
+                    subjects: {
+                        select: {
+                            id: true,
+                            name: true,
+                            topics: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    description: true,
+                                    difficulty: true,
+                                },
                             },
                         },
                     },
                 },
-            },
-        });
+            });
 
-        return exam;
-    } catch (err) {
-        console.error("❌ Error fetching exam:", err);
-        return null;
+            return exam;
+        } catch (err) {
+            console.error("❌ Error fetching exam:", err);
+            return null;
+        }
+    },
+    ["getExamById"], // Cache key
+    {
+        tags: ["exams"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
 
-export async function getShortExams() {
-    try {
-        const exams = await db.exam.findMany({
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                imageUrl: true,
-                aiContext: true,
-            },
-        });
+export const getShortExams = unstable_cache(
+    async () => {
+        try {
+            const exams = await db.exam.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    imageUrl: true,
+                    aiContext: true,
+                },
+            });
 
-        return exams;
-    } catch (error) {
-        console.error("Error fetching exams:", error);
-        return [];
+            return exams;
+        } catch (error) {
+            console.error("Error fetching exams:", error);
+            return [];
+        }
+    },
+    ["getShortExams"], // Cache key
+    {
+        tags: ["exams"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
+export const getUserExams = unstable_cache(
+    async (userId: string) => {
+        try {
+            const userExams = await db.userExam.findMany({
+                where: { user_id: userId },
+                include: {
+                    exam: true
+                },
+            });
 
-export async function getUserExams(userId: string) {
-    try {
-        const userExams = await db.userExam.findMany({
-            where: { user_id: userId },
-            include: {
-                exam: true
-            },
-        });
-
-        return userExams;
-    } catch (err) {
-        console.error("❌ Error fetching UserExams:", err);
-        return [];
+            return userExams;
+        } catch (err) {
+            console.error("❌ Error fetching UserExams:", err);
+            return [];
+        }
+    },
+    ["getUserExams"], // Cache key
+    {
+        tags: ["userExams"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+)
 
 interface CreateUserExamProps {
     examId: number;
@@ -181,127 +209,136 @@ export async function createUserExam({
     }
 }
 
-export async function getRoadmapByUserExamId(user_exam_id: number) {
-    try {
-        const roadmap = await db.roadmap.findUnique({
-            where: { user_exam_id },
-            include: {
-                phases: {
-                    orderBy: { order_index: "asc" },
-                    include: {
-                        weeks: {
-                            orderBy: { order_index: "asc" },
-                            include: {
-                                tasks: {
-                                    orderBy: { order_index: "asc" },
+export const getRoadmapByUserExamId = unstable_cache(
+    async (user_exam_id: number) => {
+        try {
+            const roadmap = await db.roadmap.findUnique({
+                where: { user_exam_id },
+                include: {
+                    phases: {
+                        orderBy: { order_index: "asc" },
+                        include: {
+                            weeks: {
+                                orderBy: { order_index: "asc" },
+                                include: {
+                                    tasks: {
+                                        orderBy: { order_index: "asc" },
+                                    },
                                 },
                             },
                         },
                     },
-                },
-                milestones: {
-                    orderBy: { target_date: "asc" },
-                },
-                userExam: {
-                    include: {
-                        exam: {
-                            include: {
-                                resources: true,
+                    milestones: {
+                        orderBy: { target_date: "asc" },
+                    },
+                    userExam: {
+                        include: {
+                            exam: {
+                                include: {
+                                    resources: true,
+                                }
                             }
                         }
                     }
-                }
-            },
-        });
+                },
+            });
 
-        return roadmap;
-    } catch (err) {
-        console.error("❌ Error fetching Roadmap:", err);
-        return null;
+            return roadmap;
+        } catch (err) {
+            console.error("❌ Error fetching Roadmap:", err);
+            return null;
+        }
+    },
+    ["getRoadmapByUserExamId"], // Cache key
+    {
+        tags: ["roadmaps"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
 
 
-export async function getDashboardUser(userId: string) {
-    try {
-        const dashboardUser = await db.user.findUnique({
-            where: { id: userId },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                createdAt: true,
+export const getDashboardUser = unstable_cache(
+    async (userId: string) => {
+        try {
+            const dashboardUser = await db.user.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    image: true,
+                    createdAt: true,
 
-                exams: {
-                    select: {
-                        id: true,
-                        exam_id: true,
-                        start_date: true,
-                        end_date: true,
-                        current_stage: true,
-                        progress_percent: true,
-                        performanceScore: true,
-                        roadmap_status: true,
+                    exams: {
+                        select: {
+                            id: true,
+                            exam_id: true,
+                            start_date: true,
+                            end_date: true,
+                            current_stage: true,
+                            progress_percent: true,
+                            performanceScore: true,
+                            roadmap_status: true,
 
-                        // UserExam → Exam Details
-                        exam: {
-                            select: {
-                                id: true,
-                                name: true,
-                                description: true,
-                            },
-
-                        },
-
-                        roadmap: {
-                            select: {
-                                id: true,
-                                title: true,
-                                progress: true,
-
-                                // ⭐ Milestones added
-                                milestones: {
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        goal: true,
-                                        achieved: true,
-                                        target_date: true,
-                                        created_at: true,
-                                    },
-                                    orderBy: { target_date: "asc" }
+                            // UserExam → Exam Details
+                            exam: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    description: true,
                                 },
 
-                                // Phases, Weeks, Tasks
-                                phases: {
-                                    orderBy: { order_index: "asc" },
-                                    select: {
-                                        id: true,
-                                        phase_name: true,
-                                        duration: true,
-                                        order_index: true,
-                                        progress: true,
+                            },
 
-                                        weeks: {
-                                            orderBy: { order_index: "asc" },
-                                            select: {
-                                                id: true,
-                                                week_number: true,
-                                                order_index: true,
-                                                progress: true,
+                            roadmap: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    progress: true,
 
-                                                tasks: {
-                                                    orderBy: { order_index: "asc" },
-                                                    select: {
-                                                        id: true,
-                                                        title: true,
-                                                        is_completed: true,
-                                                        start_date: true,
-                                                        end_date: true,
-                                                        order_index: true,
-                                                        created_at: true,
-                                                        updated_at: true,
+                                    // ⭐ Milestones added
+                                    milestones: {
+                                        select: {
+                                            id: true,
+                                            name: true,
+                                            goal: true,
+                                            achieved: true,
+                                            target_date: true,
+                                            created_at: true,
+                                        },
+                                        orderBy: { target_date: "asc" }
+                                    },
+
+                                    // Phases, Weeks, Tasks
+                                    phases: {
+                                        orderBy: { order_index: "asc" },
+                                        select: {
+                                            id: true,
+                                            phase_name: true,
+                                            duration: true,
+                                            order_index: true,
+                                            progress: true,
+
+                                            weeks: {
+                                                orderBy: { order_index: "asc" },
+                                                select: {
+                                                    id: true,
+                                                    week_number: true,
+                                                    order_index: true,
+                                                    progress: true,
+
+                                                    tasks: {
+                                                        orderBy: { order_index: "asc" },
+                                                        select: {
+                                                            id: true,
+                                                            title: true,
+                                                            is_completed: true,
+                                                            start_date: true,
+                                                            end_date: true,
+                                                            order_index: true,
+                                                            created_at: true,
+                                                            updated_at: true,
+                                                        }
                                                     }
                                                 }
                                             }
@@ -312,16 +349,21 @@ export async function getDashboardUser(userId: string) {
                         }
                     }
                 }
-            }
-        });
+            });
 
-        return dashboardUser;
+            return dashboardUser;
+        }
+        catch (err) {
+            console.error("❌ Error fetching DashboardUser:", err);
+            return null;
+        }
+    },
+    ["getDashboardUser"], // Cache key
+    {
+        tags: ["dashboardUsers"], // Tag for cache invalidation
+        revalidate: 60, // Revalidate every 60 seconds
     }
-    catch (err) {
-        console.error("❌ Error fetching DashboardUser:", err);
-        return null;
-    }
-}
+);
 
 
 export async function deleteUserExam(user_exam_id: number) {

@@ -3,6 +3,9 @@ import Link from "next/link";
 import { FaXTwitter, FaInstagram, FaLinkedin, FaFacebook } from "react-icons/fa6";
 
 export default function Footer() {
+
+    const currentYear = 2026; // You can dynamically get the current year if needed
+
     return (
         <footer className="bg-[#00203d] text-gray-300 border-t border-gray-800">
             <div className="max-w-7xl mx-auto px-6 py-12">
@@ -87,7 +90,7 @@ export default function Footer() {
 
                 {/* Bottom */}
                 <div className="border-t border-gray-600 mt-10 pt-6 text-center text-gray-400 text-sm">
-                    © {new Date().getFullYear()} PrepMate — All rights reserved.
+                    © {currentYear} PrepMate — All rights reserved.
                 </div>
             </div>
         </footer>

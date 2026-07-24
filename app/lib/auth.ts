@@ -12,18 +12,6 @@ export const auth = betterAuth({
     advanced: {
         // disableOriginCheck: process.env.NODE_ENV === "development", // Disable origin check in development for easier testing
     },
-    events: {
-        onSignIn: async (ctx: any) => {
-            toast.success(`Welcome back, ${ctx.user.name || ctx.user.email}!`);
-        },
-        onSignOut: async (ctx: any ) => {
-            console.log("User signed out:", ctx.user);
-            toast.success(`Goodbye, ${ctx.user.name || ctx.user.email}!`);
-        },
-        onSignUp: async (ctx: any) => {
-            console.log("User signed up:", ctx.user);
-        },
-    },
     emailAndPassword: { enabled: true },
     socialProviders: {
         github: {

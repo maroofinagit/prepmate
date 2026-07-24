@@ -22,7 +22,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
-  }
+  },
+  cacheComponents: true,
   /* config options here */
 };
 

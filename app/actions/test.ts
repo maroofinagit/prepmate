@@ -1,114 +1,141 @@
 "use server";
 
 import { db } from "@/app/lib/db";
+import { unstable_cache } from "next/cache";
 
-
-export async function getTestsForUserExam(userExamId: number) {
-    try {
-        // 🔥 1. Fetch roadmap
-        const roadmap = await db.roadmap.findUnique({
-            where: { user_exam_id: userExamId },
-            include: {
-                phases: {
-                    orderBy: { order_index: "asc" },
-                    include: {
-                        weeks: {
-                            orderBy: { order_index: "asc" },
-                            include: {
-                                tasks: true,
+export const getTestsForUserExam = unstable_cache(
+    async (userExamId: number) => {
+        try {
+            // 🔥 1. Fetch roadmap
+            const roadmap = await db.roadmap.findUnique({
+                where: { user_exam_id: userExamId },
+                include: {
+                    phases: {
+                        orderBy: { order_index: "asc" },
+                        include: {
+                            weeks: {
+                                orderBy: { order_index: "asc" },
+                                include: {
+                                    tasks: true,
+                                },
                             },
                         },
                     },
-                },
-                userExam: {
-                    select: {
-                        id: true,
-                        exam: {
-                            select: {
-                                id: true,
-                                name: true,
+                    userExam: {
+                        select: {
+                            id: true,
+                            exam: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                },
                             },
-                        },
+                        }
                     }
-                }
-            },
-        });
-
-        if (!roadmap) throw new Error("Roadmap not found");
-
-        // 🔥 2. Fetch tests
-        const tests = await db.test.findMany({
-            where: { userExamId },
-            include: {
-                attempt: true,
-            },
-        });
-
-        // console.log("Fetched tests:", { tests });
-
-        if (tests.length === 0) {
-            return {
-                success: true,
-                data: {
-                    weekly: [],
-                    phase: [],
-                    final: [],
-                    examName: roadmap.userExam.exam.name,
                 },
+            });
+
+            if (!roadmap) throw new Error("Roadmap not found");
+
+            // 🔥 2. Fetch tests
+            const tests = await db.test.findMany({
+                where: { userExamId },
+                include: {
+                    attempt: true,
+                },
+            });
+
+            // console.log("Fetched tests:", { tests });
+
+            if (tests.length === 0) {
+                return {
+                    success: true,
+                    data: {
+                        weekly: [],
+                        phase: [],
+                        final: [],
+                        examName: roadmap.userExam.exam.name,
+                    },
+                };
+            }
+
+            // helper
+            // helper
+            const isWeekCompleted = (week: any) =>
+                week.tasks.length > 0 &&
+                week.tasks.every((t: any) => t.is_completed);
+
+            // helper
+            const getStatus = ({
+                isCompleted,
+                isGenerated,
+                isAttempted,
+            }: {
+                isCompleted: boolean;
+                isGenerated?: boolean;
+                isAttempted?: boolean;
+            }) => {
+                // highest priority
+                if (isAttempted) {
+                    return "ATTEMPTED";
+                }
+
+                // tasks not completed yet
+                if (!isCompleted) {
+                    return "LOCKED";
+                }
+
+                // completed but test not generated
+                if (!isGenerated) {
+                    return "GENERATE";
+                }
+
+                // completed + generated
+                return "GIVE";
             };
-        }
 
-        // helper
-        // helper
-        const isWeekCompleted = (week: any) =>
-            week.tasks.length > 0 &&
-            week.tasks.every((t: any) => t.is_completed);
+            const result: any = {
+                weekly: [],
+                phase: [],
+                final: [],
+            };
 
-        // helper
-        const getStatus = ({
-            isCompleted,
-            isGenerated,
-            isAttempted,
-        }: {
-            isCompleted: boolean;
-            isGenerated?: boolean;
-            isAttempted?: boolean;
-        }) => {
-            // highest priority
-            if (isAttempted) {
-                return "ATTEMPTED";
+            // =========================
+            // ✅ WEEKLY TESTS
+            // =========================
+            for (const phase of roadmap.phases) {
+                for (const week of phase.weeks) {
+                    const test = tests.find(
+                        (t) => t.weekId === week.id
+                    );
+
+                    const isCompleted = isWeekCompleted(week);
+
+                    const status = getStatus({
+                        isCompleted,
+                        isGenerated: test?.isGenerated,
+                        isAttempted: !!test?.attempt,
+                    });
+
+                    result.weekly.push({
+                        weekId: week.id,
+                        title: test?.title || `Week ${week.week_number} Test`,
+                        description: test?.description || week.focus,
+                        testId: test?.id,
+                        status,
+                    });
+                }
             }
 
-            // tasks not completed yet
-            if (!isCompleted) {
-                return "LOCKED";
-            }
+            // =========================
+            // ✅ PHASE TESTS
+            // =========================
+            for (const phase of roadmap.phases) {
+                const test = tests.find((t) => t.phaseId === phase.id);
 
-            // completed but test not generated
-            if (!isGenerated) {
-                return "GENERATE";
-            }
-
-            // completed + generated
-            return "GIVE";
-        };
-
-        const result: any = {
-            weekly: [],
-            phase: [],
-            final: [],
-        };
-
-        // =========================
-        // ✅ WEEKLY TESTS
-        // =========================
-        for (const phase of roadmap.phases) {
-            for (const week of phase.weeks) {
-                const test = tests.find(
-                    (t) => t.weekId === week.id
+                const isCompleted = phase.weeks.every((w) =>
+                    isWeekCompleted(w)
                 );
-
-                const isCompleted = isWeekCompleted(week);
 
                 const status = getStatus({
                     isCompleted,
@@ -116,290 +143,283 @@ export async function getTestsForUserExam(userExamId: number) {
                     isAttempted: !!test?.attempt,
                 });
 
-                result.weekly.push({
-                    weekId: week.id,
-                    title: test?.title || `Week ${week.week_number} Test`,
-                    description: test?.description || week.focus,
+                result.phase.push({
+                    phaseId: phase.id,
+                    title: test?.title || `Phase ${phase.order_index + 1} Test`,
+                    description: test?.description || phase.phase_name,
                     testId: test?.id,
                     status,
                 });
             }
-        }
 
-        // =========================
-        // ✅ PHASE TESTS
-        // =========================
-        for (const phase of roadmap.phases) {
-            const test = tests.find((t) => t.phaseId === phase.id);
-
-            const isCompleted = phase.weeks.every((w) =>
-                isWeekCompleted(w)
+            // =========================
+            // ✅ FINAL TESTS
+            // =========================
+            const allPhasesCompleted = roadmap.phases.every((phase) =>
+                phase.weeks.every((w) => isWeekCompleted(w))
             );
 
-            const status = getStatus({
-                isCompleted,
-                isGenerated: test?.isGenerated,
-                isAttempted: !!test?.attempt,
-            });
+            for (let i = 1; i <= 3; i++) {
+                const test = tests.find(
+                    (t) => t.type === "FINAL" && t.nOfFinalTests === i
+                );
 
-            result.phase.push({
-                phaseId: phase.id,
-                title: test?.title || `Phase ${phase.order_index + 1} Test`,
-                description: test?.description || phase.phase_name,
-                testId: test?.id,
-                status,
-            });
+                const status = getStatus({
+                    isCompleted: allPhasesCompleted,
+                    isGenerated: test?.isGenerated,
+                    isAttempted: !!test?.attempt,
+                });
+
+                result.final.push({
+                    finalNumber: i,
+                    title: test?.title || `Final Test ${i}`,
+                    description:
+                        test?.description ||
+                        `Final test of completing all roadmap content. Attempt ${i}`,
+                    testId: test?.id,
+                    status,
+                });
+            }
+
+            result.examName = roadmap.userExam.exam.name;
+
+            return {
+                success: true,
+                data: result,
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                success: false,
+                error: "Failed to load tests",
+            };
         }
-
-        // =========================
-        // ✅ FINAL TESTS
-        // =========================
-        const allPhasesCompleted = roadmap.phases.every((phase) =>
-            phase.weeks.every((w) => isWeekCompleted(w))
-        );
-
-        for (let i = 1; i <= 3; i++) {
-            const test = tests.find(
-                (t) => t.type === "FINAL" && t.nOfFinalTests === i
-            );
-
-            const status = getStatus({
-                isCompleted: allPhasesCompleted,
-                isGenerated: test?.isGenerated,
-                isAttempted: !!test?.attempt,
-            });
-
-            result.final.push({
-                finalNumber: i,
-                title: test?.title || `Final Test ${i}`,
-                description:
-                    test?.description ||
-                    `Final test of completing all roadmap content. Attempt ${i}`,
-                testId: test?.id,
-                status,
-            });
-        }
-
-        result.examName = roadmap.userExam.exam.name;
-
-        return {
-            success: true,
-            data: result,
-        };
-    } catch (error) {
-        console.error(error);
-        return {
-            success: false,
-            error: "Failed to load tests",
-        };
+    },
+    ['getTestsForUserExam', 'userExamId'],
+    {
+        tags: ["tests", "roadmaptests", "userExamtests"],
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
 
-export async function getTestById(testId: number) {
-    try {
-        const test = await db.test.findUnique({
-            where: {
-                id: testId,
-                isGenerated: true,
-            },
-            include: {
-                questions: {
-                    orderBy: {
-                        id: "asc",
-                    },
+export const getTestById = unstable_cache(
+    async (testId: number) => {
+        try {
+            const test = await db.test.findUnique({
+                where: {
+                    id: testId,
+                    isGenerated: true,
                 },
-                attempt: true,
-            },
-        });
+                include: {
+                    questions: {
+                        orderBy: {
+                            id: "asc",
+                        },
+                    },
+                    attempt: true,
+                },
+            });
 
-        if (!test) {
+            if (!test) {
+                return {
+                    success: false,
+                    message: "Test not found",
+                };
+            }
+
+            // 🎯 Clean frontend-ready structure
+            const formatted = {
+                id: test.id,
+                title: test.title,
+                type: test.type,
+                description: test.description,
+                totalMarks: test.totalMarks,
+                duration: test.duration,
+
+                questions: test.questions.map((q) => ({
+                    id: q.id,
+                    question: q.question,
+                    options: q.options as string[],
+                    topic: q.topic,
+                    difficulty: q.difficulty,
+                    marks: q.marks,
+                })),
+
+                attempt: test.attempt
+                    ? {
+                        score: test.attempt.score,
+                        percentage: test.attempt.percentage,
+                        responses: test.attempt.responses,
+                        completedAt: test.attempt.completedAt,
+                    }
+                    : null,
+            };
+
+            return {
+                success: true,
+                data: formatted,
+            };
+        } catch (error) {
+            console.error("❌ getTestById error:", error);
+
             return {
                 success: false,
-                message: "Test not found",
+                message: "Something went wrong",
             };
         }
-
-        // 🎯 Clean frontend-ready structure
-        const formatted = {
-            id: test.id,
-            title: test.title,
-            type: test.type,
-            description: test.description,
-            totalMarks: test.totalMarks,
-            duration: test.duration,
-
-            questions: test.questions.map((q) => ({
-                id: q.id,
-                question: q.question,
-                options: q.options as string[],
-                topic: q.topic,
-                difficulty: q.difficulty,
-                marks: q.marks,
-            })),
-
-            attempt: test.attempt
-                ? {
-                    score: test.attempt.score,
-                    percentage: test.attempt.percentage,
-                    responses: test.attempt.responses,
-                    completedAt: test.attempt.completedAt,
-                }
-                : null,
-        };
-
-        return {
-            success: true,
-            data: formatted,
-        };
-    } catch (error) {
-        console.error("❌ getTestById error:", error);
-
-        return {
-            success: false,
-            message: "Something went wrong",
-        };
+    },
+    ['getTestById', 'testId'],
+    {
+        tags: ["tests", "testById"],
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);
 
 
-export async function getTestResult(testId: number) {
+export const getTestResult = unstable_cache(
+    async (testId: number) => {
+        try {
 
-    try {
+            const test = await db.test.findUnique({
 
-        const test = await db.test.findUnique({
+                where: {
+                    id: testId,
+                },
 
-            where: {
-                id: testId,
-            },
+                include: {
 
-            include: {
+                    questions: true,
 
-                questions: true,
+                    attempt: true,
+                },
+            });
 
-                attempt: true,
-            },
-        });
+            if (!test) {
+                return {
+                    success: false,
 
-        if (!test) {
-            return {
-                success: false,
+                    message: "Test not found",
+                };
+            }
 
-                message: "Test not found",
-            };
-        }
-
-        if (!test.attempt) {
-            return {
-
-                success: false,
-
-                message: "Test not attempted yet",
-            };
-        }
-
-        const responses =
-            test.attempt.responses as Record<number, string>;
-
-        // =========================
-        // QUESTION ANALYSIS
-        // =========================
-        const questionsAnalysis =
-            test.questions.map((question) => {
-
-                const selectedAnswer =
-                    responses[question.id];
-
-                const isCorrect =
-                    selectedAnswer === question.correctAns;
-
+            if (!test.attempt) {
                 return {
 
-                    id: question.id,
+                    success: false,
 
-                    question: question.question,
-
-                    options: question.options as string[],
-
-                    correctAnswer: question.correctAns,
-
-                    selectedAnswer,
-
-                    isCorrect,
-
-                    marks: question.marks,
-
-                    topic: question.topic,
-
-                    difficulty: question.difficulty,
+                    message: "Test not attempted yet",
                 };
-            });
+            }
 
-        // =========================
-        // STATS
-        // =========================
-        const correctAnswers =
-            questionsAnalysis.filter(
-                (q) => q.isCorrect
-            ).length;
+            const responses =
+                test.attempt.responses as Record<number, string>;
 
-        const wrongAnswers =
-            questionsAnalysis.filter(
-                (q) =>
-                    q.selectedAnswer &&
-                    !q.isCorrect
-            ).length;
+            // =========================
+            // QUESTION ANALYSIS
+            // =========================
+            const questionsAnalysis =
+                test.questions.map((question) => {
 
-        const skippedAnswers =
-            questionsAnalysis.filter(
-                (q) => !q.selectedAnswer
-            ).length;
+                    const selectedAnswer =
+                        responses[question.id];
 
-        return {
+                    const isCorrect =
+                        selectedAnswer === question.correctAns;
 
-            test: {
+                    return {
 
-                id: test.id,
+                        id: question.id,
 
-                title: test.title,
+                        question: question.question,
 
-                description: test.description,
+                        options: question.options as string[],
 
-                totalMarks: test.totalMarks,
+                        correctAnswer: question.correctAns,
 
-                duration: test.duration,
-            },
+                        selectedAnswer,
 
-            result: {
+                        isCorrect,
 
-                score: test.attempt.score,
+                        marks: question.marks,
 
-                totalMarks:
-                    test.attempt.totalMarks,
+                        topic: question.topic,
 
-                percentage:
-                    test.attempt.percentage,
+                        difficulty: question.difficulty,
+                    };
+                });
 
-                completedAt:
-                    test.attempt.completedAt,
+            // =========================
+            // STATS
+            // =========================
+            const correctAnswers =
+                questionsAnalysis.filter(
+                    (q) => q.isCorrect
+                ).length;
 
-                correctAnswers,
+            const wrongAnswers =
+                questionsAnalysis.filter(
+                    (q) =>
+                        q.selectedAnswer &&
+                        !q.isCorrect
+                ).length;
 
-                wrongAnswers,
+            const skippedAnswers =
+                questionsAnalysis.filter(
+                    (q) => !q.selectedAnswer
+                ).length;
 
-                skippedAnswers,
-            },
+            return {
 
-            questions: questionsAnalysis,
-        };
+                test: {
 
-    } catch (error) {
+                    id: test.id,
 
-        console.error(error);
+                    title: test.title,
 
-        return {
-            success: false,
+                    description: test.description,
 
-            message: "Failed to fetch test result",
-        };
+                    totalMarks: test.totalMarks,
+
+                    duration: test.duration,
+                },
+
+                result: {
+
+                    score: test.attempt.score,
+
+                    totalMarks:
+                        test.attempt.totalMarks,
+
+                    percentage:
+                        test.attempt.percentage,
+
+                    completedAt:
+                        test.attempt.completedAt,
+
+                    correctAnswers,
+
+                    wrongAnswers,
+
+                    skippedAnswers,
+                },
+
+                questions: questionsAnalysis,
+            };
+
+        } catch (error) {
+
+            console.error(error);
+
+            return {
+                success: false,
+
+                message: "Failed to fetch test result",
+            };
+        }
+    },
+    ['getTestResult', 'testId'],
+    {
+        tags: ["tests", "testResult"],
+        revalidate: 60, // Revalidate every 60 seconds
     }
-}
+);  

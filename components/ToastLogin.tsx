@@ -13,7 +13,7 @@ export default function ToastLogin() {
             sessionStorage.getItem("show-login-toast") === "true"
         ) {
             toast.success("Signed in successfully!" ,{
-                duration: 500,
+                duration: 1500
             });
             sessionStorage.removeItem("show-login-toast");
         }

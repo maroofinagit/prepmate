@@ -1,7 +1,7 @@
 import { getTestsForUserExam } from "@/app/actions/test";
 import TestsClient from "@/components/TestsClient";
 
-export const revalidate = 0; // Disable caching for this page
+// export const revalidate = 0; // Disable caching for this page
 
 export default async function TestPage({ params }: { params: Promise<{ id: string }> }) {
     

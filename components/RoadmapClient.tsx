@@ -155,14 +155,16 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     };
 
     // Helper: format optional snake_case date fields safely
-    const formatDate = (d?: string | null) => {
-        if (!d) return null;
-        try {
-            return new Date(d).toLocaleDateString();
-        } catch {
-            return null;
-        }
-    };
+    function formatDate(date: string | Date) {
+        const d = new Date(date);
+
+        return d.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            timeZone: "UTC", // or your chosen timezone
+        });
+    }
 
     return (
         <div className="p-6 mt-16 md:mt-20 space-y-10">
@@ -175,9 +177,13 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                 <p className="text-sm text-gray-500 mt-1">
                     Duration:{" "}
                     <span className="font-medium">
-                        {localRoadmap.start_date && formatDate(localRoadmap.start_date.toDateString())}{" "}
-                        {localRoadmap.start_date || localRoadmap.end_date ? "→" : ""}{" "}
-                        {localRoadmap.end_date && formatDate(localRoadmap.end_date.toDateString())}
+                        {localRoadmap.start_date &&
+                            formatDate(new Date(localRoadmap.start_date).toDateString())}
+
+                        {localRoadmap.start_date || localRoadmap.end_date ? "→" : ""}
+
+                        {localRoadmap.end_date &&
+                            formatDate(new Date(localRoadmap.end_date).toDateString())}
                     </span>
                 </p>
 
@@ -464,7 +470,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         <p className=" text-gray-600">{m.goal}</p>
                                         <p className="text-sm mt-4 text-black font-medium">
                                             🎯 Target: {m.target_date
-                                                ? formatDate(m.target_date.toDateString())
+                                                ? formatDate(new Date(m.target_date).toDateString())
                                                 : "Not specified"}
                                         </p>
 
