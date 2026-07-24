@@ -1,20 +1,21 @@
-import { getShortExams, getUserExams } from "@/app/actions/action";
+"use client";
 import Link from "next/link";
-import { auth } from "@/app/lib/auth";
-import { headers } from "next/headers";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import VisitMobile from "./VisitMobile";
-import { toast } from "sonner";
 import ToastLogin from "./ToastLogin";
 
-export default async function LandingPage() {
-    const headersData = await headers();
-    const data = await auth.api.getSession({ headers: headersData });
-    const user = data?.session?.userId ? data.user : null;
+interface LandingPageProps {
+    user: any | null;
+    exams: any[];
+    userExams: any[];
+}
 
-    const exams = await getShortExams();
-    let userExams: any[] = user ? await getUserExams(user.id) : [];
+export default function LandingPage({
+    user,
+    exams,
+    userExams,
+}: LandingPageProps) {
 
     const isGuest = !user;
     const isLoggedNoExam = user && userExams.length === 0;
@@ -74,7 +75,7 @@ export default async function LandingPage() {
                     </h2>
 
                     <p className="text-gray-600 mb-10">
-                        Your ongoing preparation — pick up where you left off.
+                        Your ongoing preparation - pick up where you left off.
                     </p>
 
                     <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
