@@ -27,11 +27,12 @@ interface TestProps {
 }
 
 export default function TestClient({ test }: TestProps) {
+    
     const [currentQ, setCurrentQ] = useState(0);
 
     const [responses, setResponses] = useState<Record<number, string>>({});
 
-    const [timeLeft, setTimeLeft] = useState(test.duration || 15 * 60);
+    const [timeLeft, setTimeLeft] = useState(test.duration ? test.duration * 60 : 15 * 60); //duration is in minutes, default to 15 if not provided
 
     const [submitting, setSubmitting] = useState(false);
 
@@ -81,7 +82,7 @@ export default function TestClient({ test }: TestProps) {
             const parsed = JSON.parse(saved);
 
             setResponses(parsed.responses || {});
-            setTimeLeft(parsed.timeLeft || 15 * 60);
+            setTimeLeft(parsed.timeLeft || 15);
         }
     }, [test.id]);
 
@@ -139,7 +140,7 @@ export default function TestClient({ test }: TestProps) {
     // =========================
     // FORMAT TIMER
     // =========================
-    const minutes = Math.floor(timeLeft / 60);
+    const minutes = Math.floor(timeLeft/60);
 
     const seconds = timeLeft % 60;
 
@@ -154,7 +155,7 @@ export default function TestClient({ test }: TestProps) {
 
             setSubmitting(true);
 
-            toast.loading("Submitting your test...");
+            const toastId = toast.loading("Submitting your test...");
 
             const res = await fetch("/api/tests/submit", {
                 method: "POST",
@@ -170,11 +171,16 @@ export default function TestClient({ test }: TestProps) {
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message || "Failed to submit test");
+                toast.error(data.message || "Failed to submit test", {
+                    id: toastId,
+                });
                 return;
             }
 
-            toast.success("Test submitted successfully!");
+            toast.success("Test submitted successfully!",{
+                id: toastId,
+            });
+            setSubmitting(false);
 
             console.log("Submission Result:", data);
 

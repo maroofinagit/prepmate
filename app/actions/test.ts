@@ -282,6 +282,18 @@ export async function getTestResult(testId: number) {
                 questions: true,
 
                 attempt: true,
+
+                userExam: {
+                    select: {
+                        id: true,
+                        exam: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
@@ -372,6 +384,8 @@ export async function getTestResult(testId: number) {
                 totalMarks: test.totalMarks,
 
                 duration: test.duration,
+
+                examName: test.userExam.exam.name,
             },
 
             result: {

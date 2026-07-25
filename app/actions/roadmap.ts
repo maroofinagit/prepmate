@@ -188,9 +188,9 @@ Output ONLY valid JSON in this exact structure:
 
                             phaseId: createdPhase.id,
 
-                            totalMarks: 100,
+                            totalMarks: 20,
 
-                            duration: 120,
+                            duration: 30,
 
                             isGenerated: false,
                         },
@@ -233,9 +233,9 @@ Output ONLY valid JSON in this exact structure:
 
                                     weekId: createdWeek.id,
 
-                                    totalMarks: 50,
+                                    totalMarks: 10,
 
-                                    duration: 60,
+                                    duration: 15,
 
                                     isGenerated: false,
                                 },
@@ -323,9 +323,9 @@ Output ONLY valid JSON in this exact structure:
 
                         userExamId: user_exam_id,
 
-                        totalMarks: 150,
+                        totalMarks: 50,
 
-                        duration: 180,
+                        duration: 70,
 
                         nOfFinalTests: 1,
 
@@ -341,9 +341,9 @@ Output ONLY valid JSON in this exact structure:
 
                         userExamId: user_exam_id,
 
-                        totalMarks: 200,
+                        totalMarks: 50,
 
-                        duration: 240,
+                        duration: 70,
 
                         nOfFinalTests: 2,
 
@@ -359,9 +359,9 @@ Output ONLY valid JSON in this exact structure:
 
                         userExamId: user_exam_id,
 
-                        totalMarks: 300,
+                        totalMarks: 50,
 
-                        duration: 300,
+                        duration: 70,
 
                         nOfFinalTests: 3,
 

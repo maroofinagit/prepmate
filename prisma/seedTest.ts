@@ -1,90 +1,49 @@
 import { db } from "@/app/lib/db";
-import { Difficulty } from "@/generated/prisma/enums";
-
 
 async function main() {
-    const userExamId = 15;
-    const weekId = 384;
+    const userExamId = 25;
 
     // 🔍 Find existing test
-    const test = await db.test.findUnique({
+    const tests = await db.test.findMany({
         where: {
-            userExamId_weekId: {
-                userExamId,
-                weekId,
-            },
-        },
-        include: {
-            questions: true,
+            userExamId: userExamId,
         },
     });
 
-    if (!test) {
-        console.log("❌ Test not found");
+    if (tests.length === 0) {
+        console.log("❌ No tests found for the given userExamId");
         return;
     }
 
-    // 🛑 Prevent duplicate seeding
-    if (test.questions.length > 0) {
-        console.log("⚠️ Questions already exist for this test");
-        return;
+    for (const test of tests) {
+        if (test.type === "WEEKLY") {
+            await db.test.update({
+                where: { id: test.id },
+                data: {
+                    duration: 15,
+                    totalMarks: 10,
+                },
+            });
+        } else if (test.type === "PHASE") {
+            await db.test.update({
+                where: { id: test.id },
+                data: {
+                    duration: 30,
+                    totalMarks: 20,
+                },
+            });
+        } else if (test.type === "FINAL") {
+            await db.test.update({
+                where: { id: test.id },
+                data: {
+                    duration: 70,
+                    totalMarks: 50,
+                },
+            });
+        }
     }
 
-    // ✍️ Prepare questions
-    const questionsData = [
-        {
-            testId: test.id,
-            question: "What is the time complexity of binary search?",
-            options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-            correctAns: "O(log n)",
-            topic: "Searching",
-            difficulty: Difficulty.easy,
-            marks: 1,
-        },
-        {
-            testId: test.id,
-            question: "Which data structure follows FIFO?",
-            options: ["Stack", "Queue", "Tree", "Graph"],
-            correctAns: "Queue",
-            topic: "Data Structures",
-            difficulty: Difficulty.easy,
-            marks: 1,
-        },
-        {
-            testId: test.id,
-            question: "Max element in array requires?",
-            options: ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
-            correctAns: "O(n)",
-            topic: "Arrays",
-            difficulty: Difficulty.easy,
-            marks: 1,
-        },
-        {
-            testId: test.id,
-            question: "Which sorting is fastest on average?",
-            options: ["Bubble", "Selection", "QuickSort", "Insertion"],
-            correctAns: "QuickSort",
-            topic: "Sorting",
-            difficulty: Difficulty.medium,
-            marks: 1,
-        },
-        {
-            testId: test.id,
-            question: "Space complexity of merge sort?",
-            options: ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
-            correctAns: "O(n)",
-            topic: "Sorting",
-            difficulty: Difficulty.medium,
-            marks: 1,
-        },
-    ];
-
-    // 🚀 Insert all questions
-    await db.question.createMany({
-        data: questionsData,
-    });
-
-    console.log("✅ Questions added to existing test:", test.id);
+    console.log(`✅ Tests of userExamId ${userExamId} updated successfully.`);
 }
 
 main()

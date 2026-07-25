@@ -160,13 +160,16 @@ export async function POST(req: NextRequest) {
         // =========================
 
         const prompt = `
-Generate exactly 10 MCQ questions for a ${test.type} level test.
+Generate test questions for the following exam and test:
 
 Exam Name:
 ${test.userExam.exam.name}
 
 Test Title:
 ${test.title}
+
+Type of Test:
+${test.type}
 
 Topics:
 ${topics.join(", ")}
@@ -183,6 +186,11 @@ Rules:
   - difficulty
   - marks
 
+Question Count:
+- If the test type is "WEEKLY", generate exactly 10 MCQ questions.
+- If the test type is "PHASE", generate exactly 20 MCQ questions.
+- If the test type is "FINAL", generate exactly 50 MCQ questions.
+ 
 Difficulty values allowed:
 easy, medium, hard
 

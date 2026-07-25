@@ -41,7 +41,7 @@ export default async function ResultPage({
                 <div className="bg-white rounded-3xl shadow-lg p-8 mb-8">
 
                     <h1 className="text-4xl font-bold text-zinc-800 mb-2">
-                        {test.title}
+                        {test.title} of {test.examName}
                     </h1>
 
                     <p className="text-zinc-500">
