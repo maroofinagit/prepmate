@@ -1,39 +1,38 @@
 "use client";
 
+import { sendBulkEmail } from "@/app/actions/admin";
 import { useState } from "react";
-import { toast } from "sonner";    
+import { toast } from "sonner";
 
-export default function SendEmailPage() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+export default function SendBulkEmailPage() {
+    const [subject, setSubject] = useState("");
+    const [body, setBody] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSend = async () => {
-        if (!email) {
-            toast.error("Please enter an email address");
+        if (!body) {
+            toast.error("Please enter an email body");
+
+            return;
+        }
+
+        if (!subject) {
+            toast.error("Please enter an email subject");
             return;
         }
 
         try {
             setLoading(true);
 
-            const res = await fetch("/api/sendEmail", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    to: email,
-                    name: name,
-                }),
+            const res = await sendBulkEmail({
+                subject,
+                body,
             });
 
-            const data = await res.json();
-
-            if (data.success) {
+            if (res.success) {
                 toast.success("Email sent successfully!");
-                setName("");
-                setEmail("");
+                setSubject("");
+                setBody("");
             } else {
                 toast.error("❌ Failed to send email");
             }
@@ -54,18 +53,18 @@ export default function SendEmailPage() {
 
                 <input
                     type="text"
-                    placeholder="Enter name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     className="w-full border p-2 rounded mb-3"
                 />
 
-                <input
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                <textarea
+                    placeholder="Enter email body"
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
                     className="w-full border p-2 rounded mb-4"
+                    rows={5}
                 />
 
                 <button

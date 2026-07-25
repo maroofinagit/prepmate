@@ -4,6 +4,16 @@ import { Resend } from "resend";
 import { db } from "../lib/db";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
+import { getEmailTemplate } from "@/app/lib/emailTempelete";
+import nodemailer from "nodemailer";
+
+const mailTransporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+    },
+});
 
 export async function getAdminDashboardData() {
     const totalUsers = await db.user.count();
@@ -45,7 +55,7 @@ export async function getUserDetails(userId: string) {
 }
 
 // Admin action to send email to a Admin when a new user signs up without enrolling in any exam
-export async function sendAdminNotificationEmail(to: string, name: string) {
+export async function sendSignUpAdminNot(to: string, name: string) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -148,3 +158,93 @@ export async function deleteAccount() {
     }
 }
 
+interface SendEmailProps {
+    to: string;
+    name: string;
+    subject: string;
+    body: string;
+}
+
+export async function sendEmail({
+    to,
+    name,
+    subject,
+    body,
+}: SendEmailProps) {
+    try {
+
+        // Wrap inside your email template
+        const html = await getEmailTemplate({
+            name,
+            body,
+        });
+
+        await mailTransporter.sendMail({
+            from: `"PrepMate" <${process.env.GMAIL_USER}>`,
+            to,
+            subject,
+            html,
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return { success: false };
+    }
+}
+
+
+export async function sendBulkEmail({
+    subject,
+    body,
+}: {
+    subject: string;
+    body: string;
+}) {
+    try {
+        const users = await db.user.findMany({
+            where: {
+                role: 'student',
+            },
+        });
+
+        const validUsers = users.filter(
+            (user): user is typeof user & { email: string; name: string } =>
+                user.email !== null && user.name !== null
+        );
+
+        for (const user of validUsers) {
+            await sendEmail({
+                to: user.email,
+                name: user.name,
+                subject,
+                body,
+            });
+        }
+        return { success: true, message: "Bulk email sent successfully" };
+    } catch (error) {
+        console.error("Error sending bulk email:", error);
+        return { success: false, message: "Failed to send bulk email" };
+    }
+}
+
+export async function getUserData(userId: string) {
+    try {
+        const user = await db.user.findUnique({
+            where: { id: userId },
+            select: {
+                email: true,
+                name: true,
+            },
+        });
+
+        if (!user) {
+            return { success: false, message: "User not found" };
+        }
+
+        return { success: true, data: user };
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return { success: false, message: "Failed to fetch user data" };
+    }
+}   

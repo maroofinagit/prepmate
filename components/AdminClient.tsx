@@ -37,8 +37,8 @@ export default function AdminClient({ data }: any) {
                 </div>
             </div>
 
-            <Link href="/admin/sendEmail" className="inline-block mb-6 px-4 py-2 bg-black text-white rounded-lg">
-                ✉️ Send Email
+            <Link href="/admin/sendBulkEmail" className="inline-block mb-6 px-4 py-2 bg-black text-white rounded-lg">
+                ✉️ Send Bulk Email
             </Link>
 
             {/* 📋 USERS TABLE */}

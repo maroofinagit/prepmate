@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function UserDetailClient({ user }: any) {
     const router = useRouter();
@@ -73,6 +74,12 @@ export default function UserDetailClient({ user }: any) {
                         </span>
                     </div>
                 </div>
+
+                <Link href={`/admin/sendEmail/${user.id}`} className="ml-auto">
+                    <Button className="hover:bg-black bg-transparent border border-black text-black font-medium hover:text-white cursor-pointer">
+                        Send Email
+                    </Button>
+                </Link>
             </div>
 
             {/* 📊 STATS GRID */}
@@ -107,10 +114,10 @@ export default function UserDetailClient({ user }: any) {
 
                                 <span
                                     className={`px-2 py-1 text-xs rounded-full ${!exam.roadmap
-                                            ? "bg-gray-100 text-gray-600"
-                                            : exam.roadmap_status === "completed"
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-yellow-100 text-yellow-700"
+                                        ? "bg-gray-100 text-gray-600"
+                                        : exam.roadmap_status === "completed"
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-yellow-100 text-yellow-700"
                                         }`}
                                 >
                                     {!exam.roadmap

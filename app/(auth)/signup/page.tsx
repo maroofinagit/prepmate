@@ -1,6 +1,6 @@
 "use client";
 
-import { sendAdminNotificationEmail } from "@/app/actions/admin";
+import { sendSignUpAdminNot } from "@/app/actions/admin";
 import { authClient } from "@/app/lib/auth-client";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -49,7 +49,7 @@ export default function SignUpPage() {
                 toast.success("Account created successfully!");
 
                 // Send welcome email using Resend
-                await sendAdminNotificationEmail(email, name);
+                await sendSignUpAdminNot(email, name);
                 
                 router.push("/signin");
 

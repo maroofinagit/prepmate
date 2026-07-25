@@ -9,14 +9,14 @@ export default async function UserDetailPage({
     
     const { id } = await params;
 
-    let user;
+    const user = await getUserDetails(id);
 
-    try {
-        user = await getUserDetails(id);        
-    } catch (err) {
-        console.error("❌ Error fetching user details:", err);
-        return <div className="p-6 bg-gray-50 min-h-screen">Error loading user details.</div>;
+    if (!user) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <h1 className="text-2xl font-semibold text-gray-700">User not found</h1>
+            </div>
+        );
     }
-
     return <UserDetailAdmin user={user} />;
 }
