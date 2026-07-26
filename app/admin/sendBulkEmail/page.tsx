@@ -1,13 +1,28 @@
 "use client";
 
 import { sendBulkEmail } from "@/app/actions/admin";
-import { useState } from "react";
+import { getEmailTemplate } from "@/app/lib/emailTempelete";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function SendBulkEmailPage() {
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [loading, setLoading] = useState(false);
+    const [preview, setPreview] = useState("");
+
+    useEffect(() => {
+        async function generatePreview() {
+            const html = await getEmailTemplate({
+                name: "User",
+                body,
+            });
+
+            setPreview(html);
+        }
+
+        generatePreview();
+    }, [body, subject]);
 
     const handleSend = async () => {
         if (!body) {
@@ -44,37 +59,43 @@ export default function SendBulkEmailPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f6f1eb] px-4">
-            <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
+        <div className="min-h-screen overflow-y-visible pt-32 flex flex-col w-full items-center justify-center bg-[#f6f1eb] px-4">            <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
 
-                <h1 className="text-xl font-semibold mb-4">
-                    Send PrepMate Email 🚀
-                </h1>
+            <h1 className="text-xl font-semibold mb-4">
+                Send PrepMate Email 🚀
+            </h1>
 
-                <input
-                    type="text"
-                    placeholder="Enter subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full border p-2 rounded mb-3"
-                />
+            <input
+                type="text"
+                placeholder="Enter subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="w-full border p-2 rounded mb-3"
+            />
 
-                <textarea
-                    placeholder="Enter email body"
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    className="w-full border p-2 rounded mb-4"
-                    rows={5}
-                />
+            <textarea
+                placeholder="Enter email body"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="w-full border p-2 rounded mb-4"
+                rows={5}
+            />
 
-                <button
-                    onClick={handleSend}
-                    disabled={loading}
-                    className={`w-full cursor-pointer bg-black text-white py-2 rounded hover:bg-green-700 hover:opacity-90 ${loading ? "cursor-not-allowed opacity-70 hover:opacity-70" : ""}`}
-                >
-                    {loading ? "Sending..." : "Send Email"}
-                </button>
+            <button
+                onClick={handleSend}
+                disabled={loading}
+                className={`w-full cursor-pointer bg-black text-white py-2 rounded hover:bg-green-700 hover:opacity-90 ${loading ? "cursor-not-allowed opacity-70 hover:opacity-70" : ""}`}
+            >
+                {loading ? "Sending..." : "Send Email"}
+            </button>
 
+        </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-md w-full mt-6">
+                <h2 className="text-lg font-semibold mb-4">
+                    Subject: {subject || "No subject provided"}
+                </h2>
+                <iframe srcDoc={preview} className="w-full h-100 border" title="Email Preview" />
             </div>
         </div>
     );

@@ -1,13 +1,30 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sendEmail } from "@/app/actions/admin";
 import { toast } from "sonner";
+import { getEmailTemplate } from "@/app/lib/emailTempelete";
 
 export default function SendEmailClient({ email, name }: { email: string; name: string }) {
 
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const [preview, setPreview] = useState("");
+
+    useEffect(() => {
+        async function generatePreview() {
+
+            const html = await getEmailTemplate({
+                name,
+                body,
+            });
+
+            setPreview(html);
+        }
+
+        generatePreview();
+    }, [body, subject,]);
 
     const handleSend = async () => {
         if (!body) {
@@ -46,7 +63,7 @@ export default function SendEmailClient({ email, name }: { email: string; name: 
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f6f1eb] px-4">
+        <div className="min-h-screen overflow-y-visible pt-32 flex flex-col w-full items-center justify-center bg-[#f6f1eb] px-4">
             <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
 
                 <h1 className="text-xl font-semibold mb-4">
@@ -77,6 +94,13 @@ export default function SendEmailClient({ email, name }: { email: string; name: 
                     {loading ? "Sending..." : "Send Email"}
                 </button>
 
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-md w-full mt-6">
+                <h2 className="text-lg font-semibold mb-4">
+                    Subject: {subject || "No subject provided"}
+                </h2>
+                <iframe srcDoc={preview} className="w-full h-100 border" title="Email Preview" />
             </div>
         </div>
     );
