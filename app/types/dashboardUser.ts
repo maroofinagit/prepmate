@@ -1,4 +1,5 @@
-import { RoadmapStatus} from "@/generated/prisma/enums";
+import { Prisma } from "@/generated/prisma/client";
+import { RoadmapStatus, TestType } from "@/generated/prisma/enums";
 
 export interface DashboardUser {
     id: string;
@@ -12,13 +13,16 @@ export interface DashboardUserExam {
     exam_id: number;
     start_date: Date;   // Dates come as Date in JSON
     end_date: Date;
-    current_stage: string | null;
     progress_percent: number | null;
     performanceScore: number | null;
+    highestScore: number | null;
+    lowestScore: number | null;
+    lastTestScore: number | null;
 
     exam: DashboardExam;
     roadmap: DashboardRoadmap | null;
-    roadmap_status: RoadmapStatus 
+    roadmap_status: RoadmapStatus
+    tests: DashboardTest[] | null;
 }
 
 export interface DashboardExam {
@@ -69,6 +73,46 @@ export interface DashboardTask {
     order_index: number | null;
     created_at: Date;
     updated_at: Date;
+}
+
+export interface DashboardTest {
+    id: number;
+
+    title: string;
+    type: TestType;
+
+    totalMarks: number;
+    duration: number | null;
+
+    createdAt: Date;
+    isGenerated: boolean;
+
+    weekId: number | null;
+    phaseId: number | null;
+
+    questions: DashboardQuestion[];
+
+    attempt: DashboardTestAttempt | null;
+}
+
+export interface DashboardQuestion {
+    id: number;
+}
+
+export interface DashboardTestAttempt {
+    id: number;
+
+    score: number;
+    totalMarks: number;
+    percentage: number;
+
+    isPassed: boolean;
+
+    timeTaken: number;
+
+    completedAt: Date;
+
+    responses: Prisma.JsonValue;
 }
 
 // export enum RoadmapStatus {

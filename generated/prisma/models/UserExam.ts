@@ -31,7 +31,9 @@ export type UserExamAvgAggregateOutputType = {
   exam_id: number | null
   progress_percent: number | null
   performanceScore: number | null
-  testsGiven: number | null
+  highestScore: number | null
+  lowestScore: number | null
+  lastTestScore: number | null
 }
 
 export type UserExamSumAggregateOutputType = {
@@ -39,7 +41,9 @@ export type UserExamSumAggregateOutputType = {
   exam_id: number | null
   progress_percent: number | null
   performanceScore: number | null
-  testsGiven: number | null
+  highestScore: number | null
+  lowestScore: number | null
+  lastTestScore: number | null
 }
 
 export type UserExamMinAggregateOutputType = {
@@ -48,10 +52,11 @@ export type UserExamMinAggregateOutputType = {
   exam_id: number | null
   start_date: Date | null
   end_date: Date | null
-  current_stage: string | null
   progress_percent: number | null
   performanceScore: number | null
-  testsGiven: number | null
+  highestScore: number | null
+  lowestScore: number | null
+  lastTestScore: number | null
   created_at: Date | null
   roadmap_status: $Enums.RoadmapStatus | null
 }
@@ -62,10 +67,11 @@ export type UserExamMaxAggregateOutputType = {
   exam_id: number | null
   start_date: Date | null
   end_date: Date | null
-  current_stage: string | null
   progress_percent: number | null
   performanceScore: number | null
-  testsGiven: number | null
+  highestScore: number | null
+  lowestScore: number | null
+  lastTestScore: number | null
   created_at: Date | null
   roadmap_status: $Enums.RoadmapStatus | null
 }
@@ -76,10 +82,11 @@ export type UserExamCountAggregateOutputType = {
   exam_id: number
   start_date: number
   end_date: number
-  current_stage: number
   progress_percent: number
   performanceScore: number
-  testsGiven: number
+  highestScore: number
+  lowestScore: number
+  lastTestScore: number
   created_at: number
   roadmap_status: number
   _all: number
@@ -91,7 +98,9 @@ export type UserExamAvgAggregateInputType = {
   exam_id?: true
   progress_percent?: true
   performanceScore?: true
-  testsGiven?: true
+  highestScore?: true
+  lowestScore?: true
+  lastTestScore?: true
 }
 
 export type UserExamSumAggregateInputType = {
@@ -99,7 +108,9 @@ export type UserExamSumAggregateInputType = {
   exam_id?: true
   progress_percent?: true
   performanceScore?: true
-  testsGiven?: true
+  highestScore?: true
+  lowestScore?: true
+  lastTestScore?: true
 }
 
 export type UserExamMinAggregateInputType = {
@@ -108,10 +119,11 @@ export type UserExamMinAggregateInputType = {
   exam_id?: true
   start_date?: true
   end_date?: true
-  current_stage?: true
   progress_percent?: true
   performanceScore?: true
-  testsGiven?: true
+  highestScore?: true
+  lowestScore?: true
+  lastTestScore?: true
   created_at?: true
   roadmap_status?: true
 }
@@ -122,10 +134,11 @@ export type UserExamMaxAggregateInputType = {
   exam_id?: true
   start_date?: true
   end_date?: true
-  current_stage?: true
   progress_percent?: true
   performanceScore?: true
-  testsGiven?: true
+  highestScore?: true
+  lowestScore?: true
+  lastTestScore?: true
   created_at?: true
   roadmap_status?: true
 }
@@ -136,10 +149,11 @@ export type UserExamCountAggregateInputType = {
   exam_id?: true
   start_date?: true
   end_date?: true
-  current_stage?: true
   progress_percent?: true
   performanceScore?: true
-  testsGiven?: true
+  highestScore?: true
+  lowestScore?: true
+  lastTestScore?: true
   created_at?: true
   roadmap_status?: true
   _all?: true
@@ -237,10 +251,11 @@ export type UserExamGroupByOutputType = {
   exam_id: number
   start_date: Date
   end_date: Date
-  current_stage: string | null
   progress_percent: number | null
   performanceScore: number | null
-  testsGiven: number | null
+  highestScore: number | null
+  lowestScore: number | null
+  lastTestScore: number | null
   created_at: Date
   roadmap_status: $Enums.RoadmapStatus
   _count: UserExamCountAggregateOutputType | null
@@ -274,10 +289,11 @@ export type UserExamWhereInput = {
   exam_id?: Prisma.IntFilter<"UserExam"> | number
   start_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   end_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
-  current_stage?: Prisma.StringNullableFilter<"UserExam"> | string | null
   progress_percent?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   performanceScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
-  testsGiven?: Prisma.IntNullableFilter<"UserExam"> | number | null
+  highestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lowestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lastTestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
   roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
@@ -293,10 +309,11 @@ export type UserExamOrderByWithRelationInput = {
   exam_id?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
-  current_stage?: Prisma.SortOrderInput | Prisma.SortOrder
   progress_percent?: Prisma.SortOrderInput | Prisma.SortOrder
   performanceScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  testsGiven?: Prisma.SortOrderInput | Prisma.SortOrder
+  highestScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  lowestScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
   roadmap?: Prisma.RoadmapOrderByWithRelationInput
@@ -315,10 +332,11 @@ export type UserExamWhereUniqueInput = Prisma.AtLeast<{
   exam_id?: Prisma.IntFilter<"UserExam"> | number
   start_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   end_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
-  current_stage?: Prisma.StringNullableFilter<"UserExam"> | string | null
   progress_percent?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   performanceScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
-  testsGiven?: Prisma.IntNullableFilter<"UserExam"> | number | null
+  highestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lowestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lastTestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
   roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
@@ -334,10 +352,11 @@ export type UserExamOrderByWithAggregationInput = {
   exam_id?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
-  current_stage?: Prisma.SortOrderInput | Prisma.SortOrder
   progress_percent?: Prisma.SortOrderInput | Prisma.SortOrder
   performanceScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  testsGiven?: Prisma.SortOrderInput | Prisma.SortOrder
+  highestScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  lowestScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
   _count?: Prisma.UserExamCountOrderByAggregateInput
@@ -356,10 +375,11 @@ export type UserExamScalarWhereWithAggregatesInput = {
   exam_id?: Prisma.IntWithAggregatesFilter<"UserExam"> | number
   start_date?: Prisma.DateTimeWithAggregatesFilter<"UserExam"> | Date | string
   end_date?: Prisma.DateTimeWithAggregatesFilter<"UserExam"> | Date | string
-  current_stage?: Prisma.StringNullableWithAggregatesFilter<"UserExam"> | string | null
   progress_percent?: Prisma.FloatNullableWithAggregatesFilter<"UserExam"> | number | null
   performanceScore?: Prisma.FloatNullableWithAggregatesFilter<"UserExam"> | number | null
-  testsGiven?: Prisma.IntNullableWithAggregatesFilter<"UserExam"> | number | null
+  highestScore?: Prisma.FloatNullableWithAggregatesFilter<"UserExam"> | number | null
+  lowestScore?: Prisma.FloatNullableWithAggregatesFilter<"UserExam"> | number | null
+  lastTestScore?: Prisma.FloatNullableWithAggregatesFilter<"UserExam"> | number | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusWithAggregatesFilter<"UserExam"> | $Enums.RoadmapStatus
 }
@@ -367,10 +387,11 @@ export type UserExamScalarWhereWithAggregatesInput = {
 export type UserExamCreateInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
@@ -386,10 +407,11 @@ export type UserExamUncheckedCreateInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
@@ -400,10 +422,11 @@ export type UserExamUncheckedCreateInput = {
 export type UserExamUpdateInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
@@ -419,10 +442,11 @@ export type UserExamUncheckedUpdateInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
@@ -436,10 +460,11 @@ export type UserExamCreateManyInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
 }
@@ -447,10 +472,11 @@ export type UserExamCreateManyInput = {
 export type UserExamUpdateManyMutationInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
 }
@@ -461,10 +487,11 @@ export type UserExamUncheckedUpdateManyInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
 }
@@ -485,10 +512,11 @@ export type UserExamCountOrderByAggregateInput = {
   exam_id?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
-  current_stage?: Prisma.SortOrder
   progress_percent?: Prisma.SortOrder
   performanceScore?: Prisma.SortOrder
-  testsGiven?: Prisma.SortOrder
+  highestScore?: Prisma.SortOrder
+  lowestScore?: Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
 }
@@ -498,7 +526,9 @@ export type UserExamAvgOrderByAggregateInput = {
   exam_id?: Prisma.SortOrder
   progress_percent?: Prisma.SortOrder
   performanceScore?: Prisma.SortOrder
-  testsGiven?: Prisma.SortOrder
+  highestScore?: Prisma.SortOrder
+  lowestScore?: Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrder
 }
 
 export type UserExamMaxOrderByAggregateInput = {
@@ -507,10 +537,11 @@ export type UserExamMaxOrderByAggregateInput = {
   exam_id?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
-  current_stage?: Prisma.SortOrder
   progress_percent?: Prisma.SortOrder
   performanceScore?: Prisma.SortOrder
-  testsGiven?: Prisma.SortOrder
+  highestScore?: Prisma.SortOrder
+  lowestScore?: Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
 }
@@ -521,10 +552,11 @@ export type UserExamMinOrderByAggregateInput = {
   exam_id?: Prisma.SortOrder
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
-  current_stage?: Prisma.SortOrder
   progress_percent?: Prisma.SortOrder
   performanceScore?: Prisma.SortOrder
-  testsGiven?: Prisma.SortOrder
+  highestScore?: Prisma.SortOrder
+  lowestScore?: Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
 }
@@ -534,7 +566,9 @@ export type UserExamSumOrderByAggregateInput = {
   exam_id?: Prisma.SortOrder
   progress_percent?: Prisma.SortOrder
   performanceScore?: Prisma.SortOrder
-  testsGiven?: Prisma.SortOrder
+  highestScore?: Prisma.SortOrder
+  lowestScore?: Prisma.SortOrder
+  lastTestScore?: Prisma.SortOrder
 }
 
 export type UserExamScalarRelationFilter = {
@@ -690,10 +724,11 @@ export type UserExamUpdateOneWithoutNotificationsNestedInput = {
 export type UserExamCreateWithoutUserInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
@@ -707,10 +742,11 @@ export type UserExamUncheckedCreateWithoutUserInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
@@ -753,10 +789,11 @@ export type UserExamScalarWhereInput = {
   exam_id?: Prisma.IntFilter<"UserExam"> | number
   start_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   end_date?: Prisma.DateTimeFilter<"UserExam"> | Date | string
-  current_stage?: Prisma.StringNullableFilter<"UserExam"> | string | null
   progress_percent?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   performanceScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
-  testsGiven?: Prisma.IntNullableFilter<"UserExam"> | number | null
+  highestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lowestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
+  lastTestScore?: Prisma.FloatNullableFilter<"UserExam"> | number | null
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
 }
@@ -764,10 +801,11 @@ export type UserExamScalarWhereInput = {
 export type UserExamCreateWithoutExamInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
@@ -781,10 +819,11 @@ export type UserExamUncheckedCreateWithoutExamInput = {
   user_id: string
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
@@ -821,10 +860,11 @@ export type UserExamUpdateManyWithWhereWithoutExamInput = {
 export type UserExamCreateWithoutRoadmapInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
@@ -839,10 +879,11 @@ export type UserExamUncheckedCreateWithoutRoadmapInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
@@ -868,10 +909,11 @@ export type UserExamUpdateToOneWithWhereWithoutRoadmapInput = {
 export type UserExamUpdateWithoutRoadmapInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
@@ -886,10 +928,11 @@ export type UserExamUncheckedUpdateWithoutRoadmapInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
@@ -899,10 +942,11 @@ export type UserExamUncheckedUpdateWithoutRoadmapInput = {
 export type UserExamCreateWithoutTestsInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
@@ -917,10 +961,11 @@ export type UserExamUncheckedCreateWithoutTestsInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
@@ -946,10 +991,11 @@ export type UserExamUpdateToOneWithWhereWithoutTestsInput = {
 export type UserExamUpdateWithoutTestsInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
@@ -964,10 +1010,11 @@ export type UserExamUncheckedUpdateWithoutTestsInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
@@ -977,10 +1024,11 @@ export type UserExamUncheckedUpdateWithoutTestsInput = {
 export type UserExamCreateWithoutNotificationsInput = {
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
@@ -995,10 +1043,11 @@ export type UserExamUncheckedCreateWithoutNotificationsInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
@@ -1024,10 +1073,11 @@ export type UserExamUpdateToOneWithWhereWithoutNotificationsInput = {
 export type UserExamUpdateWithoutNotificationsInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
@@ -1042,10 +1092,11 @@ export type UserExamUncheckedUpdateWithoutNotificationsInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
@@ -1057,10 +1108,11 @@ export type UserExamCreateManyUserInput = {
   exam_id: number
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
 }
@@ -1068,10 +1120,11 @@ export type UserExamCreateManyUserInput = {
 export type UserExamUpdateWithoutUserInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
@@ -1085,10 +1138,11 @@ export type UserExamUncheckedUpdateWithoutUserInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
@@ -1101,10 +1155,11 @@ export type UserExamUncheckedUpdateManyWithoutUserInput = {
   exam_id?: Prisma.IntFieldUpdateOperationsInput | number
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
 }
@@ -1114,10 +1169,11 @@ export type UserExamCreateManyExamInput = {
   user_id: string
   start_date: Date | string
   end_date: Date | string
-  current_stage?: string | null
   progress_percent?: number | null
   performanceScore?: number | null
-  testsGiven?: number | null
+  highestScore?: number | null
+  lowestScore?: number | null
+  lastTestScore?: number | null
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
 }
@@ -1125,10 +1181,11 @@ export type UserExamCreateManyExamInput = {
 export type UserExamUpdateWithoutExamInput = {
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
@@ -1142,10 +1199,11 @@ export type UserExamUncheckedUpdateWithoutExamInput = {
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
@@ -1158,10 +1216,11 @@ export type UserExamUncheckedUpdateManyWithoutExamInput = {
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  current_stage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   progress_percent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   performanceScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  testsGiven?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  highestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lowestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lastTestScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
 }
@@ -1212,10 +1271,11 @@ export type UserExamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   exam_id?: boolean
   start_date?: boolean
   end_date?: boolean
-  current_stage?: boolean
   progress_percent?: boolean
   performanceScore?: boolean
-  testsGiven?: boolean
+  highestScore?: boolean
+  lowestScore?: boolean
+  lastTestScore?: boolean
   created_at?: boolean
   roadmap_status?: boolean
   roadmap?: boolean | Prisma.UserExam$roadmapArgs<ExtArgs>
@@ -1232,10 +1292,11 @@ export type UserExamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   exam_id?: boolean
   start_date?: boolean
   end_date?: boolean
-  current_stage?: boolean
   progress_percent?: boolean
   performanceScore?: boolean
-  testsGiven?: boolean
+  highestScore?: boolean
+  lowestScore?: boolean
+  lastTestScore?: boolean
   created_at?: boolean
   roadmap_status?: boolean
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
@@ -1248,10 +1309,11 @@ export type UserExamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   exam_id?: boolean
   start_date?: boolean
   end_date?: boolean
-  current_stage?: boolean
   progress_percent?: boolean
   performanceScore?: boolean
-  testsGiven?: boolean
+  highestScore?: boolean
+  lowestScore?: boolean
+  lastTestScore?: boolean
   created_at?: boolean
   roadmap_status?: boolean
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
@@ -1264,15 +1326,16 @@ export type UserExamSelectScalar = {
   exam_id?: boolean
   start_date?: boolean
   end_date?: boolean
-  current_stage?: boolean
   progress_percent?: boolean
   performanceScore?: boolean
-  testsGiven?: boolean
+  highestScore?: boolean
+  lowestScore?: boolean
+  lastTestScore?: boolean
   created_at?: boolean
   roadmap_status?: boolean
 }
 
-export type UserExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "exam_id" | "start_date" | "end_date" | "current_stage" | "progress_percent" | "performanceScore" | "testsGiven" | "created_at" | "roadmap_status", ExtArgs["result"]["userExam"]>
+export type UserExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "exam_id" | "start_date" | "end_date" | "progress_percent" | "performanceScore" | "highestScore" | "lowestScore" | "lastTestScore" | "created_at" | "roadmap_status", ExtArgs["result"]["userExam"]>
 export type UserExamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roadmap?: boolean | Prisma.UserExam$roadmapArgs<ExtArgs>
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
@@ -1305,10 +1368,11 @@ export type $UserExamPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     exam_id: number
     start_date: Date
     end_date: Date
-    current_stage: string | null
     progress_percent: number | null
     performanceScore: number | null
-    testsGiven: number | null
+    highestScore: number | null
+    lowestScore: number | null
+    lastTestScore: number | null
     created_at: Date
     roadmap_status: $Enums.RoadmapStatus
   }, ExtArgs["result"]["userExam"]>
@@ -1744,10 +1808,11 @@ export interface UserExamFieldRefs {
   readonly exam_id: Prisma.FieldRef<"UserExam", 'Int'>
   readonly start_date: Prisma.FieldRef<"UserExam", 'DateTime'>
   readonly end_date: Prisma.FieldRef<"UserExam", 'DateTime'>
-  readonly current_stage: Prisma.FieldRef<"UserExam", 'String'>
   readonly progress_percent: Prisma.FieldRef<"UserExam", 'Float'>
   readonly performanceScore: Prisma.FieldRef<"UserExam", 'Float'>
-  readonly testsGiven: Prisma.FieldRef<"UserExam", 'Int'>
+  readonly highestScore: Prisma.FieldRef<"UserExam", 'Float'>
+  readonly lowestScore: Prisma.FieldRef<"UserExam", 'Float'>
+  readonly lastTestScore: Prisma.FieldRef<"UserExam", 'Float'>
   readonly created_at: Prisma.FieldRef<"UserExam", 'DateTime'>
   readonly roadmap_status: Prisma.FieldRef<"UserExam", 'RoadmapStatus'>
 }

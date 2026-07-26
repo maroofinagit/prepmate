@@ -18,6 +18,8 @@ import {
     AreaChart,
     CartesianGrid,
     Area,
+    LineChart,
+    Line,
 } from "recharts";
 import { DashboardUser } from "@/app/types/dashboardUser";
 import { RoadmapStatus } from "@/generated/prisma/enums";
@@ -33,14 +35,18 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { Award, BadgeCheck, BookOpen, CircleX, ClipboardCheck, Clock3, FileText, Lightbulb, Route, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import { generateRoadmap } from "@/app/actions/roadmap";
 import { deleteUserExam } from "@/app/actions/action";
+import { tr } from "date-fns/locale";
+import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
     const exams = dashboardUser?.exams || [];
+    // const exams: any[] = []
 
     const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
@@ -59,8 +65,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const roadmap = exam?.roadmap || null;
     const phases = roadmap?.phases || [];
     const milestones = roadmap?.milestones || [];
-
-    // Chart data (always arrays)
 
     // for phase progress bar chart
     const phaseProgressData = phases.map((p: any) => ({
@@ -86,6 +90,82 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const selectedProgress = exam?.progress_percent ?? 0;
     const selectedId = exam?.id ?? null;
     const roadmapStatus = exam?.roadmap_status;
+    // const roadmapStatus = RoadmapStatus.failed
+
+    // safe values for top performance cards
+    const performanceScore = exam?.performanceScore ?? 0;
+    const highestScore = exam?.highestScore ?? 0;
+    const lowestScore = exam?.lowestScore ?? 0;
+    const lastTestScore = exam?.lastTestScore ?? 0;
+
+    const totalTests = exam?.tests?.length ?? 0;
+
+    const testsGenerated =
+        exam?.tests?.filter((t) => t.isGenerated).length ?? 0;
+
+    const testsAttempted =
+        exam?.tests?.filter((t) => t.attempt).length ?? 0;
+
+    const testsPassed =
+        exam?.tests?.filter((t) => t.attempt?.isPassed).length ?? 0;
+
+    const testsFailed =
+        exam?.tests?.filter((t) => t.attempt && !t.attempt.isPassed).length ?? 0;
+
+    //performance trend
+    const performanceTrend =
+        exam?.tests?.filter((test: (typeof exam.tests)[number]) => test.attempt)
+            .sort(
+                (a, b) =>
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime()
+            )
+            .map((test, index) => ({
+                test: `Test ${index + 1}`,
+                score: test.attempt!.percentage,
+                type: test.type,
+            })) ?? [];
+
+
+
+    const performanceChartConfig = {
+        score: {
+            label: "Score",
+            color: "hsl(var(--chart-1))",
+        },
+    } satisfies ChartConfig;
+
+    // performance pie chart data
+    const pfPieChartData = [
+        {
+            status: "Passed",
+            value: testsAttempted
+                ? Math.round((testsPassed / testsAttempted) * 100)
+                : 0,
+            fill: "var(--color-passed)",
+        },
+        {
+            status: "Failed",
+            value: testsAttempted
+                ? Math.round((testsFailed / testsAttempted) * 100)
+                : 0,
+            fill: "var(--color-failed)",
+        },
+    ];
+
+    const pfChartConfig = {
+        value: {
+            label: "Percentage",
+        },
+        passed: {
+            label: "Passed",
+            color: "#22c55e", // green
+        },
+        failed: {
+            label: "Failed",
+            color: "#ef4444", // red
+        },
+    } satisfies ChartConfig;
 
     // Chart config (labels, colors, etc.)
     const chartConfig = {
@@ -100,7 +180,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             label: "Remaining",
             color: "#e5e7eb", // gray
         },
-    }
+    } satisfies ChartConfig;
 
     //PieChart Value
     const pieChartData = [
@@ -115,6 +195,89 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             fill: "var(--color-remaining)",
         },
     ]
+
+    const passRate =
+        testsAttempted > 0
+            ? Math.round((testsPassed / testsAttempted) * 100)
+            : 0;
+
+    const overallPerformanceSummary =
+        performanceScore >= 85
+            ? "Excellent performance with consistently strong test results."
+            : performanceScore >= 70
+                ? "Good overall performance with room for further improvement."
+                : performanceScore >= 50
+                    ? "Average performance. More practice is needed to strengthen concepts."
+                    : "Performance is currently below expectations and requires focused practice.";
+
+    const roadmapSummary =
+        selectedProgress >= 90
+            ? `Your roadmap is ${selectedProgress}% complete and is almost finished.`
+            : selectedProgress >= 70
+                ? `Your roadmap is ${selectedProgress}% complete with good overall progress.`
+                : selectedProgress >= 40
+                    ? `Your roadmap is ${selectedProgress}% complete and progressing steadily.`
+                    : `Your roadmap is ${selectedProgress}% complete. Continue completing weekly tasks.`;
+
+    const testsSummary =
+        totalTests === 0
+            ? "No tests have been generated yet."
+            : testsAttempted === totalTests
+                ? `All ${totalTests} available tests have been completed.`
+                : testsAttempted >= totalTests * 0.75
+                    ? `${testsAttempted} of ${totalTests} tests have been completed.`
+                    : testsAttempted >= totalTests * 0.4
+                        ? `${testsAttempted} of ${totalTests} tests have been attempted so far.`
+                        : `Only ${testsAttempted} of ${totalTests} tests have been attempted.`;
+
+    const passRateSummary =
+        testsAttempted === 0
+            ? "No tests have been attempted yet."
+            : passRate >= 85
+                ? `Passed ${testsPassed} tests and failed ${testsFailed}, achieving an excellent ${passRate}% pass rate.`
+                : passRate >= 70
+                    ? `Passed ${testsPassed} tests and failed ${testsFailed}, achieving a healthy ${passRate}% pass rate.`
+                    : passRate >= 50
+                        ? `Passed ${testsPassed} tests and failed ${testsFailed}, resulting in a ${passRate}% pass rate.`
+                        : `Passed ${testsPassed} tests and failed ${testsFailed}. Your current pass rate is ${passRate}%.`;
+
+    const latestPerformanceSummary =
+        testsAttempted === 0
+            ? "No test attempts are available yet."
+            : lastTestScore >= highestScore - 5
+                ? `Your latest test score is ${lastTestScore}%, which is close to your personal best of ${highestScore}%.`
+                : lastTestScore > performanceScore
+                    ? `Your latest test score is ${lastTestScore}%, which is above your average performance.`
+                    : lastTestScore < performanceScore
+                        ? `Your latest test score is ${lastTestScore}%, which is below your average performance.`
+                        : `Your latest test score is ${lastTestScore}%, matching your overall average.`;
+
+    const suggestions: string[] = [];
+
+    if (selectedProgress < 50)
+        suggestions.push("Complete more roadmap tasks to build a stronger foundation.");
+
+    if (testsAttempted < totalTests / 2)
+        suggestions.push("Attempt more practice tests to improve your preparation.");
+
+    if (passRate < 60 && testsAttempted > 0)
+        suggestions.push("Review incorrect answers before taking the next assessment.");
+
+    if (performanceScore >= 85)
+        suggestions.push("Maintain your momentum by attempting more advanced tests.");
+
+    if (
+        performanceScore >= 70 &&
+        passRate >= 70 &&
+        selectedProgress >= 70
+    ) {
+        suggestions.push("You're progressing well. Keep practicing consistently to reach mastery.");
+    }
+
+    if (suggestions.length === 0) {
+        suggestions.push("Keep following your roadmap and practice regularly.");
+    }
+
 
     useEffect(() => {
         // check if roadmap is not generated if not show a toast to inform user to generate roadmap
@@ -177,7 +340,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 )
             }
             {/* Header */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-x-6">
                 <Image
                     src={dashboardUser?.image || "/avatar.png"}
                     width={60}
@@ -192,65 +355,134 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             </div>
 
             {/* Top Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>User Exams Enrolled</CardTitle>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                {/* Exams */}
+                <Card className="relative">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <div>
+                            <CardTitle className="text-xl font-semibold">
+                                Exams Enrolled
+                            </CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground">
+                                Total exams you are enrolled in
+                            </CardDescription>
+                        </div>
+
+                        <BookOpen className="h-6 absolute top-5 right-5 text-emerald-600" />
                     </CardHeader>
+
                     <CardContent>
-                        <p className="md:text-4xl text-xl font-bold">{totalUserExams}</p>
+                        <div className="text-5xl font-bold">
+                            {totalUserExams}
+                        </div>
                     </CardContent>
                 </Card>
 
-                <Card>
+                {/* Progress */}
+                <Card className="relative">
                     <CardHeader>
-                        <CardTitle>{currentSelectedExam?.exam.name || "Selected"} Progress</CardTitle>
+                        <CardTitle className="text-xl font-semibold">
+                            {currentSelectedExam?.exam.name || "Selected Exam"}
+                        </CardTitle>
+                        <CardDescription className="text-sm text-muted-foreground">
+                            Your progress in this exam
+                        </CardDescription>
                     </CardHeader>
+
                     <CardContent>
-                        <Progress value={selectedProgress || 0} className="h-3 [&>div]:bg-green-600" />
-                        <p className="text-center mt-2 font-semibold">{selectedProgress || 0}%</p>
+                        <div className="mb-3 flex items-center justify-between">
+                            <span className="text-3xl font-bold">
+                                {selectedProgress || 0}%
+                            </span>
+
+                            <span className="text-sm text-muted-foreground">
+                                Completed
+                            </span>
+                        </div>
+
+                        <Progress
+                            value={selectedProgress || 0}
+                            className="h-3 [&>div]:bg-emerald-600"
+                        />
                     </CardContent>
+                    <TrendingUp className="h-6 absolute top-5 right-5 text-emerald-600" />
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Go to Roadmap</CardTitle>
+                {/* Roadmap */}
+                <Card className="flex flex-col relative">
+                    <CardHeader className="flex-row items-center justify-between space-y-0">
+                        <div>
+                            <CardTitle className="text-xl font-semibold">
+                                Roadmap
+                            </CardTitle>
+
+                            <CardDescription className="text-sm text-muted-foreground mt-2">
+                                Your learning path
+                            </CardDescription>
+                        </div>
+
+                        <Route className="h-6 absolute top-5 right-5 text-blue-600" />
                     </CardHeader>
-                    <CardContent>
+
+                    <CardContent className="mt-auto">
                         {!exam ? (
                             <Link href="/onboarding">
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Create Roadmap</Button>
+                                <Button className="w-full cursor-pointer">
+                                    Create Roadmap
+                                </Button>
                             </Link>
-                        ) : roadmapStatus === RoadmapStatus.completed && !regenerating ? (
+                        ) : roadmapStatus === RoadmapStatus.completed &&
+                            !regenerating ? (
                             <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">Open Roadmap</Button>
+                                <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                    Open Roadmap
+                                </Button>
                             </Link>
-                        ) : roadmapStatus === RoadmapStatus.in_progress && !regenerating ? (
-                            <Button className="w-full disabled:cursor-not-allowed disabled:opacity-50 md:text-base text-sm" disabled>
-                                ⏳ Generating Roadmap...
+                        ) : roadmapStatus === RoadmapStatus.in_progress &&
+                            !regenerating ? (
+                            <Button
+                                disabled
+                                className="w-full"
+                            >
+                                ⏳ Generating...
                             </Button>
                         ) : regenerating ? (
-                            <Button className="w-full bg-green-600 disabled:cursor-not-allowed md:text-base text-sm" disabled>
+                            <Button
+                                disabled
+                                className="w-full"
+                            >
                                 🔁 Regenerating...
                             </Button>
-                        ) :
-
-                            (
-                                <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm" onClick={handleRegenerate}>
-                                    🔁 Regenerate Roadmap
-                                </Button>
-                            )
-                        }
+                        ) : (
+                            <Button
+                                className="w-full cursor-pointer bg-red-700 hover:bg-red-600 text-white transition-colors duration-200"
+                                onClick={handleRegenerate}
+                            >
+                                🔁 Regenerate Roadmap
+                            </Button>
+                        )}
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Give Tests</CardTitle>
+                {/* Tests */}
+                <Card className="flex flex-col">
+                    <CardHeader className="flex-row items-center justify-between space-y-0">
+                        <div>
+                            <CardTitle className="text-xl font-semibold">
+                                Practice Tests
+                            </CardTitle>
+
+                            <CardDescription className="text-sm text-muted-foreground mt-2">
+                                Evaluate your progress
+                            </CardDescription>
+                        </div>
+
+                        <ClipboardCheck className="h-6 absolute top-5 right-5 text-violet-600" />
                     </CardHeader>
-                    <CardContent>
+
+                    <CardContent className="mt-auto">
                         <Link href={`/user-exam/${selectedId}/tests`}>
-                            <Button className="w-full cursor-pointer hover:bg-emerald-600 hover:text-white md:text-base text-sm">
+                            <Button className="w-full">
                                 Give Tests
                             </Button>
                         </Link>
@@ -963,6 +1195,463 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                 </div>
 
+                                <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
+                                {/* Performance Cards */}
+
+                                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Performance Score
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Overall readiness
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-950">
+                                                <TrendingUp className="h-5 w-5 text-emerald-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-emerald-600">
+                                                {performanceScore}%
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Based on your latest performance
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Highest Score
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Best test performance
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-950">
+                                                <Award className="h-5 w-5 text-blue-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-blue-600">
+                                                {highestScore}%
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Your personal best
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Lowest Score
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Room for improvement
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-950">
+                                                <TrendingDown className="h-5 w-5 text-orange-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-orange-600">
+                                                {lowestScore}%
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Lowest recorded score
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Last Test
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Most recent attempt
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-violet-100 p-2 dark:bg-violet-950">
+                                                <Clock3 className="h-5 w-5 text-violet-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-violet-600">
+                                                {lastTestScore}%
+                                            </div>
+
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Latest recorded score
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                </div>
+
+
+                                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mt-6">
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Generated Tests
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Total AI generated tests
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-slate-100 p-2 dark:bg-slate-900">
+                                                <FileText className="h-5 w-5 text-slate-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold">
+                                                {testsGenerated}
+                                            </div>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                {totalTests} total tests available
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Attempted
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Tests you've completed
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-indigo-100 p-2 dark:bg-indigo-950">
+                                                <ClipboardCheck className="h-5 w-5 text-indigo-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-indigo-600">
+                                                {testsAttempted}
+                                            </div>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                {totalTests > 0
+                                                    ? `${Math.round((testsAttempted / totalTests) * 100)}% completed`
+                                                    : "No tests yet"}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Passed
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Successfully cleared
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-green-100 p-2 dark:bg-green-950">
+                                                <BadgeCheck className="h-5 w-5 text-green-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-green-600">
+                                                {testsPassed}
+                                            </div>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                {testsAttempted > 0
+                                                    ? `${Math.round((testsPassed / testsAttempted) * 100)}% pass rate`
+                                                    : "No attempts yet"}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                            <div>
+                                                <CardTitle className="text-sm font-medium">
+                                                    Failed
+                                                </CardTitle>
+                                                <CardDescription>
+                                                    Tests to improve
+                                                </CardDescription>
+                                            </div>
+
+                                            <div className="rounded-lg bg-red-100 p-2 dark:bg-red-950">
+                                                <CircleX className="h-5 w-5 text-red-600" />
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <div className="text-3xl font-bold text-red-600">
+                                                {testsFailed}
+                                            </div>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                {testsAttempted > 0
+                                                    ? `${Math.round((testsFailed / testsAttempted) * 100)}% failure rate`
+                                                    : "No attempts yet"}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+
+                                <div className="grid gap-6 md:grid-cols-2 mt-6">
+
+                                    <Card className="">
+                                        <CardHeader>
+                                            <CardTitle>Performance Trend</CardTitle>
+                                            <CardDescription>
+                                                Score progression across all tests
+                                            </CardDescription>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            <ChartContainer
+                                                config={performanceChartConfig}
+                                                className="h-75 w-full"
+                                            >
+                                                <LineChart
+                                                    accessibilityLayer
+                                                    data={performanceTrend.length > 0 ? performanceTrend : [{ test: "No Data", score: 0, type: "N/A" }]}
+                                                >
+                                                    <CartesianGrid vertical={true} />
+
+                                                    <XAxis
+                                                        dataKey="test"
+                                                        tickLine={true}
+                                                        axisLine={true}
+                                                    />
+
+                                                    <YAxis
+                                                        domain={[0, 100]}
+                                                        tickLine={true}
+                                                        axisLine={true}
+                                                    />
+
+                                                    <ChartTooltip
+                                                        cursor={true}
+                                                        content={<ChartTooltipContent />}
+                                                    />
+
+                                                    <Line
+                                                        dataKey="score"
+                                                        type="monotone"
+                                                        stroke="var(--color-score)"
+                                                        strokeWidth={3}
+                                                        dot={{
+                                                            r: 7,
+                                                            fill: "var(--color-score)",
+                                                            stroke: "var(--color-score)",
+                                                        }}
+                                                        activeDot={{
+                                                            r: 7,
+                                                            fill: "#16a34a",
+                                                            stroke: "var(--color-score)",
+                                                        }}
+                                                    />
+                                                    <Line
+                                                        dataKey="type"
+                                                        type="monotone"
+                                                        stroke="var(--color-type)"
+                                                        strokeWidth={3}
+                                                        dot={{
+                                                            r: 5,
+                                                        }}
+                                                        activeDot={{
+                                                            r: 7,
+                                                        }}
+                                                    />
+                                                </LineChart>
+                                            </ChartContainer>
+                                        </CardContent>
+                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                Your performance trend over time <TrendingUp className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                Track your score progression across all tests
+                                            </div>
+                                        </CardFooter>
+                                    </Card>
+
+                                    {/* Pass Fail Pie Chart */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Pass Rate</CardTitle>
+                                            <CardDescription className="text-sm text-muted-foreground">
+                                                Your overall test performance distribution
+                                            </CardDescription>
+                                        </CardHeader>
+
+
+                                        <CardContent>
+                                            <ChartContainer
+                                                config={pfChartConfig}
+                                                className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                            >
+                                                <PieChart>
+                                                    <ChartTooltip
+                                                        content={<ChartTooltipContent hideLabel />}
+                                                    />
+
+                                                    <Pie
+                                                        data={pfPieChartData}
+                                                        dataKey="value"
+                                                        nameKey="status"
+                                                        label={({ percent }) =>
+                                                            `${((percent ?? 0) * 100).toFixed(0)}%`
+                                                        }
+                                                    />
+                                                </PieChart>
+                                            </ChartContainer>
+
+                                            <p className="text-center text-lg font-semibold">
+                                                {testsAttempted > 0
+                                                    ? `${Math.round((testsPassed / testsAttempted) * 100)}%`
+                                                    : "0%"} Passing Rate
+                                            </p>
+                                        </CardContent>
+
+                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                            <div className="flex gap-2 leading-none font-medium">
+                                                {(pfPieChartData[0]?.value ?? 0) >= 70
+                                                    ? "Strong progress — you're close to the finish line"
+                                                    : (pfPieChartData[0]?.value ?? 0) >= 40
+                                                        ? "Good pace — stay consistent"
+                                                        : "Just getting started — build the habit"}
+                                                <TrendingUp className="h-4 w-4" />
+                                            </div>
+                                            <div className="leading-none text-muted-foreground">
+                                                {(pfPieChartData[0]?.value ?? 0)}% of your exam journey is complete
+                                            </div>
+                                        </CardFooter>
+                                    </Card>
+                                </div>
+
+                                {/* Performance Summary */}
+
+                                <h1 className="text-2xl font-bold mt-12 mb-6">Your {selectedExam?.exam.name} Summary</h1>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Sparkles className="h-5 w-5 text-emerald-600" />
+                                            A quick overview of your current progress and performance.
+                                        </CardTitle>
+                                    </CardHeader>
+
+                                    <CardContent className="space-y-6">
+                                        <div className="space-y-4">
+
+                                            <div className="flex items-start gap-3">
+                                                <TrendingUp className="mt-1 h-4 w-4 text-emerald-600" />
+                                                <div>
+                                                    <p className="font-medium">Overall Performance</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {overallPerformanceSummary}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Separator />
+
+                                            <div className="flex items-start gap-3">
+                                                <Route className="mt-1 h-4 w-4 text-blue-600" />
+                                                <div>
+                                                    <p className="font-medium">Roadmap Progress</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {roadmapSummary}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Separator />
+
+                                            <div className="flex items-start gap-3">
+                                                <ClipboardCheck className="mt-1 h-4 w-4 text-violet-600" />
+                                                <div>
+                                                    <p className="font-medium">Tests</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {testsSummary}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Separator />
+
+                                            <div className="flex items-start gap-3">
+                                                <BadgeCheck className="mt-1 h-4 w-4 text-green-600" />
+                                                <div>
+                                                    <p className="font-medium">Pass Rate</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {passRateSummary}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Separator />
+
+                                            <div className="flex items-start gap-3">
+                                                <Clock3 className="mt-1 h-4 w-4 text-orange-600" />
+                                                <div>
+                                                    <p className="font-medium">Latest Performance</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {latestPerformanceSummary}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="rounded-lg border bg-muted/40 p-4">
+                                            <div className="mb-3 flex items-center gap-2">
+                                                <Lightbulb className="h-4 w-4 text-yellow-500" />
+                                                <h4 className="font-semibold">
+                                                    Suggestions
+                                                </h4>
+                                            </div>
+
+                                            <ul className="space-y-2 text-sm text-muted-foreground">
+                                                {suggestions.map((suggestion, index) => (
+                                                    <li key={index} className="flex items-start gap-2">
+                                                        <span className="mt-1 text-yellow-500">💡</span>
+                                                        {suggestion}
+                                                    </li>
+                                                ))}
+                                            </ul>
+
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
 
                                 {/* DELETE EXAM */}
                                 <div className=" border-t mt-8 pt-8">
@@ -977,7 +1666,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </div>
                                         <Dialog open={dltDialogOpen} onOpenChange={setDltDialogOpen}>
                                             <DialogTrigger asChild>
-                                                <button onClick={() => setDltDialogOpen(true)} className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled={deleting}>
+                                                <button onClick={() => setDltDialogOpen(true)} className="bg-transparent text-red-600 font-medium cursor-pointer hover:text-white border border-red-600 px-4 py-2 rounded-md hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled={deleting}>
                                                     {deleting ? "Deleting..." : "Delete Exam"}
                                                 </button>
                                             </DialogTrigger>

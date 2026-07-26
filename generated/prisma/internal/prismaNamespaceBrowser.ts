@@ -185,10 +185,11 @@ export const UserExamScalarFieldEnum = {
   exam_id: 'exam_id',
   start_date: 'start_date',
   end_date: 'end_date',
-  current_stage: 'current_stage',
   progress_percent: 'progress_percent',
   performanceScore: 'performanceScore',
-  testsGiven: 'testsGiven',
+  highestScore: 'highestScore',
+  lowestScore: 'lowestScore',
+  lastTestScore: 'lastTestScore',
   created_at: 'created_at',
   roadmap_status: 'roadmap_status'
 } as const
@@ -312,6 +313,8 @@ export const TestAttemptScalarFieldEnum = {
   score: 'score',
   totalMarks: 'totalMarks',
   percentage: 'percentage',
+  isPassed: 'isPassed',
+  timeTaken: 'timeTaken',
   responses: 'responses',
   completedAt: 'completedAt'
 } as const

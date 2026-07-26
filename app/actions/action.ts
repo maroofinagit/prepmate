@@ -88,7 +88,8 @@ export async function getShortExams() {
                 id: true,
                 name: true,
                 description: true,
-                imageUrl: true,            },
+                imageUrl: true,
+            },
         });
 
         return exams;
@@ -233,7 +234,7 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 
 export async function getDashboardUser(userId: string) {
     'use cache';
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 1 hour
     try {
         const dashboardUser = await db.user.findUnique({
             where: { id: userId },
@@ -250,10 +251,12 @@ export async function getDashboardUser(userId: string) {
                         exam_id: true,
                         start_date: true,
                         end_date: true,
-                        current_stage: true,
                         progress_percent: true,
                         performanceScore: true,
                         roadmap_status: true,
+                        highestScore: true,
+                        lowestScore: true,
+                        lastTestScore: true,
 
                         // UserExam → Exam Details
                         exam: {
@@ -320,8 +323,45 @@ export async function getDashboardUser(userId: string) {
                                     }
                                 }
                             }
-                        }
-                    }
+                        },
+
+                        // UserExam → Test Performance Metrics
+                        tests: {
+                            orderBy: {
+                                createdAt: "asc",
+                            },
+                            select: {
+                                id: true,
+                                title: true,
+                                type: true,
+                                totalMarks: true,
+                                duration: true,
+                                createdAt: true,
+                                isGenerated: true,
+                                weekId: true,
+                                phaseId: true,
+
+                                questions: {
+                                    select: {
+                                        id: true,
+                                    },
+                                },
+
+                                attempt: {
+                                    select: {
+                                        id: true,
+                                        score: true,
+                                        totalMarks: true,
+                                        percentage: true,
+                                        isPassed: true,
+                                        timeTaken: true,
+                                        completedAt: true,
+                                        responses: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
                 }
             }
         });
@@ -698,6 +738,163 @@ export async function changePassword(
     }
 }
 
+export async function submitTest(
+    testId: number,
+    responses: Record<string, string>
+) {
+    try {
+        // =========================
+        // AUTH CHECK
+        // =========================
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.user?.id) {
+            return {
+                success: false,
+                error: "Unauthorized",
+                status: 401,
+            };
+        }
+
+        // =========================
+        // VALIDATION
+        // =========================
+        if (!testId || !responses) {
+            return {
+                success: false,
+                error: "Missing fields",
+                status: 400,
+            };
+        }
+
+        // =========================
+        // FIND TEST
+        // =========================
+        const test = await db.test.findUnique({
+            where: {
+                id: testId,
+            },
+            include: {
+                questions: true,
+                attempt: true,
+            },
+        });
+
+        if (!test) {
+            return {
+                success: false,
+                error: "Test not found",
+                status: 404,
+            };
+        }
+
+        // =========================
+        // CHECK IF ALREADY SUBMITTED
+        // =========================
+        if (test.attempt) {
+            return {
+                success: false,
+                error: "Test already submitted",
+                status: 400,
+            };
+        }
+
+        // =========================
+        // CALCULATE SCORE
+        // =========================
+        let score = 0;
+
+        for (const question of test.questions) {
+            const userAnswer = responses[question.id];
+
+            if (userAnswer === question.correctAns) {
+                score += question.marks;
+            }
+        }
+
+        const percentage = (score / test.totalMarks) * 100;
+
+        const isPassed = percentage >= 40;
+
+        // =========================
+        // CREATE ATTEMPT
+        // =========================
+        await db.testAttempt.create({
+            data: {
+                userId: session.user.id,
+                testId: test.id,
+                score,
+                totalMarks: test.totalMarks,
+                percentage,
+                isPassed,
+                responses,
+            },
+        });
+
+        // =========================
+        // UPDATE PERFORMANCE
+        // =========================
+
+        const tests = await db.test.findMany({
+            where: {
+                userExamId: test.userExamId,
+                attempt: {
+                    isNot: null,
+                },
+            },
+            include: {
+                attempt: true,
+            },
+            orderBy: {
+                createdAt: "asc",
+            },
+        });
+
+        const percentages = tests.map(
+            (t) => t.attempt!.percentage
+        );
+
+        const performanceScore =
+            percentages.reduce((sum, p) => sum + p, 0) /
+            percentages.length;
+
+        const highestScore = Math.max(...percentages);
+
+        const lowestScore = Math.min(...percentages);
+
+        const lastTestScore =
+            tests[tests.length - 1]?.attempt?.percentage ?? 0;
+
+        await db.userExam.update({
+            where: {
+                id: test.userExamId,
+            },
+            data: {
+                performanceScore: Number(
+                    performanceScore.toFixed(2)
+                ),
+                highestScore,
+                lowestScore,
+                lastTestScore,
+            },
+        });
+
+        return {
+            success: true,
+            message: "Test submitted successfully",
+        };
+    } catch (error) {
+        console.error(error);
+
+        return {
+            success: false,
+            error: "Internal Server Error",
+            status: 500,
+        };
+    }
+}
 
 
 

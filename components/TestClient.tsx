@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { submitTest } from "@/app/actions/action";
 
 interface Question {
     id: number;
@@ -24,9 +25,10 @@ interface TestProps {
         questions: Question[];
         attempt: any;
     };
+    userExamId: string;
 }
 
-export default function TestClient({ test }: TestProps) {
+export default function TestClient({ test, userExamId }: TestProps) {
     
     const [currentQ, setCurrentQ] = useState(0);
 
@@ -157,21 +159,10 @@ export default function TestClient({ test }: TestProps) {
 
             const toastId = toast.loading("Submitting your test...");
 
-            const res = await fetch("/api/tests/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    testId: test.id,
-                    responses,
-                }),
-            });
+            const res = await submitTest(test.id, responses);
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast.error(data.message || "Failed to submit test", {
+            if (!res.success) {
+                toast.error(res.error || "Failed to submit test", {
                     id: toastId,
                 });
                 return;
@@ -182,13 +173,11 @@ export default function TestClient({ test }: TestProps) {
             });
             setSubmitting(false);
 
-            console.log("Submission Result:", data);
-
             // remove saved localstorage
             localStorage.removeItem(`test-${test.id}`);
 
             // optional redirect
-            router.push(`/user-exam/${test.id}/tests/${test.id}/result`);
+            router.push(`/user-exam/${userExamId}/tests/${test.id}/result`);
 
         } catch (err: any) {
 

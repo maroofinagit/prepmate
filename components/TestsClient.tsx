@@ -7,6 +7,7 @@ import { cn } from "@/app/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { generateTestAttempt } from "@/app/actions/test";
 
 type Test = {
     testId: number;
@@ -146,19 +147,12 @@ function TestCard({
         setGeneratingTestId(test.testId);
         toast.info("Starting test generation. This may take a few moments... Dont refresh the page !");
         try {
-            const response = await fetch(`/api/tests/generate`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ testId }),
-            });
-            const data = await response.json();
-            if (data.success) {
+            const response = await generateTestAttempt(test.testId);
+            if (response.success) {
                 toast.success("Test generation started successfully! Click on GIVE once the test is ready.");
                 router.refresh();
             } else {
-                toast.error(data.message || "Failed to start test generation.");
+                toast.error(response.message || "Failed to start test generation.");
             }
         } catch (error) {
             toast.error("An unexpected error occurred.");

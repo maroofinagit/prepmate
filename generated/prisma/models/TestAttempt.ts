@@ -32,6 +32,7 @@ export type TestAttemptAvgAggregateOutputType = {
   score: number | null
   totalMarks: number | null
   percentage: number | null
+  timeTaken: number | null
 }
 
 export type TestAttemptSumAggregateOutputType = {
@@ -40,6 +41,7 @@ export type TestAttemptSumAggregateOutputType = {
   score: number | null
   totalMarks: number | null
   percentage: number | null
+  timeTaken: number | null
 }
 
 export type TestAttemptMinAggregateOutputType = {
@@ -49,6 +51,8 @@ export type TestAttemptMinAggregateOutputType = {
   score: number | null
   totalMarks: number | null
   percentage: number | null
+  isPassed: boolean | null
+  timeTaken: number | null
   completedAt: Date | null
 }
 
@@ -59,6 +63,8 @@ export type TestAttemptMaxAggregateOutputType = {
   score: number | null
   totalMarks: number | null
   percentage: number | null
+  isPassed: boolean | null
+  timeTaken: number | null
   completedAt: Date | null
 }
 
@@ -69,6 +75,8 @@ export type TestAttemptCountAggregateOutputType = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed: number
+  timeTaken: number
   responses: number
   completedAt: number
   _all: number
@@ -81,6 +89,7 @@ export type TestAttemptAvgAggregateInputType = {
   score?: true
   totalMarks?: true
   percentage?: true
+  timeTaken?: true
 }
 
 export type TestAttemptSumAggregateInputType = {
@@ -89,6 +98,7 @@ export type TestAttemptSumAggregateInputType = {
   score?: true
   totalMarks?: true
   percentage?: true
+  timeTaken?: true
 }
 
 export type TestAttemptMinAggregateInputType = {
@@ -98,6 +108,8 @@ export type TestAttemptMinAggregateInputType = {
   score?: true
   totalMarks?: true
   percentage?: true
+  isPassed?: true
+  timeTaken?: true
   completedAt?: true
 }
 
@@ -108,6 +120,8 @@ export type TestAttemptMaxAggregateInputType = {
   score?: true
   totalMarks?: true
   percentage?: true
+  isPassed?: true
+  timeTaken?: true
   completedAt?: true
 }
 
@@ -118,6 +132,8 @@ export type TestAttemptCountAggregateInputType = {
   score?: true
   totalMarks?: true
   percentage?: true
+  isPassed?: true
+  timeTaken?: true
   responses?: true
   completedAt?: true
   _all?: true
@@ -216,6 +232,8 @@ export type TestAttemptGroupByOutputType = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed: boolean
+  timeTaken: number
   responses: runtime.JsonValue
   completedAt: Date
   _count: TestAttemptCountAggregateOutputType | null
@@ -250,6 +268,8 @@ export type TestAttemptWhereInput = {
   score?: Prisma.IntFilter<"TestAttempt"> | number
   totalMarks?: Prisma.IntFilter<"TestAttempt"> | number
   percentage?: Prisma.FloatFilter<"TestAttempt"> | number
+  isPassed?: Prisma.BoolFilter<"TestAttempt"> | boolean
+  timeTaken?: Prisma.IntFilter<"TestAttempt"> | number
   responses?: Prisma.JsonFilter<"TestAttempt">
   completedAt?: Prisma.DateTimeFilter<"TestAttempt"> | Date | string
   test?: Prisma.XOR<Prisma.TestScalarRelationFilter, Prisma.TestWhereInput>
@@ -262,6 +282,8 @@ export type TestAttemptOrderByWithRelationInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  isPassed?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
   responses?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   test?: Prisma.TestOrderByWithRelationInput
@@ -277,6 +299,8 @@ export type TestAttemptWhereUniqueInput = Prisma.AtLeast<{
   score?: Prisma.IntFilter<"TestAttempt"> | number
   totalMarks?: Prisma.IntFilter<"TestAttempt"> | number
   percentage?: Prisma.FloatFilter<"TestAttempt"> | number
+  isPassed?: Prisma.BoolFilter<"TestAttempt"> | boolean
+  timeTaken?: Prisma.IntFilter<"TestAttempt"> | number
   responses?: Prisma.JsonFilter<"TestAttempt">
   completedAt?: Prisma.DateTimeFilter<"TestAttempt"> | Date | string
   test?: Prisma.XOR<Prisma.TestScalarRelationFilter, Prisma.TestWhereInput>
@@ -289,6 +313,8 @@ export type TestAttemptOrderByWithAggregationInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  isPassed?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
   responses?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   _count?: Prisma.TestAttemptCountOrderByAggregateInput
@@ -308,6 +334,8 @@ export type TestAttemptScalarWhereWithAggregatesInput = {
   score?: Prisma.IntWithAggregatesFilter<"TestAttempt"> | number
   totalMarks?: Prisma.IntWithAggregatesFilter<"TestAttempt"> | number
   percentage?: Prisma.FloatWithAggregatesFilter<"TestAttempt"> | number
+  isPassed?: Prisma.BoolWithAggregatesFilter<"TestAttempt"> | boolean
+  timeTaken?: Prisma.IntWithAggregatesFilter<"TestAttempt"> | number
   responses?: Prisma.JsonWithAggregatesFilter<"TestAttempt">
   completedAt?: Prisma.DateTimeWithAggregatesFilter<"TestAttempt"> | Date | string
 }
@@ -317,6 +345,8 @@ export type TestAttemptCreateInput = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed?: boolean
+  timeTaken?: number
   responses: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Date | string
   test: Prisma.TestCreateNestedOneWithoutAttemptInput
@@ -329,6 +359,8 @@ export type TestAttemptUncheckedCreateInput = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed?: boolean
+  timeTaken?: number
   responses: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Date | string
 }
@@ -338,6 +370,8 @@ export type TestAttemptUpdateInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   test?: Prisma.TestUpdateOneRequiredWithoutAttemptNestedInput
@@ -350,6 +384,8 @@ export type TestAttemptUncheckedUpdateInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,6 +397,8 @@ export type TestAttemptCreateManyInput = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed?: boolean
+  timeTaken?: number
   responses: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Date | string
 }
@@ -370,6 +408,8 @@ export type TestAttemptUpdateManyMutationInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -381,6 +421,8 @@ export type TestAttemptUncheckedUpdateManyInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -397,6 +439,8 @@ export type TestAttemptCountOrderByAggregateInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  isPassed?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
   responses?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
@@ -407,6 +451,7 @@ export type TestAttemptAvgOrderByAggregateInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
 }
 
 export type TestAttemptMaxOrderByAggregateInput = {
@@ -416,6 +461,8 @@ export type TestAttemptMaxOrderByAggregateInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  isPassed?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
 
@@ -426,6 +473,8 @@ export type TestAttemptMinOrderByAggregateInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  isPassed?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
 }
 
@@ -435,6 +484,7 @@ export type TestAttemptSumOrderByAggregateInput = {
   score?: Prisma.SortOrder
   totalMarks?: Prisma.SortOrder
   percentage?: Prisma.SortOrder
+  timeTaken?: Prisma.SortOrder
 }
 
 export type TestAttemptCreateNestedOneWithoutTestInput = {
@@ -474,6 +524,8 @@ export type TestAttemptCreateWithoutTestInput = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed?: boolean
+  timeTaken?: number
   responses: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Date | string
 }
@@ -484,6 +536,8 @@ export type TestAttemptUncheckedCreateWithoutTestInput = {
   score: number
   totalMarks: number
   percentage: number
+  isPassed?: boolean
+  timeTaken?: number
   responses: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Date | string
 }
@@ -509,6 +563,8 @@ export type TestAttemptUpdateWithoutTestInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -519,6 +575,8 @@ export type TestAttemptUncheckedUpdateWithoutTestInput = {
   score?: Prisma.IntFieldUpdateOperationsInput | number
   totalMarks?: Prisma.IntFieldUpdateOperationsInput | number
   percentage?: Prisma.FloatFieldUpdateOperationsInput | number
+  isPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  timeTaken?: Prisma.IntFieldUpdateOperationsInput | number
   responses?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   completedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -532,6 +590,8 @@ export type TestAttemptSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   score?: boolean
   totalMarks?: boolean
   percentage?: boolean
+  isPassed?: boolean
+  timeTaken?: boolean
   responses?: boolean
   completedAt?: boolean
   test?: boolean | Prisma.TestDefaultArgs<ExtArgs>
@@ -544,6 +604,8 @@ export type TestAttemptSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   score?: boolean
   totalMarks?: boolean
   percentage?: boolean
+  isPassed?: boolean
+  timeTaken?: boolean
   responses?: boolean
   completedAt?: boolean
   test?: boolean | Prisma.TestDefaultArgs<ExtArgs>
@@ -556,6 +618,8 @@ export type TestAttemptSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   score?: boolean
   totalMarks?: boolean
   percentage?: boolean
+  isPassed?: boolean
+  timeTaken?: boolean
   responses?: boolean
   completedAt?: boolean
   test?: boolean | Prisma.TestDefaultArgs<ExtArgs>
@@ -568,11 +632,13 @@ export type TestAttemptSelectScalar = {
   score?: boolean
   totalMarks?: boolean
   percentage?: boolean
+  isPassed?: boolean
+  timeTaken?: boolean
   responses?: boolean
   completedAt?: boolean
 }
 
-export type TestAttemptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "testId" | "score" | "totalMarks" | "percentage" | "responses" | "completedAt", ExtArgs["result"]["testAttempt"]>
+export type TestAttemptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "testId" | "score" | "totalMarks" | "percentage" | "isPassed" | "timeTaken" | "responses" | "completedAt", ExtArgs["result"]["testAttempt"]>
 export type TestAttemptInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   test?: boolean | Prisma.TestDefaultArgs<ExtArgs>
 }
@@ -595,6 +661,8 @@ export type $TestAttemptPayload<ExtArgs extends runtime.Types.Extensions.Interna
     score: number
     totalMarks: number
     percentage: number
+    isPassed: boolean
+    timeTaken: number
     responses: runtime.JsonValue
     completedAt: Date
   }, ExtArgs["result"]["testAttempt"]>
@@ -1027,6 +1095,8 @@ export interface TestAttemptFieldRefs {
   readonly score: Prisma.FieldRef<"TestAttempt", 'Int'>
   readonly totalMarks: Prisma.FieldRef<"TestAttempt", 'Int'>
   readonly percentage: Prisma.FieldRef<"TestAttempt", 'Float'>
+  readonly isPassed: Prisma.FieldRef<"TestAttempt", 'Boolean'>
+  readonly timeTaken: Prisma.FieldRef<"TestAttempt", 'Int'>
   readonly responses: Prisma.FieldRef<"TestAttempt", 'Json'>
   readonly completedAt: Prisma.FieldRef<"TestAttempt", 'DateTime'>
 }
