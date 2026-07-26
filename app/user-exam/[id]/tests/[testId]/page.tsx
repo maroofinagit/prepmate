@@ -34,6 +34,6 @@ export default async function TestPage({ params }: { params: Promise<{ id: strin
     }
 
     return (
-        <TestClient test={res.data} />
+        <TestClient test={res.data} userExamId={id} />
     );
 }

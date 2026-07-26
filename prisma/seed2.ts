@@ -15,7 +15,6 @@ async function main() {
             exam_id: examId,
             start_date: new Date('2025-11-12'),
             end_date: new Date('2026-03-12'),
-            current_stage: 'Not Started',
             progress_percent: 0,
             roadmap_status : 'completed',
         },

@@ -170,7 +170,6 @@ export async function createUserExam({
                 exam_id: Number(examId),
                 start_date: new Date(start_date),
                 end_date: new Date(end_date),
-                current_stage: "Not Started",
                 progress_percent: 0,
             },
         });
