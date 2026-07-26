@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { submitTest } from "@/app/actions/action";
+import { submitTest } from "@/app/actions/test";
 
 interface Question {
     id: number;
@@ -159,7 +159,8 @@ export default function TestClient({ test, userExamId }: TestProps) {
 
             const toastId = toast.loading("Submitting your test...");
 
-            const res = await submitTest(test.id, responses);
+            const timeTaken = test.duration ? test.duration * 60 - timeLeft : 0;
+            const res = await submitTest(test.id, responses, timeTaken);
 
             if (!res.success) {
                 toast.error(res.error || "Failed to submit test", {
@@ -167,7 +168,6 @@ export default function TestClient({ test, userExamId }: TestProps) {
                 });
                 return;
             }
-
             toast.success("Test submitted successfully!",{
                 id: toastId,
             });

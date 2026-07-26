@@ -815,7 +815,7 @@ export async function submitTest(
 
         const percentage = (score / test.totalMarks) * 100;
 
-        const isPassed = percentage >= 40;
+        const isPassed = percentage >= 30;
 
         // =========================
         // CREATE ATTEMPT

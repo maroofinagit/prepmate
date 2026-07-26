@@ -482,7 +482,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                     <CardContent className="mt-auto">
                         <Link href={`/user-exam/${selectedId}/tests`}>
-                            <Button className="w-full">
+                            <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
                                 Give Tests
                             </Button>
                         </Link>
@@ -1195,14 +1195,15 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                 </div>
 
-                                <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
                                 {/* Performance Cards */}
 
-                                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                                <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
+
+                                <div className="grid gap-6 md:grid-cols-4">
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Performance Score
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1228,7 +1229,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Highest Score
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1255,7 +1256,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Lowest Score
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1282,7 +1283,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Last Test
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1313,7 +1314,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Generated Tests
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1340,7 +1341,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Attempted
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1369,7 +1370,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Passed
                                                 </CardTitle>
                                                 <CardDescription>
@@ -1398,7 +1399,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card>
                                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                             <div>
-                                                <CardTitle className="text-sm font-medium">
+                                                <CardTitle className="mb-2 font-semibold">
                                                     Failed
                                                 </CardTitle>
                                                 <CardDescription>

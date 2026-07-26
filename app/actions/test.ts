@@ -3,6 +3,8 @@
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
 import { cacheLife } from "next/cache";
+import { auth } from "@/app/lib/auth";
+import { headers } from "next/headers";
 
 export async function getTestsForUserExam(userExamId: number) {
     'use cache';
@@ -704,6 +706,166 @@ Return format:
         return {
             success: false,
             message: "Internal Server Error",
+        };
+    }
+}
+
+export async function submitTest(
+    testId: number,
+    responses: Record<string, string>,
+    timeTaken: number
+) {
+    try {
+        // =========================
+        // AUTH CHECK
+        // =========================
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.user?.id) {
+            return {
+                success: false,
+                error: "Unauthorized",
+                status: 401,
+            };
+        }
+
+        // =========================
+        // VALIDATION
+        // =========================
+        if (!testId || !responses) {
+            return {
+                success: false,
+                error: "Missing fields",
+                status: 400,
+            };
+        }
+
+        // =========================
+        // FIND TEST
+        // =========================
+        const test = await db.test.findUnique({
+            where: {
+                id: testId,
+            },
+            include: {
+                questions: true,
+                attempt: true,
+            },
+        });
+
+        if (!test) {
+            return {
+                success: false,
+                error: "Test not found",
+                status: 404,
+            };
+        }
+
+        // =========================
+        // CHECK IF ALREADY SUBMITTED
+        // =========================
+        if (test.attempt) {
+            return {
+                success: false,
+                error: "Test already submitted",
+                status: 400,
+            };
+        }
+
+        // =========================
+        // CALCULATE SCORE
+        // =========================
+        let score = 0;
+
+        for (const question of test.questions) {
+            const userAnswer = responses[question.id];
+
+            if (userAnswer === question.correctAns) {
+                score += question.marks;
+            }
+        }
+
+        const percentage = (score / test.totalMarks) * 100;
+
+        const isPassed = percentage >= 30;
+
+        // =========================
+        // CREATE ATTEMPT
+        // =========================
+        await db.testAttempt.create({
+            data: {
+                userId: session.user.id,
+                testId: test.id,
+                score,
+                totalMarks: test.totalMarks,
+                percentage,
+                isPassed,
+                responses,
+                timeTaken,
+            },
+        });
+
+        // =========================
+        // UPDATE PERFORMANCE
+        // =========================
+
+        const tests = await db.test.findMany({
+            where: {
+                userExamId: test.userExamId,
+                attempt: {
+                    isNot: null,
+                },
+            },
+            include: {
+                attempt: true,
+            },
+            orderBy: {
+                createdAt: "asc",
+            },
+        });
+
+        const percentages = tests.map(
+            (t) => t.attempt!.percentage
+        );
+
+        const performanceScore =
+            percentages.reduce((sum, p) => sum + p, 0) /
+            percentages.length;
+
+        const highestScore = Math.max(...percentages);
+
+        const lowestScore = Math.min(...percentages);
+
+        const lastTestScore =
+            tests[tests.length - 1]?.attempt?.percentage ?? 0;
+
+        await db.userExam.update({
+            where: {
+                id: test.userExamId,
+            },
+            data: {
+                performanceScore: Number(
+                    performanceScore.toFixed(2)
+                ),
+                highestScore,
+                lowestScore,
+                lastTestScore,
+            },
+        });
+
+        return {
+            success: true,
+            message: "Test submitted successfully",
+        };
+    } catch (error) {
+        console.error(error);
+
+        return {
+            success: false,
+            error: "Internal Server Error",
+            status: 500,
         };
     }
 }
