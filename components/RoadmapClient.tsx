@@ -265,7 +265,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
             {/* Header */}
             <div className="space-y-3">
-                <h1 className="text-xl md:text-3xl font-bold mb-8">{localRoadmap.title}</h1>
+                <h1 className="text-xl md:text-3xl md:w-2/3 font-bold mb-8">{localRoadmap.title}</h1>
                 <p className="text-gray-600 text-sm md:text-base max-w-3xl">{localRoadmap.description}</p>
                 <p className="font-medium text-sm md:text-base">{localRoadmap.summary} It comprises {localRoadmap.phases.length} phases, {localRoadmap.phases.reduce((acc, phase) => acc + phase.weeks.length, 0)} weeks, and {localRoadmap.milestones.length} milestones.</p>
 
