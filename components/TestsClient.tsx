@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "@/app/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { generateTestAttempt } from "@/app/actions/test";
@@ -31,8 +31,30 @@ interface TestsClientProps {
 export default function TestsClient({ data, baseId }: TestsClientProps) {
 
     const [generatingTestId, setGeneratingTestId] = useState<number | null>(null);
+    const [newData, setNewData] = useState(data);
 
-    if (data.weekly.length === 0 && data.phase.length === 0 && data.final.length === 0) {
+    const markTestAsGive = (testId: number) => {
+        setNewData(prev => ({
+            ...prev,
+            weekly: prev.weekly.map(test =>
+                test.testId === testId
+                    ? { ...test, status: "GIVE" }
+                    : test
+            ),
+            phase: prev.phase.map(test =>
+                test.testId === testId
+                    ? { ...test, status: "GIVE" }
+                    : test
+            ),
+            final: prev.final.map(test =>
+                test.testId === testId
+                    ? { ...test, status: "GIVE" }
+                    : test
+            ),
+        }));
+    };
+
+    if (newData.weekly.length === 0 && newData.phase.length === 0 && newData.final.length === 0) {
         return (
             <div className="min-h-screen flex items-center justify-center p-10 mt-20">
                 <h2 className="text-xl font-medium text-gray-500">
@@ -72,16 +94,16 @@ export default function TestsClient({ data, baseId }: TestsClientProps) {
             )}
 
             <div className="space-y-10 min-h-screen mt-20 p-10">
-                <h1 className="text-3xl font-bold">Tests of {data.examName}</h1>
+                <h1 className="text-3xl font-bold">Tests of {newData.examName}</h1>
 
                 <p className="text-gray-600 tracking-wider leading-relaxed">
                     Here are the tests generated based on your roadmap.<br />
                     Click on <span className="font-bold text-blue-600">"GIVE"</span> to attempt a test or <span className="font-bold text-green-600">"GENERATE"</span> to create a new one.<br />
                     Test which are locked will require you to complete certain tasks or previous tests first.
                 </p>
-                <TestSection title="Weekly Tests" tests={data.weekly} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} />
-                <TestSection title="Phase Tests" tests={data.phase} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} />
-                <TestSection title="Final Tests" tests={data.final} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} />
+                <TestSection title="Weekly Tests" tests={newData.weekly} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} markTestAsGive={markTestAsGive} />
+                <TestSection title="Phase Tests" tests={newData.phase} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} markTestAsGive={markTestAsGive} />
+                <TestSection title="Final Tests" tests={newData.final} baseId={baseId} generatingTestId={generatingTestId} setGeneratingTestId={setGeneratingTestId} markTestAsGive={markTestAsGive} />
             </div>
         </>
     );
@@ -93,12 +115,14 @@ function TestSection({
     baseId,
     generatingTestId,
     setGeneratingTestId,
+    markTestAsGive,
 }: {
     title: string;
     tests: Test[];
     baseId: string;
     generatingTestId: number | null;
     setGeneratingTestId: (id: number | null) => void;
+    markTestAsGive: (testId: number) => void;
 }) {
 
 
@@ -116,6 +140,7 @@ function TestSection({
                             baseId={baseId}
                             generatingTestId={generatingTestId}
                             setGeneratingTestId={setGeneratingTestId}
+                            markTestAsGive={markTestAsGive}
                         />
 
                     ))
@@ -134,11 +159,13 @@ function TestCard({
     baseId,
     generatingTestId,
     setGeneratingTestId,
+    markTestAsGive,
 }: {
     test: any;
     baseId: string;
     generatingTestId: number | null;
     setGeneratingTestId: (id: number | null) => void;
+    markTestAsGive: (testId: number) => void;
 }) {
 
     const router = useRouter();
@@ -150,6 +177,9 @@ function TestCard({
             const response = await generateTestAttempt(test.testId);
             if (response.success) {
                 toast.success("Test generation started successfully! Click on GIVE once the test is ready.");
+                await new Promise(resolve => setTimeout(resolve, 500)); // Simulate a delay of 0.5 seconds
+                setGeneratingTestId(null);
+                markTestAsGive(test.testId);
                 router.refresh();
             } else {
                 toast.error(response.message || "Failed to start test generation.");

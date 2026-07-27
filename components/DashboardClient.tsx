@@ -48,7 +48,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const exams = dashboardUser?.exams || [];
     // const exams: any[] = []
 
-    const [selectedExam, setSelectedExam] = useState(exams.length ? exams[0] : null);
+    const [newExams, setNewExams] = useState(exams);
+    const [selectedExam, setSelectedExam] = useState(newExams.length ? newExams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [dltDialogOpen, setDltDialogOpen] = useState(false);
@@ -58,8 +59,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const currentSelectedExam = useMemo(() => {
         if (!selectedExam) return null;
         // try to find the same id in latest exams array
-        return exams.find((e) => e.id === selectedExam.id) || null;
-    }, [exams, selectedExam]);
+        return newExams.find((e) => e.id === selectedExam.id) || null;
+    }, [newExams, selectedExam]);
 
     const exam = currentSelectedExam; // alias
     const roadmap = exam?.roadmap || null;
@@ -84,7 +85,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         .sort((a, b) => a.weekNumber - b.weekNumber)
 
     // safe values for top cards
-    const totalUserExams = exams.length;
+    const totalUserExams = newExams.length;
 
     // safe values for top cards
     const selectedProgress = exam?.progress_percent ?? 0;
@@ -316,21 +317,22 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setDeleting(true);
             const res = await deleteUserExam(selectedId, dashboardUser.id);
             if (res.success) {
-                toast.success("Exam deleted successfully.",{
+                toast.success("Exam deleted successfully.", {
                     duration: 2000,
                 });
             } else {
-                toast.error("Failed to delete exam.",{
+                toast.error("Failed to delete exam.", {
                     duration: 2000,
                 });
             }
             setDltDialogOpen(false);
             setDeleting(false);
             setSelectedExam(null);
+            setNewExams((prev) => prev.filter((ex) => ex.id !== selectedId));
             router.refresh();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to delete exam. Please try again later.",{
+            toast.error("Failed to delete exam. Please try again later.", {
                 duration: 2000,
             });
         } finally {
@@ -501,21 +503,21 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
             {/* Tabs */}
             <Tabs
-                defaultValue={exams[0] ? String(exams[0].id) : "none"}
+                defaultValue={newExams[0] ? String(newExams[0].id) : "none"}
                 onValueChange={(v) => {
                     if (v === "none") {
                         setSelectedExam(null);
                         return;
                     }
                     const id = Number(v);
-                    const found = exams.find((ex) => ex.id === id);
+                    const found = newExams.find((ex) => ex.id === id);
                     setSelectedExam(found || null);
                 }}
                 className="mt-6 p-4 "
             >
                 <TabsList className="flex flex-wrap gap-2 mb-4 bg-gray-200">
-                    {exams.length > 0 ? (
-                        exams.map((ex) => (
+                    {newExams.length > 0 ? (
+                        newExams.map((ex) => (
                             <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
                                 {ex.exam?.name ?? `Exam ${ex.id}`}
                             </TabsTrigger>
@@ -526,7 +528,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 </TabsList>
 
                 {/* NO EXAMS */}
-                {exams.length === 0 ? (
+                {newExams.length === 0 ? (
                     <TabsContent value="none">
 
                         {/* 📱 MOBILE (ONLY PIE) */}
@@ -799,7 +801,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                     </TabsContent>
                 ) : (
-                    exams.map((ex) => (
+                    newExams.map((ex) => (
                         <TabsContent key={ex.id} value={String(ex.id)}>
 
                             {/* 📱 MOBILE */}

@@ -11,7 +11,7 @@ import { use } from "react";
 export async function getFullExams() {
     'use cache';
     cacheTag('exams');
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const exams = await db.exam.findMany({
             select: {
@@ -50,7 +50,7 @@ export async function getFullExams() {
 export async function getExamById(id: number) {
     'use cache';
     cacheTag(`exam-${id}`);
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const exam = await db.exam.findUnique({
             where: { id },
@@ -86,7 +86,7 @@ export async function getExamById(id: number) {
 export async function getShortExams() {
     'use cache';
     cacheTag('exams');
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const exams = await db.exam.findMany({
             select: {
@@ -107,7 +107,7 @@ export async function getShortExams() {
 export async function getUserExams(userId: string) {
     'use cache';
     cacheTag(`userExams-${userId}`);
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const userExams = await db.userExam.findMany({
             where: { user_id: userId },
@@ -197,7 +197,7 @@ export async function createUserExam({
 export async function getRoadmapByUserExamId(user_exam_id: number) {
     'use cache';
     cacheTag(`roadmap-${user_exam_id}`);
-    cacheLife('hours'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const roadmap = await db.roadmap.findUnique({
             where: { user_exam_id },
@@ -241,7 +241,7 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 export async function getDashboardUser(userId: string) {
     'use cache';
     cacheTag(`userDashboard-${userId}`);
-    cacheLife('minutes'); // Cache for 1 hour
+    cacheLife('minutes'); // Cache for 30 seconds
     try {
         const dashboardUser = await db.user.findUnique({
             where: { id: userId },
