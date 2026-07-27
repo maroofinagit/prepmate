@@ -50,7 +50,6 @@ export type RoadmapMinAggregateOutputType = {
   start_date: Date | null
   end_date: Date | null
   progress: number | null
-  summary: string | null
   updated_at: Date | null
   version: number | null
 }
@@ -65,7 +64,6 @@ export type RoadmapMaxAggregateOutputType = {
   start_date: Date | null
   end_date: Date | null
   progress: number | null
-  summary: string | null
   updated_at: Date | null
   version: number | null
 }
@@ -80,7 +78,6 @@ export type RoadmapCountAggregateOutputType = {
   start_date: number
   end_date: number
   progress: number
-  summary: number
   updated_at: number
   version: number
   _all: number
@@ -111,7 +108,6 @@ export type RoadmapMinAggregateInputType = {
   start_date?: true
   end_date?: true
   progress?: true
-  summary?: true
   updated_at?: true
   version?: true
 }
@@ -126,7 +122,6 @@ export type RoadmapMaxAggregateInputType = {
   start_date?: true
   end_date?: true
   progress?: true
-  summary?: true
   updated_at?: true
   version?: true
 }
@@ -141,7 +136,6 @@ export type RoadmapCountAggregateInputType = {
   start_date?: true
   end_date?: true
   progress?: true
-  summary?: true
   updated_at?: true
   version?: true
   _all?: true
@@ -243,7 +237,6 @@ export type RoadmapGroupByOutputType = {
   start_date: Date | null
   end_date: Date | null
   progress: number
-  summary: string | null
   updated_at: Date
   version: number
   _count: RoadmapCountAggregateOutputType | null
@@ -281,7 +274,6 @@ export type RoadmapWhereInput = {
   start_date?: Prisma.DateTimeNullableFilter<"Roadmap"> | Date | string | null
   end_date?: Prisma.DateTimeNullableFilter<"Roadmap"> | Date | string | null
   progress?: Prisma.FloatFilter<"Roadmap"> | number
-  summary?: Prisma.StringNullableFilter<"Roadmap"> | string | null
   updated_at?: Prisma.DateTimeFilter<"Roadmap"> | Date | string
   version?: Prisma.IntFilter<"Roadmap"> | number
   milestones?: Prisma.MilestoneListRelationFilter
@@ -300,7 +292,6 @@ export type RoadmapOrderByWithRelationInput = {
   start_date?: Prisma.SortOrderInput | Prisma.SortOrder
   end_date?: Prisma.SortOrderInput | Prisma.SortOrder
   progress?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   version?: Prisma.SortOrder
   milestones?: Prisma.MilestoneOrderByRelationAggregateInput
@@ -322,7 +313,6 @@ export type RoadmapWhereUniqueInput = Prisma.AtLeast<{
   start_date?: Prisma.DateTimeNullableFilter<"Roadmap"> | Date | string | null
   end_date?: Prisma.DateTimeNullableFilter<"Roadmap"> | Date | string | null
   progress?: Prisma.FloatFilter<"Roadmap"> | number
-  summary?: Prisma.StringNullableFilter<"Roadmap"> | string | null
   updated_at?: Prisma.DateTimeFilter<"Roadmap"> | Date | string
   version?: Prisma.IntFilter<"Roadmap"> | number
   milestones?: Prisma.MilestoneListRelationFilter
@@ -341,7 +331,6 @@ export type RoadmapOrderByWithAggregationInput = {
   start_date?: Prisma.SortOrderInput | Prisma.SortOrder
   end_date?: Prisma.SortOrderInput | Prisma.SortOrder
   progress?: Prisma.SortOrder
-  summary?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   version?: Prisma.SortOrder
   _count?: Prisma.RoadmapCountOrderByAggregateInput
@@ -364,7 +353,6 @@ export type RoadmapScalarWhereWithAggregatesInput = {
   start_date?: Prisma.DateTimeNullableWithAggregatesFilter<"Roadmap"> | Date | string | null
   end_date?: Prisma.DateTimeNullableWithAggregatesFilter<"Roadmap"> | Date | string | null
   progress?: Prisma.FloatWithAggregatesFilter<"Roadmap"> | number
-  summary?: Prisma.StringNullableWithAggregatesFilter<"Roadmap"> | string | null
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Roadmap"> | Date | string
   version?: Prisma.IntWithAggregatesFilter<"Roadmap"> | number
 }
@@ -377,7 +365,6 @@ export type RoadmapCreateInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
@@ -396,7 +383,6 @@ export type RoadmapUncheckedCreateInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
@@ -412,7 +398,6 @@ export type RoadmapUpdateInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
@@ -431,7 +416,6 @@ export type RoadmapUncheckedUpdateInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
@@ -449,7 +433,6 @@ export type RoadmapCreateManyInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
 }
@@ -462,7 +445,6 @@ export type RoadmapUpdateManyMutationInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -477,7 +459,6 @@ export type RoadmapUncheckedUpdateManyInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -497,7 +478,6 @@ export type RoadmapCountOrderByAggregateInput = {
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
   progress?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
@@ -519,7 +499,6 @@ export type RoadmapMaxOrderByAggregateInput = {
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
   progress?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
@@ -534,7 +513,6 @@ export type RoadmapMinOrderByAggregateInput = {
   start_date?: Prisma.SortOrder
   end_date?: Prisma.SortOrder
   progress?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
@@ -647,7 +625,6 @@ export type RoadmapCreateWithoutUserExamInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
@@ -664,7 +641,6 @@ export type RoadmapUncheckedCreateWithoutUserExamInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
@@ -696,7 +672,6 @@ export type RoadmapUpdateWithoutUserExamInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
@@ -713,7 +688,6 @@ export type RoadmapUncheckedUpdateWithoutUserExamInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
@@ -729,7 +703,6 @@ export type RoadmapCreateWithoutPhasesInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
@@ -747,7 +720,6 @@ export type RoadmapUncheckedCreateWithoutPhasesInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
@@ -778,7 +750,6 @@ export type RoadmapUpdateWithoutPhasesInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
@@ -796,7 +767,6 @@ export type RoadmapUncheckedUpdateWithoutPhasesInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
@@ -811,7 +781,6 @@ export type RoadmapCreateWithoutMilestonesInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   userExam: Prisma.UserExamCreateNestedOneWithoutRoadmapInput
@@ -829,7 +798,6 @@ export type RoadmapUncheckedCreateWithoutMilestonesInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   phases?: Prisma.RoadmapPhaseUncheckedCreateNestedManyWithoutRoadmapInput
@@ -860,7 +828,6 @@ export type RoadmapUpdateWithoutMilestonesInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutRoadmapNestedInput
@@ -878,7 +845,6 @@ export type RoadmapUncheckedUpdateWithoutMilestonesInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   phases?: Prisma.RoadmapPhaseUncheckedUpdateManyWithoutRoadmapNestedInput
@@ -893,7 +859,6 @@ export type RoadmapCreateWithoutNotificationsInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneCreateNestedManyWithoutRoadmapInput
@@ -911,7 +876,6 @@ export type RoadmapUncheckedCreateWithoutNotificationsInput = {
   start_date?: Date | string | null
   end_date?: Date | string | null
   progress?: number
-  summary?: string | null
   updated_at?: Date | string
   version?: number
   milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutRoadmapInput
@@ -942,7 +906,6 @@ export type RoadmapUpdateWithoutNotificationsInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUpdateManyWithoutRoadmapNestedInput
@@ -960,7 +923,6 @@ export type RoadmapUncheckedUpdateWithoutNotificationsInput = {
   start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   progress?: Prisma.FloatFieldUpdateOperationsInput | number
-  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutRoadmapNestedInput
@@ -1026,7 +988,6 @@ export type RoadmapSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   start_date?: boolean
   end_date?: boolean
   progress?: boolean
-  summary?: boolean
   updated_at?: boolean
   version?: boolean
   milestones?: boolean | Prisma.Roadmap$milestonesArgs<ExtArgs>
@@ -1046,7 +1007,6 @@ export type RoadmapSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   start_date?: boolean
   end_date?: boolean
   progress?: boolean
-  summary?: boolean
   updated_at?: boolean
   version?: boolean
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
@@ -1062,7 +1022,6 @@ export type RoadmapSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   start_date?: boolean
   end_date?: boolean
   progress?: boolean
-  summary?: boolean
   updated_at?: boolean
   version?: boolean
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
@@ -1078,12 +1037,11 @@ export type RoadmapSelectScalar = {
   start_date?: boolean
   end_date?: boolean
   progress?: boolean
-  summary?: boolean
   updated_at?: boolean
   version?: boolean
 }
 
-export type RoadmapOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_exam_id" | "title" | "description" | "generated_by_ai" | "created_at" | "start_date" | "end_date" | "progress" | "summary" | "updated_at" | "version", ExtArgs["result"]["roadmap"]>
+export type RoadmapOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_exam_id" | "title" | "description" | "generated_by_ai" | "created_at" | "start_date" | "end_date" | "progress" | "updated_at" | "version", ExtArgs["result"]["roadmap"]>
 export type RoadmapInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   milestones?: boolean | Prisma.Roadmap$milestonesArgs<ExtArgs>
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
@@ -1116,7 +1074,6 @@ export type $RoadmapPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     start_date: Date | null
     end_date: Date | null
     progress: number
-    summary: string | null
     updated_at: Date
     version: number
   }, ExtArgs["result"]["roadmap"]>
@@ -1555,7 +1512,6 @@ export interface RoadmapFieldRefs {
   readonly start_date: Prisma.FieldRef<"Roadmap", 'DateTime'>
   readonly end_date: Prisma.FieldRef<"Roadmap", 'DateTime'>
   readonly progress: Prisma.FieldRef<"Roadmap", 'Float'>
-  readonly summary: Prisma.FieldRef<"Roadmap", 'String'>
   readonly updated_at: Prisma.FieldRef<"Roadmap", 'DateTime'>
   readonly version: Prisma.FieldRef<"Roadmap", 'Int'>
 }

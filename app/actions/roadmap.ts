@@ -71,34 +71,47 @@ ${subjects
 5. Spread difficult topics across multiple weeks instead of merging them.
 6. Phases should group related subjects, not individual topics.
 7. The roadmap should feel like a university course with incremental progression.
+8. Roadmap description will be concise (1–2 sentences) that provides a general overview of the roadmap and the subject or exam it is designed for. This should be generic and the same for any learner preparing for that exam.
+9. Roadmap summary will be personalized (3–5 sentences) tailored to the user's profile, goals, current skill level, available time, and target exam. It should explain how this roadmap is specifically designed to help the user achieve their objective.
 
-Output ONLY valid JSON in this exact structure:
+Output ONLY valid JSON in this exact structure, Ensure the roadmap start_date equals the first task's start date and the roadmap end_date equals the last task's end date. Each phase's dates should span all of its weeks, and each week's dates should span all of its tasks. Do not include markdown, explanations, comments, or additional fields. Every phase, week, task, and milestone must include all required properties :
 
 {
   "title": "string",
   "description": "string",
   "summary": "string",
+  "start_date": "YYYY-MM-DD",
+  "end_date": "YYYY-MM-DD",
+
   "phases": [
     {
       "phase_name": "string",
       "description": "string",
       "duration": "string",
+      "start_date": "YYYY-MM-DD",
+      "end_date": "YYYY-MM-DD",
+      "progress": 0,
+
       "weeks": [
         {
-          "week_number": number,
+          "week_number": 1,
           "focus": "string",
+          "start_date": "YYYY-MM-DD",
+          "end_date": "YYYY-MM-DD",
+
           "tasks": [
             {
               "title": "string",
               "description": "string",
               "start_date": "YYYY-MM-DD",
-              "end_date": "YYYY-MM-DD"
+              "end_date": "YYYY-MM-DD",
             }
           ]
         }
       ]
     }
   ],
+
   "milestones": [
     {
       "name": "string",

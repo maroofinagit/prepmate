@@ -136,7 +136,6 @@ model Roadmap {
   start_date      DateTime?
   end_date        DateTime?
   progress        Float          @default(0)
-  summary         String?
   updated_at      DateTime       @updatedAt
   version         Int            @default(1)
   milestones      Milestone[]

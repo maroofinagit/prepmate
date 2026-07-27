@@ -11,10 +11,11 @@ import { toast } from "sonner";
 import { Roadmap } from "@/app/types/roadmap";
 import { completeMilestone, completeRoadmapTask } from "@/app/actions/action";
 import { Search } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
-    const [localRoadmap, setLocalRoadmap] = useState(roadmap);
 
+    const [localRoadmap, setLocalRoadmap] = useState(roadmap);
     const [expandedPhases, setExpandedPhases] = useState<(number | undefined)[]>([]);
     const [expandedWeeks, setExpandedWeeks] = useState<Record<number, (number | undefined)[]>>({});
     const [isExpandedAll, setIsExpandedAll] = useState(false);
@@ -243,12 +244,28 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         setExpandedWeeks(weekIds);
     }, [search]);
 
+    const isPhaseComplete = (
+        phase: { weeks: ((typeof localRoadmap.phases)[number]["weeks"][number] | null)[] }
+    ) => {
+        const weeks = phase.weeks.filter(
+            (week): week is NonNullable<typeof week> => week !== null
+        );
+
+        const totalTasks = weeks.reduce((acc, week) => acc + week.tasks.length, 0);
+        const completedTasks = weeks.reduce(
+            (acc, week) => acc + week.tasks.filter((t) => t.is_completed).length,
+            0
+        );
+
+        return totalTasks > 0 && completedTasks === totalTasks;
+    };
+
     const displayedPhases = search.trim()
         ? filteredPhases
         : localRoadmap.phases;
 
     return (
-        <div className=" px-6 mt-16 md:mt-32 pb-12 space-y-10 max-w-6xl mx-auto relative">
+        <div className=" px-6 mt-20 md:mt-36 pb-12 space-y-10 max-w-6xl mx-auto relative">
             <div className="absolute top-0 right-0 w-80 md:block hidden">
                 <Search
                     size={18}
@@ -259,23 +276,46 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search phase, week or task..."
-                    className="w-full rounded-md border pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-400 focus:border-none pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition"
                 />
             </div>
 
             {/* Header */}
-            <div className="space-y-3">
-                <h1 className="text-xl md:text-3xl md:w-2/3 font-bold mb-8">{localRoadmap.title}</h1>
-                <p className="text-gray-600 text-sm md:text-base max-w-3xl">{localRoadmap.description}</p>
-                <p className="font-medium text-sm md:text-base">{localRoadmap.summary} It comprises {localRoadmap.phases.length} phases, {localRoadmap.phases.reduce((acc, phase) => acc + phase.weeks.length, 0)} weeks, and {localRoadmap.milestones.length} milestones.</p>
+            <div className="space-y-4">
 
-                <p className="text-sm text-gray-500 mt-1">
-                    Duration:{" "}
+                <h1 className="text-xl md:text-3xl md:w-2/3 font-bold mb-8">
+                    {localRoadmap.title}
+                </h1>
+
+                <p className="mt-2 text-lg text-muted-foreground">
+                    {localRoadmap.description}
+                </p>
+
+                <div className="flex flex-wrap gap-3">
+                    <Badge className="bg-gray-600 text-white">
+                        {localRoadmap.phases.length} Phases
+                    </Badge>
+
+                    <Badge className="bg-green-800 text-white">
+                        {localRoadmap.phases.reduce((acc, p) => acc + p.weeks.length, 0)} Weeks
+                    </Badge>
+
+                    <Badge className="bg-rose-800 text-white">
+                        {localRoadmap.phases.reduce((acc, p) => acc + p.weeks.length / 4.345, 0).toFixed(1)} Months
+                    </Badge>
+
+                    <Badge className="bg-indigo-800 text-white">
+                        {localRoadmap.milestones.length} Milestones
+                    </Badge>
+                </div>
+
+                <p className="font-semibold text-black ">
+                    Duration : {" "}
                     <span className="font-medium">
                         {localRoadmap.start_date &&
                             formatDate(new Date(localRoadmap.start_date).toDateString())}
 
-                        {localRoadmap.start_date || localRoadmap.end_date ? "→" : ""}
+                        {localRoadmap.start_date || localRoadmap.end_date ? "   →  " : " "}
 
                         {localRoadmap.end_date &&
                             formatDate(new Date(localRoadmap.end_date).toDateString())}
@@ -284,7 +324,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
                 <div className="flex items-center justify-between">
 
-                    <div className="flex gap-x-4">
+                    <div className="flex gap-x-4 mt-4">
                         <Button
                             variant={isExpandedAll ? "default" : "outline"}
                             className="cursor-pointer hover:bg-gray-700 hover:border-gray-800 transition-colors hover:text-white"
@@ -437,30 +477,33 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         onClick={() => togglePhase(phase?.id)}
                                         className="cursor-pointer"
                                     >
-                                        <CardTitle className="flex justify-between">
-                                            <div>
-                                                <div className="flex flex-col items-center gap-3">
+                                        <CardTitle className="flex justify-around items-center gap-4">
+                                            <div className="flex flex-col gap-3 w-full">
+                                                <div className="flex items-center w-full justify-between pr-8 gap-4">
                                                     <span className="text-lg font-semibold">{phase?.phase_name}</span>
-                                                    {/* optional calendar icon with dates */}
-                                                    {(phase?.start_date || phase?.end_date) && (
-                                                        <span className=" text-gray-500 flex items-center gap-2">
-                                                            <CalendarDays size={14} />
-                                                            {phase.start_date && formatDate(phase.start_date.toDateString())}{" "}
-                                                            {phase.start_date || phase.end_date ? "→" : ""}{" "}
-                                                            {phase.end_date && formatDate(phase.end_date.toDateString())}
-                                                        </span>
-                                                    )}
                                                 </div>
+                                                {/* optional calendar icon with dates */}
+                                                {(phase?.start_date || phase?.end_date) && (
+                                                    <span className=" text-gray-500 text-sm flex items-center gap-2">
+                                                        <CalendarDays size={14} />
+                                                        {phase.start_date && formatDate(phase.start_date.toDateString())}{" "}
+                                                        {phase.start_date || phase.end_date ? "→" : ""}{" "}
+                                                        {phase.end_date && formatDate(phase.end_date.toDateString())}
+                                                    </span>
+                                                )}
                                             </div>
-
-                                            {isPhaseOpen ? <ChevronUp /> : <ChevronDown />}
+                                            {phase?.weeks && isPhaseComplete(phase) && (
+                                                <Badge className="bg-green-800 text-white w-fit">Complete</Badge>
+                                            )}
+                                            <span className="text-gray-500 w-full text-right text-sm">{phase?.weeks.length ? phase.weeks.length * 7 : 0} Days</span>
+                                            {isPhaseOpen ? <ChevronUp size={40} /> : <ChevronDown size={40} />}
                                         </CardTitle>
                                     </CardHeader>
 
                                     {isPhaseOpen && (
                                         <CardContent className="space-y-6">
                                             {phase?.description && (
-                                                <p className="text-sm text-gray-600">{phase.description}</p>
+                                                <p className=" text-gray-600">{phase.description}</p>
                                             )}
 
                                             {phase?.weeks.map((week) => {
@@ -514,6 +557,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                                         {task.description}
                                                                                     </p>
                                                                                 )}
+
                                                                             </div>
 
                                                                             <div className="flex items-center gap-3 flex-wrap justify-end">
@@ -653,24 +697,24 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                     href={res.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="group block p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-blue-400 transition-all duration-200"
+                                    className="group block p-4 rounded-xl border  border-gray-200 bg-transparent hover:bg-green-100 shadow-sm hover:shadow-md hover:border-green-700  transition-all duration-200"
                                 >
                                     <div className="flex items-start justify-between gap-3">
 
                                         {/* Title */}
                                         <div>
-                                            <h3 className="font-medium text-gray-800 group-hover:text-blue-600 transition">
+                                            <h3 className="font-medium text-gray-800">
                                                 {res.title}
                                             </h3>
 
                                             {/* Type badge */}
-                                            <span className="inline-block mt-2 text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-600">
+                                            <span className="inline-block group-hover:bg-green-800 group-hover:text-white mt-2 text-xs px-2 py-1 rounded-full bg-green-50 text-green-700">
                                                 {res.type}
                                             </span>
                                         </div>
 
                                         {/* External icon */}
-                                        <div className="text-gray-400 group-hover:text-blue-500 transition">
+                                        <div className="text-gray-400 group-hover:text-green-700 transition">
                                             ↗
                                         </div>
                                     </div>

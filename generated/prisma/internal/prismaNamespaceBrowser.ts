@@ -207,7 +207,6 @@ export const RoadmapScalarFieldEnum = {
   start_date: 'start_date',
   end_date: 'end_date',
   progress: 'progress',
-  summary: 'summary',
   updated_at: 'updated_at',
   version: 'version'
 } as const
