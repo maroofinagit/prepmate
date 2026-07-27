@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CalendarDays, ChevronDown, ChevronUp, CheckCircle2, Loader2 } from "lucide-react";
@@ -10,13 +10,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Roadmap } from "@/app/types/roadmap";
 import { completeMilestone, completeRoadmapTask } from "@/app/actions/action";
+import { Search } from "lucide-react";
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const [localRoadmap, setLocalRoadmap] = useState(roadmap);
 
-    const [expandedPhases, setExpandedPhases] = useState<number[]>([]);
-    const [expandedWeeks, setExpandedWeeks] = useState<Record<number, number[]>>({});
+    const [expandedPhases, setExpandedPhases] = useState<(number | undefined)[]>([]);
+    const [expandedWeeks, setExpandedWeeks] = useState<Record<number, (number | undefined)[]>>({});
     const [isExpandedAll, setIsExpandedAll] = useState(false);
+    const [search, setSearch] = useState("");
 
     // task -> checked
     const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
@@ -29,14 +31,16 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const [updatingTasks, setUpdatingTasks] = useState<Record<number, boolean>>({});
 
     // Toggle Phase
-    const togglePhase = (phaseId: number) => {
+    const togglePhase = (phaseId: number | undefined) => {
+        if (phaseId === undefined) return;
         setExpandedPhases((prev) =>
             prev.includes(phaseId) ? prev.filter((id) => id !== phaseId) : [...prev, phaseId]
         );
     };
 
     // Toggle Week
-    const toggleWeek = (phaseId: number, weekId: number) => {
+    const toggleWeek = (phaseId: number | undefined, weekId: number | undefined) => {
+        if (phaseId === undefined || weekId === undefined) return;
         setExpandedWeeks((prev) => {
             const arr = prev[phaseId] || [];
             return {
@@ -166,8 +170,99 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         });
     }
 
+    const filteredPhases = localRoadmap.phases
+        .map((phase) => {
+            const phaseMatch =
+                phase.phase_name.toLowerCase().includes(search.toLowerCase()) ||
+                (phase.description ?? "")
+                    .toLowerCase()
+                    .includes(search.toLowerCase());
+
+            const weeks = phase.weeks
+                .map((week) => {
+                    const weekMatch =
+                        week.focus.toLowerCase().includes(search.toLowerCase());
+
+                    const tasks = week.tasks.filter((task) => {
+                        return (
+                            task.title.toLowerCase().includes(search.toLowerCase()) ||
+                            (task.description ?? "")
+                                .toLowerCase()
+                                .includes(search.toLowerCase())
+                        );
+                    });
+
+                    if (weekMatch) {
+                        return week;
+                    }
+
+                    if (tasks.length > 0) {
+                        return {
+                            ...week,
+                            tasks,
+                        };
+                    }
+
+                    return null;
+                })
+                .filter(Boolean);
+
+            if (phaseMatch) {
+                return phase;
+            }
+
+            if (weeks.length > 0) {
+                return {
+                    ...phase,
+                    weeks,
+                };
+            }
+
+            return null;
+        })
+        .filter(Boolean);
+
+    useEffect(() => {
+        if (!search.trim()) {
+            setExpandedPhases([]);
+            setExpandedWeeks({});
+            return;
+        }
+
+        const phaseIds = filteredPhases.map((p) => p?.id);
+
+        const weekIds: Record<number, (number | undefined)[]> = {};
+
+        filteredPhases.forEach((phase) => {
+            if (phase?.id) {
+                weekIds[phase.id] = phase.weeks.map((w) => w?.id);
+            }
+        });
+
+        setExpandedPhases(phaseIds);
+        setExpandedWeeks(weekIds);
+    }, [search]);
+
+    const displayedPhases = search.trim()
+        ? filteredPhases
+        : localRoadmap.phases;
+
     return (
-        <div className="p-6 mt-16 md:mt-20 space-y-10">
+        <div className=" px-6 mt-16 md:mt-32 space-y-10 max-w-6xl mx-auto relative">
+            <div className="absolute top-0 right-0 w-80 md:block hidden">
+                <Search
+                    size={18}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                />
+
+                <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search phase, week or task..."
+                    className="w-full rounded-md border pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
             {/* Header */}
             <div className="space-y-3">
                 <h1 className="text-xl md:text-3xl font-bold mb-8">{localRoadmap.title}</h1>
@@ -187,15 +282,30 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     </span>
                 </p>
 
-                <div className="md:flex gap-3 pt-3 hidden">
-                    <Button variant={isExpandedAll ? "default" : "outline"} onClick={expandAll}>
-                        Expand All
-                    </Button>
-                    <Button variant={isExpandedAll ? "outline" : "default"} onClick={collapseAll}>
-                        Collapse All
-                    </Button>
+                <div className="flex items-center justify-between">
+
+                    <div className="flex gap-x-4">
+                        <Button
+                            variant={isExpandedAll ? "default" : "outline"}
+                            className="cursor-pointer hover:bg-gray-700 hover:border-gray-800 transition-colors hover:text-white"
+                            onClick={expandAll}
+                        >
+                            Expand All
+                        </Button>
+
+                        <Button
+                            variant={isExpandedAll ? "outline" : "default"}
+                            className="cursor-pointer hover:bg-gray-700 hover:border-gray-800 transition-colors hover:text-white"
+                            onClick={collapseAll}
+                        >
+                            Collapse All
+                        </Button>
+                    </div>
+
                 </div>
             </div>
+
+
 
             <p className="text-sm text-gray-500 md:block hidden">
                 Check off tasks as you complete them to track your progress. Click on phases and weeks to see more details, and watch your roadmap evolve as you move forward!
@@ -294,148 +404,173 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             <div className="hidden space-y-8 md:block">
                 {/* Phases */}
                 <div className="space-y-8">
-                    {localRoadmap.phases.map((phase, i) => {
-                        const isPhaseOpen = expandedPhases.includes(phase.id);
+                    {displayedPhases.length === 0 ? (
+                        <Card className="border-dashed border-2 py-16">
+                            <CardContent className="flex flex-col items-center justify-center text-center space-y-3">
+                                <Search className="h-12 w-12 text-gray-400" />
 
-                        return (
-                            <Card key={phase.id} className={`border border-gray-300 shadow-sm ${isPhaseOpen ? "bg-white shadow-xl" : "bg-linear-to-r from-indigo-100 to-white"}`}>
-                                <CardHeader
-                                    onClick={() => togglePhase(phase.id)}
-                                    className="cursor-pointer"
+                                <h3 className="text-xl font-semibold">
+                                    No results found
+                                </h3>
+
+                                <p className="text-gray-500 max-w-md">
+                                    We couldn't find any phase, week, or task matching{" "}
+                                    <span className="font-medium">"{search}"</span>.
+                                </p>
+
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSearch("")}
                                 >
-                                    <CardTitle className="flex justify-between">
-                                        <div>
-                                            <div className="flex flex-col items-center gap-3">
-                                                <span className="text-lg font-semibold">{phase.phase_name}</span>
-                                                {/* optional calendar icon with dates */}
-                                                {(phase.start_date || phase.end_date) && (
-                                                    <span className=" text-gray-500 flex items-center gap-2">
-                                                        <CalendarDays size={14} />
-                                                        {phase.start_date && formatDate(phase.start_date.toDateString())}{" "}
-                                                        {phase.start_date || phase.end_date ? "→" : ""}{" "}
-                                                        {phase.end_date && formatDate(phase.end_date.toDateString())}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
+                                    Clear Search
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
 
-                                        {isPhaseOpen ? <ChevronUp /> : <ChevronDown />}
-                                    </CardTitle>
-                                </CardHeader>
+                        displayedPhases.map((phase, i) => {
+                            const isPhaseOpen = expandedPhases.includes(phase?.id ? phase.id : -1);
 
-                                {isPhaseOpen && (
-                                    <CardContent className="space-y-6">
-                                        {phase.description && (
-                                            <p className="text-sm text-gray-600">{phase.description}</p>
-                                        )}
-
-                                        {phase.weeks.map((week) => {
-                                            const isWeekOpen =
-                                                expandedWeeks[phase.id]?.includes(week.id) || false;
-
-                                            const completedTasks = week.tasks.filter((t) => t.is_completed).length;
-                                            const totalTasks = week.tasks.length;
-
-                                            return (
-                                                <div
-                                                    key={week.id}
-                                                    className={`border rounded-lg space-y-4 p-5 ${isWeekOpen ? "shadow-xl " : "shadow-sm bg-linear-to-r from-indigo-100 to-white"
-                                                        }`}
-                                                >
-                                                    <div
-                                                        className="flex justify-between cursor-pointer"
-                                                        onClick={() => toggleWeek(phase.id, week.id)}
-                                                    >
-                                                        <div className=" flex flex-col justify-center gap-2">
-                                                            <h3 className="md:text-lg font-semibold">
-                                                                Week {week.week_number}: {week.focus}
-                                                            </h3>
-
-                                                            {/* week dates */}
-                                                            {(week.start_date || week.end_date) && (
-                                                                <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                                                                    <CalendarDays size={14} />
-                                                                    {week.start_date && formatDate(week.start_date.toDateString())}{" "}
-                                                                    {week.start_date || week.end_date ? "→" : ""}{" "}
-                                                                    {week.end_date && formatDate(week.end_date.toDateString())}
-                                                                </p>
-                                                            )}
-                                                        </div>
-
-                                                        {isWeekOpen ? <ChevronUp /> : <ChevronDown />}
-                                                    </div>
-
-                                                    {isWeekOpen && (
-                                                        <>
-                                                            <ul className="space-y-4 mt-4">
-                                                                {week.tasks.map((task) => (
-                                                                    <li
-                                                                        key={task.id}
-                                                                        className="border-l-4 border-blue-500 shadow-md px-6 py-4 bg-linear-to-r from-indigo-100 to-white rounded-md flex justify-between items-center"
-                                                                    >
-                                                                        <div className="flex-1 gap-2 flex flex-col">
-                                                                            <p className="font-medium">{task.title}</p>
-                                                                            {task.description && (
-                                                                                <p className="text-sm text-gray-600">
-                                                                                    {task.description}
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-
-                                                                        <div className="flex items-center gap-3 flex-wrap justify-end">
-                                                                            {task.is_completed ? (
-                                                                                <div className="flex items-center text-green-700">
-                                                                                    <CheckCircle2 className="mr-1" size={18} />
-                                                                                    Completed
-                                                                                </div>
-                                                                            ) : (
-                                                                                <>
-                                                                                    {/* Mark Done button (left on desktop, below on mobile) */}
-                                                                                    {checkedTasks[task.id] && (
-                                                                                        <Button
-                                                                                            size="sm"
-                                                                                            className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
-                                                                                            disabled={!!updatingTasks[task.id]}
-                                                                                            onClick={() => updateSingleTask(task.id)}
-                                                                                        >
-                                                                                            {updatingTasks[task.id] ? (
-                                                                                                <Loader2 size={16} className="animate-spin mr-1" />
-                                                                                            ) : null}
-                                                                                            Mark Done
-                                                                                        </Button>
-                                                                                    )}
-
-                                                                                    {/* Checkbox always stays in its original place */}
-                                                                                    <div className="order-1 md:order-2">
-                                                                                        <Checkbox
-                                                                                            checked={!!checkedTasks[task.id]}
-                                                                                            className="cursor-pointer border-2 border-green-700 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-green-500 transition-colors"
-                                                                                            onCheckedChange={() => handleCheckboxChange(task.id)}
-                                                                                        />
-                                                                                    </div>
-                                                                                </>
-                                                                            )}
-                                                                        </div>
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-
-                                                            <div className="pt-3">
-                                                                <p className="text-sm text-gray-700">
-                                                                    Progress: {week.progress}% ({completedTasks}/{totalTasks})
-                                                                </p>
-                                                                <Progress value={week.progress} />
-                                                            </div>
-                                                        </>
+                            return (
+                                <Card key={phase?.id} className={`border border-gray-300 shadow-sm ${isPhaseOpen ? "bg-white shadow-xl" : "bg-linear-to-r from-indigo-100 to-white"}`}>
+                                    <CardHeader
+                                        onClick={() => togglePhase(phase?.id)}
+                                        className="cursor-pointer"
+                                    >
+                                        <CardTitle className="flex justify-between">
+                                            <div>
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <span className="text-lg font-semibold">{phase?.phase_name}</span>
+                                                    {/* optional calendar icon with dates */}
+                                                    {(phase?.start_date || phase?.end_date) && (
+                                                        <span className=" text-gray-500 flex items-center gap-2">
+                                                            <CalendarDays size={14} />
+                                                            {phase.start_date && formatDate(phase.start_date.toDateString())}{" "}
+                                                            {phase.start_date || phase.end_date ? "→" : ""}{" "}
+                                                            {phase.end_date && formatDate(phase.end_date.toDateString())}
+                                                        </span>
                                                     )}
                                                 </div>
-                                            );
-                                        })}
-                                    </CardContent>
-                                )}
-                            </Card>
-                        );
-                    })}
+                                            </div>
+
+                                            {isPhaseOpen ? <ChevronUp /> : <ChevronDown />}
+                                        </CardTitle>
+                                    </CardHeader>
+
+                                    {isPhaseOpen && (
+                                        <CardContent className="space-y-6">
+                                            {phase?.description && (
+                                                <p className="text-sm text-gray-600">{phase.description}</p>
+                                            )}
+
+                                            {phase?.weeks.map((week) => {
+                                                const isWeekOpen =
+                                                    (week?.id !== undefined && expandedWeeks[phase.id]?.includes(week.id)) || false;
+
+                                                const completedTasks = week?.tasks.filter((t) => t.is_completed).length;
+                                                const totalTasks = week?.tasks.length;
+
+                                                return (
+                                                    <div
+                                                        key={week?.id}
+                                                        className={`border rounded-lg space-y-4 p-5 ${isWeekOpen ? "shadow-xl " : "shadow-sm bg-linear-to-r from-indigo-100 to-white"
+                                                            }`}
+                                                    >
+                                                        <div
+                                                            className="flex justify-between cursor-pointer"
+                                                            onClick={() => toggleWeek(phase.id, week?.id)}
+                                                        >
+                                                            <div className=" flex flex-col justify-center gap-2">
+                                                                <h3 className="md:text-lg font-semibold">
+                                                                    Week {week?.week_number}: {week?.focus}
+                                                                </h3>
+
+                                                                {/* week? dates */}
+                                                                {(week?.start_date || week?.end_date) && (
+                                                                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
+                                                                        <CalendarDays size={14} />
+                                                                        {week?.start_date && formatDate(week?.start_date.toDateString())}{" "}
+                                                                        {week?.start_date || week?.end_date ? "→" : ""}{" "}
+                                                                        {week?.end_date && formatDate(week?.end_date.toDateString())}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+
+                                                            {isWeekOpen ? <ChevronUp /> : <ChevronDown />}
+                                                        </div>
+
+                                                        {isWeekOpen && (
+                                                            <>
+                                                                <ul className="space-y-4 mt-4">
+                                                                    {week?.tasks.map((task) => (
+                                                                        <li
+                                                                            key={task.id}
+                                                                            className="border-l-4 border-blue-500 shadow-md px-6 py-4 bg-linear-to-r from-indigo-100 to-white rounded-md flex justify-between items-center"
+                                                                        >
+                                                                            <div className="flex-1 gap-2 flex flex-col">
+                                                                                <p className="font-medium">{task.title}</p>
+                                                                                {task.description && (
+                                                                                    <p className="text-sm text-gray-600">
+                                                                                        {task.description}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                                                {task.is_completed ? (
+                                                                                    <div className="flex items-center text-green-700">
+                                                                                        <CheckCircle2 className="mr-1" size={18} />
+                                                                                        Completed
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <>
+                                                                                        {/* Mark Done button (left on desktop, below on mobile) */}
+                                                                                        {checkedTasks[task.id] && (
+                                                                                            <Button
+                                                                                                size="sm"
+                                                                                                className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
+                                                                                                disabled={!!updatingTasks[task.id]}
+                                                                                                onClick={() => updateSingleTask(task.id)}
+                                                                                            >
+                                                                                                {updatingTasks[task.id] ? (
+                                                                                                    <Loader2 size={16} className="animate-spin mr-1" />
+                                                                                                ) : null}
+                                                                                                Mark Done
+                                                                                            </Button>
+                                                                                        )}
+
+                                                                                        {/* Checkbox always stays in its original place */}
+                                                                                        <div className="order-1 md:order-2">
+                                                                                            <Checkbox
+                                                                                                checked={!!checkedTasks[task.id]}
+                                                                                                className="cursor-pointer border-2 border-green-700 rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-green-500 transition-colors"
+                                                                                                onCheckedChange={() => handleCheckboxChange(task.id)}
+                                                                                            />
+                                                                                        </div>
+                                                                                    </>
+                                                                                )}
+                                                                            </div>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+
+                                                                <div className="pt-3">
+                                                                    <p className="text-sm text-gray-700">
+                                                                        Progress: {week?.progress}% ({completedTasks}/{totalTasks})
+                                                                    </p>
+                                                                    <Progress value={week?.progress} />
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </CardContent>
+                                    )}
+                                </Card>
+                            );
+                        })
+                    )}
                 </div>
 
                 <Separator />

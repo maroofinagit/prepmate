@@ -665,29 +665,33 @@ Return format:
         // SAVE QUESTIONS
         // =========================
 
-        await db.question.createMany({
-            data: generatedQuestions.map((q: any) => ({
-                testId: test.id,
-                question: q.question,
-                options: q.options,
-                correctAns: q.correctAns,
-                topic: q.topic,
-                difficulty: q.difficulty,
-                marks: q.marks || 1,
-            })),
-        });
+        const res = await db.$transaction(async (tx) => {
+            // =========================
+            // SAVE QUESTIONS
+            // =========================
+            await tx.question.createMany({
+                data: generatedQuestions.map((q: any) => ({
+                    testId: test.id,
+                    question: q.question,
+                    options: q.options,
+                    correctAns: q.correctAns,
+                    topic: q.topic,
+                    difficulty: q.difficulty,
+                    marks: q.marks || 1,
+                })),
+            });
 
-        // =========================
-        // UPDATE TEST
-        // =========================
-
-        await db.test.update({
-            where: {
-                id: test.id,
-            },
-            data: {
-                isGenerated: true,
-            },
+            // =========================
+            // UPDATE TEST
+            // =========================
+            await tx.test.update({
+                where: {
+                    id: test.id,
+                },
+                data: {
+                    isGenerated: true,
+                },
+            });
         });
 
         // =========================

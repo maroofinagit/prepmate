@@ -465,7 +465,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 </Card>
 
                 {/* Tests */}
-                <Card className="flex flex-col">
+                <Card className="flex flex-col relative">
                     <CardHeader className="flex-row items-center justify-between space-y-0">
                         <div>
                             <CardTitle className="text-xl font-semibold">
