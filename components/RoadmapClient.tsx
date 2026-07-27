@@ -95,7 +95,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setUpdatingTasks((prev) => ({ ...prev, [taskId]: true }));
 
-            const res = await completeRoadmapTask(taskId, localRoadmap.userExam.id,localRoadmap.userExam.user_id);
+            const res = await completeRoadmapTask(taskId, localRoadmap.userExam.id, localRoadmap.userExam.user_id);
 
             if (!res.success) throw new Error("Failed to update task");
 
@@ -136,7 +136,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: true }));
 
-            const res = await completeMilestone(milestoneId, localRoadmap.userExam.id,localRoadmap.userExam.user_id);
+            const res = await completeMilestone(milestoneId, localRoadmap.userExam.id, localRoadmap.userExam.user_id);
 
             if (!res.success) throw new Error("Failed updating milestone");
 
@@ -258,6 +258,33 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         );
 
         return totalTasks > 0 && completedTasks === totalTasks;
+    };
+
+    const isPhaseLate = (phase: { end_date?: Date | null | undefined | string }) => {
+        if (!phase.end_date) return false;
+        const today = new Date();
+        const endDate = new Date(phase.end_date);
+        return endDate < today;
+    };
+
+    const isWeekComplete = (week: { tasks: { is_completed: boolean }[] }) => {
+        const totalTasks = week.tasks.length;
+        const completedTasks = week.tasks.filter((t) => t.is_completed).length;
+        return totalTasks > 0 && completedTasks === totalTasks;
+    };
+
+    const isWeekLate = (week: { end_date?: Date | null | undefined | string }) => {
+        if (!week.end_date) return false;
+        const today = new Date();
+        const endDate = new Date(week.end_date);
+        return endDate < today;
+    };
+
+    const isMilestoneLate = (milestone: { target_date?: Date | null | undefined | string }) => {
+        if (!milestone.target_date) return false;
+        const today = new Date();
+        const targetDate = new Date(milestone.target_date);
+        return targetDate < today;
     };
 
     const displayedPhases = search.trim()
@@ -477,7 +504,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                         onClick={() => togglePhase(phase?.id)}
                                         className="cursor-pointer"
                                     >
-                                        <CardTitle className="flex justify-around items-center gap-4">
+                                        <CardTitle className="flex justify-between items-center gap-4">
                                             <div className="flex flex-col gap-3 w-full">
                                                 <div className="flex items-center w-full justify-between pr-8 gap-4">
                                                     <span className="text-lg font-semibold">{phase?.phase_name}</span>
@@ -492,10 +519,15 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                     </span>
                                                 )}
                                             </div>
-                                            {phase?.weeks && isPhaseComplete(phase) && (
-                                                <Badge className="bg-green-800 text-white w-fit">Complete</Badge>
-                                            )}
-                                            <span className="text-gray-500 w-full text-right text-sm">{phase?.weeks.length ? phase.weeks.length * 7 : 0} Days</span>
+
+                                            <div className=" w-full text-right text-sm">
+                                                {phase?.weeks && isPhaseComplete(phase) ? (
+                                                    <Badge className="bg-green-800 text-white w-fit mr-4">Completed</Badge>
+                                                ) : phase?.end_date && isPhaseLate(phase) ? (
+                                                    <Badge className="bg-red-800 text-white w-fit mr-4">Late</Badge>
+                                                ) : null}
+                                                <span className="text-gray-700">{phase?.weeks.length ? phase.weeks.length * 7 : 0} Days</span>
+                                            </div>
                                             {isPhaseOpen ? <ChevronUp size={40} /> : <ChevronDown size={40} />}
                                         </CardTitle>
                                     </CardHeader>
@@ -520,7 +552,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                             }`}
                                                     >
                                                         <div
-                                                            className="flex justify-between cursor-pointer"
+                                                            className="flex items-center cursor-pointer"
                                                             onClick={() => toggleWeek(phase.id, week?.id)}
                                                         >
                                                             <div className=" flex flex-col justify-center gap-2">
@@ -539,7 +571,19 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                 )}
                                                             </div>
 
-                                                            {isWeekOpen ? <ChevronUp /> : <ChevronDown />}
+                                                            <div className="flex items-center gap-4 ml-auto">
+                                                                {week && isWeekComplete(week) ? (
+                                                                    <Badge className="bg-green-800 h-fit text-white w-fit">
+                                                                        Completed
+                                                                    </Badge>
+                                                                ) : week?.end_date && isWeekLate(week) ? (
+                                                                    <Badge className="bg-red-800 h-fit text-white w-fit">
+                                                                        Late
+                                                                    </Badge>
+                                                                ) : null}
+
+                                                                {isWeekOpen ? <ChevronUp /> : <ChevronDown />}
+                                                            </div>
                                                         </div>
 
                                                         {isWeekOpen && (
@@ -563,8 +607,8 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                             <div className="flex items-center gap-3 flex-wrap justify-end">
                                                                                 {task.is_completed ? (
                                                                                     <div className="flex items-center text-green-700">
-                                                                                        <CheckCircle2 className="mr-1" size={18} />
                                                                                         Completed
+                                                                                        <CheckCircle2 className="ml-2" size={18} />
                                                                                     </div>
                                                                                 ) : (
                                                                                     <>
@@ -628,7 +672,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                         </p>
                         <div className="grid gap-6 md:grid-cols-3">
                             {localRoadmap.milestones.map((m) => (
-                                <Card key={m.id} className={`border-[1.5px] shadow-sm hover:shadow-md transition hover:border-green-700` + (m.achieved ? " bg-green-50 border-green-600" : " bg-white")}>
+                                <Card key={m.id} className={`relative border-[1.5px] shadow-sm hover:shadow-md transition hover:border-green-700` + (m.achieved ? " bg-green-50 border-green-600" : " bg-white")}>
                                     <CardHeader className="flex flex-row justify-between items-center">
                                         <CardTitle className="text-base font-semibold">
                                             {m.name}
@@ -644,6 +688,12 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                             />
                                         )}
                                     </CardHeader>
+
+                                    {!m.achieved && isMilestoneLate(m) && (
+                                        <div className="absolute bottom-4 right-4">
+                                            <Badge className="bg-red-800 text-white w-fit">Late</Badge>
+                                        </div>
+                                    )}
 
                                     <CardContent>
                                         <p className=" text-gray-600">{m.goal}</p>
@@ -667,6 +717,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                 </Button>
                                             </div>
                                         )}
+
                                     </CardContent>
                                 </Card>
                             ))}
