@@ -248,7 +248,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         : localRoadmap.phases;
 
     return (
-        <div className=" px-6 mt-16 md:mt-32 space-y-10 max-w-6xl mx-auto relative">
+        <div className=" px-6 mt-16 md:mt-32 pb-12 space-y-10 max-w-6xl mx-auto relative">
             <div className="absolute top-0 right-0 w-80 md:block hidden">
                 <Search
                     size={18}
@@ -577,7 +577,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
                 {/* Milestones */}
                 {localRoadmap.milestones?.length > 0 && (
-                    <div className="space-y-4">
+                    <div className="space-y-4 mb-6">
                         <h2 className="text-2xl font-semibold">Milestones</h2>
                         <p className="text-sm text-gray-600">
                             Track your key milestones here. Check the box when you achieve them and click "Update Milestone" to see your progress reflected in the roadmap!
