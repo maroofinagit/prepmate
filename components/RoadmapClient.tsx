@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CalendarDays, ChevronDown, ChevronUp, CheckCircle2, Loader2 } from "lucide-react";
@@ -95,7 +95,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setUpdatingTasks((prev) => ({ ...prev, [taskId]: true }));
 
-            const res = await completeRoadmapTask(taskId);
+            const res = await completeRoadmapTask(taskId, localRoadmap.userExam.id,localRoadmap.userExam.user_id);
 
             if (!res.success) throw new Error("Failed to update task");
 
@@ -136,7 +136,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         try {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: true }));
 
-            const res = await completeMilestone(milestoneId);
+            const res = await completeMilestone(milestoneId, localRoadmap.userExam.id,localRoadmap.userExam.user_id);
 
             if (!res.success) throw new Error("Failed updating milestone");
 

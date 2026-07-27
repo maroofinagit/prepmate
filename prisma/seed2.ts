@@ -31,7 +31,6 @@ async function main() {
             start_date: new Date("2025-11-01"),
             end_date: new Date("2026-06-30"),
             progress: 0,
-            summary: "Foundations → Advanced DSA → Interview Prep.",
 
             milestones: {
                 create: [

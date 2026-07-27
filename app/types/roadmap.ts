@@ -28,7 +28,7 @@ export interface UserExam {
     id: number;
     exam_id: number;
 
-
+    user_id: string;
     // Relations
     exam: Exam;
 }

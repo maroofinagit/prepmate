@@ -2,12 +2,14 @@
 
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
+import { u } from "framer-motion/client";
 
 export async function getTestsForUserExam(userExamId: number) {
     'use cache';
+    cacheTag(`tests-${userExamId}`);
     cacheLife('minutes'); // Cache for 5 minutes
     try {
         // 🔥 1. Fetch roadmap
@@ -202,6 +204,7 @@ export async function getTestsForUserExam(userExamId: number) {
 
 export async function getTestById(testId: number) {
     'use cache';
+    cacheTag(`test-${testId}`);
     cacheLife('minutes'); // Cache for 5 minutes
     try {
         const test = await db.test.findUnique({
@@ -271,6 +274,7 @@ export async function getTestById(testId: number) {
 
 export async function getTestResult(testId: number) {
     'use cache';
+    cacheTag(`test-${testId}`);
     cacheLife('minutes'); // Cache for 5 minutes
     try {
 
@@ -694,6 +698,8 @@ Return format:
             });
         });
 
+        updateTag(`test-${testId}`);
+
         // =========================
         // SUCCESS
         // =========================
@@ -858,6 +864,8 @@ export async function submitTest(
                 lastTestScore,
             },
         });
+        
+        updateTag(`test-${testId}`);
 
         return {
             success: true,

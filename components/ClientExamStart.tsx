@@ -84,7 +84,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             clearInterval(loopId);
 
             if (!roadmapRes.success) {
-                toast.error('Failed to generate roadmap. You can create one later from your dashboard.');
+                toast.error('Failed to generate roadmap. You can create one later from your dashboard.',{
+                    duration: 2000,
+                });
                 setLoadingMessage('Failed to generate roadmap. Redirecting to dashboard...');
                 await new Promise((r) => setTimeout(r, 2000));
                 router.push('/dashboard');
@@ -100,7 +102,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
 
         } catch (err: any) {
             console.error(err);
-            setError('Sorry, something went wrong. Please try again later.');
+            toast.error('Sorry, something went wrong. Please try again later.', {
+                duration: 2000,
+            });
             setLoading(false);
         }
     }

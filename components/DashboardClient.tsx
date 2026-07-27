@@ -285,7 +285,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             toast.error(
                 `Your roadmap for ${selectedExam.exam?.name ?? "the selected exam"} is not generated yet. Please click "Regenerate Roadmap" to create your personalized study plan.`,
                 {
-                    duration: 1500, // show for 1.5 seconds
+                    duration: 2500, // show for 2.5 seconds
                 }
             );
         }
@@ -296,13 +296,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const handleRegenerate = async () => {
         if (!selectedId) return;
         setRegenerating(true);
+        toast.success('Roadmap regeneration started. It may take a few moments to complete.');
         const roadmapRes = await generateRoadmap(selectedId);
         if (!roadmapRes.success) {
-            toast.error('Failed to regenerate roadmap. Please try again later.');
+            toast.error('Failed to regenerate roadmap. Please try again later.', {
+                duration: 2000,
+            });
             setRegenerating(false);
             return;
         }
-        toast.success('Roadmap regeneration started. It may take a few moments to complete.');
+        toast.success('Roadmap regenerated successfully. Refreshing dashboard...');
         setRegenerating(false);
         router.refresh(); // refresh to update roadmap status and charts
     }
@@ -311,11 +314,15 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         try {
             setDeleting(true);
-            const res = await deleteUserExam(selectedId);
+            const res = await deleteUserExam(selectedId, dashboardUser.id);
             if (res.success) {
-                toast.success("Exam deleted successfully.");
+                toast.success("Exam deleted successfully.",{
+                    duration: 2000,
+                });
             } else {
-                toast.error("Failed to delete exam.");
+                toast.error("Failed to delete exam.",{
+                    duration: 2000,
+                });
             }
             setDltDialogOpen(false);
             setDeleting(false);
@@ -323,7 +330,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             router.refresh();
         } catch (err) {
             console.error(err);
-            toast.error("Failed to delete exam. Please try again later.");
+            toast.error("Failed to delete exam. Please try again later.",{
+                duration: 2000,
+            });
         } finally {
             setDeleting(false);
         }

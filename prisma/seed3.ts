@@ -31,8 +31,6 @@ async function main() {
             start_date: userExam.start_date,
             end_date: userExam.end_date,
             progress: 0,
-            summary:
-                'Concept Building → Problem Solving → Revision → Full-Length Mocks',
 
             phases: {
                 create: [

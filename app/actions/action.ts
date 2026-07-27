@@ -2,12 +2,15 @@
 import { db } from "@/app/lib/db";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
-import { cacheLife } from "next/cache";
+import { cacheLife, updateTag, cacheTag } from "next/cache";
+import { u } from "framer-motion/client";
+import { use } from "react";
 
 
 
 export async function getFullExams() {
     'use cache';
+    cacheTag('exams');
     cacheLife('hours'); // Cache for 1 hour
     try {
         const exams = await db.exam.findMany({
@@ -46,6 +49,7 @@ export async function getFullExams() {
 
 export async function getExamById(id: number) {
     'use cache';
+    cacheTag(`exam-${id}`);
     cacheLife('hours'); // Cache for 1 hour
     try {
         const exam = await db.exam.findUnique({
@@ -81,6 +85,7 @@ export async function getExamById(id: number) {
 
 export async function getShortExams() {
     'use cache';
+    cacheTag('exams');
     cacheLife('hours'); // Cache for 1 hour
     try {
         const exams = await db.exam.findMany({
@@ -101,6 +106,7 @@ export async function getShortExams() {
 
 export async function getUserExams(userId: string) {
     'use cache';
+    cacheTag(`userExams-${userId}`);
     cacheLife('hours'); // Cache for 1 hour
     try {
         const userExams = await db.userExam.findMany({
@@ -190,6 +196,7 @@ export async function createUserExam({
 
 export async function getRoadmapByUserExamId(user_exam_id: number) {
     'use cache';
+    cacheTag(`roadmap-${user_exam_id}`);
     cacheLife('hours'); // Cache for 1 hour
     try {
         const roadmap = await db.roadmap.findUnique({
@@ -233,6 +240,7 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 
 export async function getDashboardUser(userId: string) {
     'use cache';
+    cacheTag(`userDashboard-${userId}`);
     cacheLife('minutes'); // Cache for 1 hour
     try {
         const dashboardUser = await db.user.findUnique({
@@ -256,6 +264,7 @@ export async function getDashboardUser(userId: string) {
                         highestScore: true,
                         lowestScore: true,
                         lastTestScore: true,
+                        user_id: true,
 
                         // UserExam → Exam Details
                         exam: {
@@ -374,7 +383,13 @@ export async function getDashboardUser(userId: string) {
 };
 
 
-export async function deleteUserExam(user_exam_id: number) {
+export async function deleteUserExam(user_exam_id: number, userId: string) {
+
+    updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
+    updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
+    updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+    updateTag(`exam-${user_exam_id}`); // Invalidate the cache for the specific exam
+
     try {
 
         await db.userExam.delete({
@@ -403,6 +418,7 @@ export async function deleteUserExam(user_exam_id: number) {
 }
 
 export async function markNotificationAsRead(notificationId: number) {
+    
     try {
         const updatedNotification = await db.notification.update({
             where: { id: notificationId },
@@ -423,11 +439,14 @@ export async function markNotificationAsRead(notificationId: number) {
 }
 
 
-export async function completeRoadmapTask(taskId: number): Promise<{ success: boolean }> {
+export async function completeRoadmapTask(taskId: number, user_exam_id: number, userId: string): Promise<{ success: boolean }> {
     if (!taskId) {
         throw new Error("Task ID is required.");
     }
-
+    
+    updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
+    updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+    updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
     try {
         await db.$transaction(async (tx) => {
             // 1️⃣ Mark task as completed and fetch hierarchy
@@ -539,7 +558,9 @@ export async function completeRoadmapTask(taskId: number): Promise<{ success: bo
 }
 
 export async function completeMilestone(
-    milestoneId: number
+    milestoneId: number,
+    user_exam_id: number,
+    userId: string
 ): Promise<{ success: boolean }> {
     try {
         if (!milestoneId || Number.isNaN(milestoneId)) {
@@ -561,6 +582,10 @@ export async function completeMilestone(
         if (milestone.achieved) {
             return { success: true };
         }
+
+        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific milestone
+        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
 
         await db.milestone.update({
             where: { id: milestoneId },
@@ -604,7 +629,7 @@ export async function checkEmailExistsLogin(email: string) {
     const hasCredentials = user.accounts.some(
         (account) => account.providerId === "credential"
     );
-
+    
     return {
         exists: true,
         provider: hasCredentials
