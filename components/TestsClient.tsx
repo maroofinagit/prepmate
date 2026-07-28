@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { generateTestAttempt } from "@/app/actions/test";
+import { motion } from "framer-motion";
 
 type Test = {
     testId: number;
@@ -93,7 +94,14 @@ export default function TestsClient({ data, baseId }: TestsClientProps) {
                 </div>
             )}
 
-            <div className="space-y-10 min-h-screen mt-20 p-10">
+            <div className="md:hidden relative h-screen space-y-6 mt-20 py-12 px-4">
+                <h1 className="text-2xl font-bold text-center">Tests of {newData.examName}</h1>
+                <p className="text-gray-600 font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                    Sorry the mobile view is not supported for this page. Please use a desktop or laptop to access the tests.
+                </p>
+            </div>
+
+            <div className="hidden md:block space-y-10 min-h-screen mt-20 py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-bold">Tests of {newData.examName}</h1>
 
                 <p className="text-gray-600 tracking-wider leading-relaxed">
@@ -130,18 +138,26 @@ function TestSection({
         <div>
             <h2 className="text-xl font-semibold mb-4">{title}</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6">
 
                 {tests.length > 0 ? (
                     tests.map((test) => (
-                        <TestCard
+                        <motion.div
                             key={test.testId}
-                            test={test}
-                            baseId={baseId}
-                            generatingTestId={generatingTestId}
-                            setGeneratingTestId={setGeneratingTestId}
-                            markTestAsGive={markTestAsGive}
-                        />
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: 0.1 * tests.indexOf(test) }}
+                        >
+                            <TestCard
+                                key={test.testId}
+                                test={test}
+                                baseId={baseId}
+                                generatingTestId={generatingTestId}
+                                setGeneratingTestId={setGeneratingTestId}
+                                markTestAsGive={markTestAsGive}
+                            />
+                        </motion.div>
 
                     ))
                 ) : (
@@ -192,7 +208,7 @@ function TestCard({
     }
 
     return (
-        <Card className="p-4 border shadow-sm hover:shadow-md transition-shadow ">
+        <Card className="p-4 border shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-between">
             <CardHeader>
                 <h3 className="text-lg font-medium">{test.title}</h3>
             </CardHeader>

@@ -36,13 +36,15 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { Award, BadgeCheck, BookOpen, CircleX, ClipboardCheck, Clock3, FileText, Lightbulb, Route, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
+import { Award, BadgeCheck, BookOpen, CircleX, ClipboardCheck, Clock3, FileText, Lightbulb, Route, Sparkles, Trash2, TrendingDown, TrendingUp, TriangleAlert } from "lucide-react";
 import { generateRoadmap } from "@/app/actions/roadmap";
 import { deleteUserExam } from "@/app/actions/action";
 import { tr } from "date-fns/locale";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
-import { s } from "framer-motion/client";
+import { motion } from "framer-motion";
+
+
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
@@ -414,128 +416,153 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 {/* Top Cards */}
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                     {/* Exams */}
-                    <Card className="relative">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <div>
-                                <CardTitle className="text-xl font-semibold">
-                                    Exams Enrolled
-                                </CardTitle>
-                                <CardDescription className="text-sm text-muted-foreground">
-                                    Total exams you are enrolled in
-                                </CardDescription>
-                            </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, delay: 0 }}
+                    >
+                        <Card className="relative h-full flex flex-col">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <div>
+                                    <CardTitle className="text-xl font-semibold">
+                                        Exams Enrolled
+                                    </CardTitle>
+                                    <CardDescription className="text-sm text-muted-foreground">
+                                        Total exams you are enrolled in
+                                    </CardDescription>
+                                </div>
 
-                            <BookOpen className="h-6 absolute top-5 right-5 text-emerald-600" />
-                        </CardHeader>
+                                <BookOpen className="h-6 absolute top-5 right-5 text-emerald-600" />
+                            </CardHeader>
 
-                        <CardContent>
-                            <div className="text-5xl font-bold">
-                                {totalUserExams}
-                            </div>
-                        </CardContent>
-                    </Card>
+                            <CardContent>
+                                <div className="text-5xl font-bold">
+                                    {totalUserExams}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
 
                     {/* Progress */}
-                    <Card className="relative">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-semibold">
-                                {currentSelectedExam?.exam.name || "Selected Exam"}
-                            </CardTitle>
-                            <CardDescription className="text-sm text-muted-foreground">
-                                Your progress in this exam
-                            </CardDescription>
-                        </CardHeader>
+                    <motion.div
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, delay: 0.1 }}
+                    >
+                        <Card className="relative h-full flex flex-col">
+                            <CardHeader>
+                                <CardTitle className="text-xl font-semibold">
+                                    {currentSelectedExam?.exam.name || "Selected Exam"}
+                                </CardTitle>
+                                <CardDescription className="text-sm text-muted-foreground">
+                                    Your progress in this exam
+                                </CardDescription>
+                            </CardHeader>
 
-                        <CardContent>
-                            <div className="mb-3 flex items-center justify-between">
-                                <span className="text-3xl font-bold">
-                                    {selectedProgress || 0}%
-                                </span>
+                            <CardContent>
+                                <div className="mb-3 flex items-center justify-between">
+                                    <span className="text-3xl font-bold">
+                                        {selectedProgress || 0}%
+                                    </span>
 
-                                <span className="text-sm text-muted-foreground">
-                                    Completed
-                                </span>
-                            </div>
+                                    <span className="text-sm text-muted-foreground">
+                                        Completed
+                                    </span>
+                                </div>
 
-                            <Progress
-                                value={selectedProgress || 0}
-                                className="h-3 [&>div]:bg-emerald-600"
-                            />
-                        </CardContent>
-                        <TrendingUp className="h-6 absolute top-5 right-5 text-emerald-600" />
-                    </Card>
+                                <Progress
+                                    value={selectedProgress || 0}
+                                    className="h-3 [&>div]:bg-emerald-600"
+                                />
+                            </CardContent>
+
+                            <TrendingUp className="h-6 absolute top-5 right-5 text-emerald-600" />
+                        </Card>
+                    </motion.div>
 
                     {/* Roadmap */}
-                    <Card className="flex flex-col relative">
-                        <CardHeader className="flex-row items-center justify-between space-y-0">
-                            <div>
-                                <CardTitle className="text-xl font-semibold">
-                                    Roadmap
-                                </CardTitle>
+                    <motion.div
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, delay: 0.2 }}
+                    >
+                        <Card className="flex flex-col relative h-full">
+                            <CardHeader className="flex-row items-center justify-between space-y-0">
+                                <div>
+                                    <CardTitle className="text-xl font-semibold">
+                                        Roadmap
+                                    </CardTitle>
 
-                                <CardDescription className="text-sm text-muted-foreground mt-2">
-                                    Your learning path
-                                </CardDescription>
-                            </div>
+                                    <CardDescription className="text-sm text-muted-foreground mt-2">
+                                        Your learning path
+                                    </CardDescription>
+                                </div>
 
-                            <Route className="h-6 absolute top-5 right-5 text-blue-600" />
-                        </CardHeader>
+                                <Route className="h-6 absolute top-5 right-5 text-blue-600" />
+                            </CardHeader>
 
-                        <CardContent className="mt-auto">
-                            {!exam ? (
-                                <Link href="/onboarding">
-                                    <Button className="w-full cursor-pointer">
-                                        Create Roadmap
+                            <CardContent className="mt-auto">
+                                {!exam ? (
+                                    <Link href="/onboarding">
+                                        <Button className="w-full cursor-pointer">
+                                            Create Roadmap
+                                        </Button>
+                                    </Link>
+                                ) : roadmapStatus === RoadmapStatus.completed ? (
+                                    <Link href={`/dashboard/roadmap/${selectedId}`}>
+                                        <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                            Open Roadmap
+                                        </Button>
+                                    </Link>
+                                ) : roadmapStatus === RoadmapStatus.in_progress ? (
+                                    <Button
+                                        disabled
+                                        className="w-full"
+                                    >
+                                        ⏳ Generating...
                                     </Button>
-                                </Link>
-                            ) : roadmapStatus === RoadmapStatus.completed ? (
-                                <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                    <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
-                                        Open Roadmap
+                                ) : (
+                                    <Button
+                                        className="w-full cursor-pointer bg-red-700 hover:bg-red-600 text-white transition-colors duration-200"
+                                        onClick={handleRegenerate}
+                                    >
+                                        🔁 Regenerate Roadmap
                                     </Button>
-                                </Link>
-                            ) : roadmapStatus === RoadmapStatus.in_progress ? (
-                                <Button
-                                    disabled
-                                    className="w-full"
-                                >
-                                    ⏳ Generating...
-                                </Button>
-                            ) : (
-                                <Button
-                                    className="w-full cursor-pointer bg-red-700 hover:bg-red-600 text-white transition-colors duration-200"
-                                    onClick={handleRegenerate}
-                                >
-                                    🔁 Regenerate Roadmap
-                                </Button>
-                            )}
-                        </CardContent>
-                    </Card>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </motion.div>
 
                     {/* Tests */}
-                    <Card className="flex flex-col relative">
-                        <CardHeader className="flex-row items-center justify-between space-y-0">
-                            <div>
-                                <CardTitle className="text-xl font-semibold">
-                                    Practice Tests
-                                </CardTitle>
+                    <motion.div
+                        initial={{ opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.45, delay: 0.3 }}
+                    >
+                        <Card className="flex flex-col relative h-full">
+                            <CardHeader className="flex-row items-center justify-between space-y-0">
+                                <div>
+                                    <CardTitle className="text-xl font-semibold">
+                                        Practice Tests
+                                    </CardTitle>
 
-                                <CardDescription className="text-sm text-muted-foreground mt-2">
-                                    Evaluate your progress
-                                </CardDescription>
-                            </div>
+                                    <CardDescription className="text-sm text-muted-foreground mt-2">
+                                        Evaluate your progress
+                                    </CardDescription>
+                                </div>
 
-                            <ClipboardCheck className="h-6 absolute top-5 right-5 text-violet-600" />
-                        </CardHeader>
+                                <ClipboardCheck className="h-6 absolute top-5 right-5 text-violet-600" />
+                            </CardHeader>
 
-                        <CardContent className="mt-auto">
-                            <Link href={`/user-exam/${selectedId}/tests`}>
-                                <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
-                                    Give Tests
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                            <CardContent className="mt-auto">
+                                <Link href={`/user-exam/${selectedId}/tests`}>
+                                    <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                        Give Tests
+                                    </Button>
+                                </Link>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
                 </div>
 
                 {/* Tabs */}
@@ -969,276 +996,306 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
                                         {/* Pie */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>{currentSelectedExam?.exam.name} Exam Progress</CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <ChartContainer
-                                                    config={chartConfig}
-                                                    className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
-                                                >
-                                                    <PieChart>
-                                                        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                                        <motion.div
+                                            className="h-full"
+                                            initial={{ opacity: 0, x: -50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.45, delay: 0.5 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader>
+                                                    <CardTitle>{currentSelectedExam?.exam.name} Exam Progress</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <ChartContainer
+                                                        config={chartConfig}
+                                                        className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                                    >
+                                                        <PieChart>
+                                                            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
 
-                                                        <Pie
-                                                            data={pieChartData}
-                                                            dataKey="value"
-                                                            nameKey="status"
-                                                            label
-                                                        />
-                                                    </PieChart>
-                                                </ChartContainer>
-                                                <p className="text-center font-semibold text-lg">
-                                                    {ex.progress_percent ?? 0}% Completed
-                                                </p>
-                                            </CardContent>
-                                            <CardFooter className="flex-col items-start gap-2 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    {(ex.progress_percent ?? 0) >= 70
-                                                        ? "Strong progress — you're close to the finish line"
-                                                        : (ex.progress_percent ?? 0) >= 40
-                                                            ? "Good pace — stay consistent"
-                                                            : "Just getting started — build the habit"}
-                                                    <TrendingUp className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    {(ex.progress_percent ?? 0)}% of your exam journey is complete
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
+                                                            <Pie
+                                                                data={pieChartData}
+                                                                dataKey="value"
+                                                                nameKey="status"
+                                                                label
+                                                            />
+                                                        </PieChart>
+                                                    </ChartContainer>
+                                                    <p className="text-center font-semibold text-lg">
+                                                        {ex.progress_percent ?? 0}% Completed
+                                                    </p>
+                                                </CardContent>
+                                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        {(ex.progress_percent ?? 0) >= 70
+                                                            ? "Strong progress — you're close to the finish line"
+                                                            : (ex.progress_percent ?? 0) >= 40
+                                                                ? "Good pace — stay consistent"
+                                                                : "Just getting started — build the habit"}
+                                                        <TrendingUp className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        {(ex.progress_percent ?? 0)}% of your exam journey is complete
+                                                    </div>
+                                                </CardFooter>
+                                            </Card>
+                                        </motion.div>
 
                                         {/* Phase Progress Bar Chart */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Phase Progress</CardTitle>
-                                                <CardDescription>Progress across all phases</CardDescription>
-                                            </CardHeader>
+                                        <motion.div
+                                            className="h-full"
+                                            initial={{ opacity: 0, x: 50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.45, delay: 0.5 }}
+                                        >
 
-                                            <CardContent>
-                                                <ChartContainer
-                                                    config={{
-                                                        progress: {
-                                                            label: "Progress",
-                                                            color: "#22c55e",
-                                                        },
-                                                    }}
-                                                    className="aspect-auto h-62.5 w-full"
-                                                >
-                                                    <BarChart
-                                                        accessibilityLayer
-                                                        data={phaseProgressData}
-                                                        margin={{
-                                                            left: 12,
-                                                            right: 12,
+                                            <Card className="h-full">
+                                                <CardHeader>
+                                                    <CardTitle>Phase Progress</CardTitle>
+                                                    <CardDescription>Progress across all phases</CardDescription>
+                                                </CardHeader>
+
+                                                <CardContent>
+                                                    <ChartContainer
+                                                        config={{
+                                                            progress: {
+                                                                label: "Progress",
+                                                                color: "#22c55e",
+                                                            },
                                                         }}
+                                                        className="aspect-auto h-62.5 w-full"
                                                     >
-                                                        <CartesianGrid vertical={false} />
+                                                        <BarChart
+                                                            accessibilityLayer
+                                                            data={phaseProgressData}
+                                                            margin={{
+                                                                left: 12,
+                                                                right: 12,
+                                                            }}
+                                                        >
+                                                            <CartesianGrid vertical={false} />
 
-                                                        <XAxis
-                                                            dataKey="name"
-                                                            tickLine={true}
-                                                            axisLine={true}
-                                                            tickMargin={8}
+                                                            <XAxis
+                                                                dataKey="name"
+                                                                tickLine={true}
+                                                                axisLine={true}
+                                                                tickMargin={8}
 
-                                                        />
+                                                            />
 
-                                                        <YAxis
-                                                            domain={[0, 100]}
-                                                            tickLine={true}
-                                                            axisLine={true}
-                                                            tickMargin={8}
-                                                        />
+                                                            <YAxis
+                                                                domain={[0, 100]}
+                                                                tickLine={true}
+                                                                axisLine={true}
+                                                                tickMargin={8}
+                                                            />
 
-                                                        <ChartTooltip
-                                                            cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
-                                                            content={
-                                                                <ChartTooltipContent
-                                                                    className="w-37.5"
-                                                                    nameKey="progress"
-                                                                    labelFormatter={(value) => `Phase: ${value}`}
-                                                                    formatter={(value) => `${value}% completed`}
-                                                                />
-                                                            }
-                                                        />
+                                                            <ChartTooltip
+                                                                cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
+                                                                content={
+                                                                    <ChartTooltipContent
+                                                                        className="w-37.5"
+                                                                        nameKey="progress"
+                                                                        labelFormatter={(value) => `Phase: ${value}`}
+                                                                        formatter={(value) => `${value}% completed`}
+                                                                    />
+                                                                }
+                                                            />
 
-                                                        <Bar
-                                                            dataKey="progress"
-                                                            fill="#22c55e"
-                                                            radius={8}
-                                                            activeBar={{
-                                                                fill: "#16a34a",
-                                                                opacity: 1,
-                                                                stroke: "#16a34a",
-                                                                strokeWidth: 2,
-                                                            }
+                                                            <Bar
+                                                                dataKey="progress"
+                                                                fill="#22c55e"
+                                                                radius={8}
+                                                                activeBar={{
+                                                                    fill: "#16a34a",
+                                                                    opacity: 1,
+                                                                    stroke: "#16a34a",
+                                                                    strokeWidth: 2,
+                                                                }
 
-                                                            }
-                                                        />
-                                                    </BarChart>
-                                                </ChartContainer>
-                                            </CardContent>
+                                                                }
+                                                            />
+                                                        </BarChart>
+                                                    </ChartContainer>
+                                                </CardContent>
 
-                                            <CardFooter className="flex-col items-start gap-2 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    Each phase represents your learning milestone
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
+                                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        Each phase represents your learning milestone
+                                                    </div>
+                                                </CardFooter>
+                                            </Card>
+                                        </motion.div>
 
 
                                         {/* Weekly area chart */}
-                                        <Card className="col-span-2">
-                                            <CardHeader>
-                                                <CardTitle>Weekly Progress</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-                                                <ChartContainer
-                                                    config={{
-                                                        progress: {
-                                                            label: "Weekly Progress",
-                                                            color: "#22c55e",
-                                                        },
-                                                    }}
-                                                    className="aspect-auto h-62.5 w-full"
-                                                >
-                                                    <AreaChart data={weekProgressData}>
-                                                        <defs>
-                                                            <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
-                                                                <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
-                                                            </linearGradient>
-                                                        </defs>
+                                        <motion.div
+                                            className="h-full col-span-2"
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.45, delay: 0.5 }}
+                                        >
 
-                                                        <CartesianGrid vertical={false} />
+                                            <Card className="col-span-2 h-full">
+                                                <CardHeader>
+                                                    <CardTitle>Weekly Progress</CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                                                    <ChartContainer
+                                                        config={{
+                                                            progress: {
+                                                                label: "Weekly Progress",
+                                                                color: "#22c55e",
+                                                            },
+                                                        }}
+                                                        className="aspect-auto h-62.5 w-full"
+                                                    >
+                                                        <AreaChart data={weekProgressData}>
+                                                            <defs>
+                                                                <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
+                                                                    <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
+                                                                    <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
+                                                                </linearGradient>
+                                                            </defs>
 
-                                                        <XAxis
-                                                            dataKey="week"
-                                                            tickLine={false}
-                                                            axisLine={false}
-                                                            tickMargin={8}
-                                                        />
+                                                            <CartesianGrid vertical={false} />
 
-                                                        <YAxis
-                                                            domain={[0, 100]}
-                                                            tickLine={true}
-                                                            axisLine={true}
-                                                            tickMargin={8}
-                                                        />
-
-                                                        <ChartTooltip
-                                                            cursor={true}
-                                                            content={<ChartTooltipContent
-                                                                indicator="dot"
-                                                                labelFormatter={(value) => `Week: ${value.replace("W", "")}`}
+                                                            <XAxis
+                                                                dataKey="week"
+                                                                tickLine={false}
+                                                                axisLine={false}
+                                                                tickMargin={8}
                                                             />
-                                                            }
-                                                        />
-                                                        <ChartLegend content={<ChartLegendContent />} />
-                                                        <Area
-                                                            dataKey="progress"
-                                                            type="natural"
-                                                            fill="url(#fillProgress)"
-                                                            stroke="var(--color-progress)"
-                                                            strokeWidth={2}
-                                                        />
-                                                    </AreaChart>
-                                                </ChartContainer>
-                                            </CardContent>
-                                            <CardFooter className="flex-col items-start gap-2 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    Track how consistently you’re improving week by week
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
+
+                                                            <YAxis
+                                                                domain={[0, 100]}
+                                                                tickLine={true}
+                                                                axisLine={true}
+                                                                tickMargin={8}
+                                                            />
+
+                                                            <ChartTooltip
+                                                                cursor={true}
+                                                                content={<ChartTooltipContent
+                                                                    indicator="dot"
+                                                                    labelFormatter={(value) => `Week: ${value.replace("W", "")}`}
+                                                                />
+                                                                }
+                                                            />
+                                                            <ChartLegend content={<ChartLegendContent />} />
+                                                            <Area
+                                                                dataKey="progress"
+                                                                type="natural"
+                                                                fill="url(#fillProgress)"
+                                                                stroke="var(--color-progress)"
+                                                                strokeWidth={2}
+                                                            />
+                                                        </AreaChart>
+                                                    </ChartContainer>
+                                                </CardContent>
+                                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        Track how consistently you’re improving week by week
+                                                    </div>
+                                                </CardFooter>
+                                            </Card>
+                                        </motion.div>
 
                                         {/* Milestones Cards */}
-                                        <Card className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
+                                        <motion.div
+                                            className="h-full col-span-3"
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.45, delay: 0.3 }}
+                                        >
+                                            <Card className="h-full col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
 
-                                            <CardHeader className="col-span-3">
-                                                <CardTitle>Milestones</CardTitle>
-                                                <CardDescription>Track your key achievements</CardDescription>
-                                            </CardHeader>
+                                                <CardHeader className="col-span-3">
+                                                    <CardTitle>Milestones</CardTitle>
+                                                    <CardDescription>Track your key achievements</CardDescription>
+                                                </CardHeader>
 
-                                            {milestones.map((m: any) => {
-                                                const isDone = m.achieved;
+                                                {milestones.map((m: any) => {
+                                                    const isDone = m.achieved;
 
-                                                return (
-                                                    <Card
-                                                        key={m.id}
-                                                        className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-[1.5px] ${isDone
-                                                            ? "border-green-600 bg-green-50"
-                                                            : "border-gray-300 bg-white"
-                                                            }`}
-                                                    >
-                                                        {/* Top Accent Glow
-                                                    <div
-                                                        className={`absolute top-0 bg left-0 h-1 w-full ${isDone ? "bg-green-500" : "bg-gray-300"
-                                                            }`}
-                                                    /> */}
+                                                    return (
+                                                        <Card
+                                                            key={m.id}
+                                                            className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-[1.5px] ${isDone
+                                                                ? "border-green-600 bg-green-50"
+                                                                : "border-gray-300 bg-white"
+                                                                }`}
+                                                        >
 
-                                                        <CardHeader className="pb-2">
-                                                            <CardTitle className="text-base flex items-center justify-between">
-                                                                <span className="line-clamp-1">{m.name}</span>
+                                                            <CardHeader className="pb-2">
+                                                                <CardTitle className="text-base flex items-center justify-between">
+                                                                    <span className="line-clamp-1">{m.name}</span>
 
-                                                                {/* Emoji Badge */}
-                                                                <span className="text-lg">
-                                                                    {isDone ? "🏆" : "🎯"}
-                                                                </span>
-                                                            </CardTitle>
-                                                        </CardHeader>
+                                                                    {/* Emoji Badge */}
+                                                                    <span className="text-lg">
+                                                                        {isDone ? "🏆" : "🎯"}
+                                                                    </span>
+                                                                </CardTitle>
+                                                            </CardHeader>
 
-                                                        <CardContent className="space-y-2">
-                                                            {/* Status */}
-                                                            <div className="flex items-center gap-2 text-sm">
-                                                                <span className="text-lg">
-                                                                    {isDone ? "✅" : "⏳"}
-                                                                </span>
+                                                            <CardContent className="space-y-2">
+                                                                {/* Status */}
+                                                                <div className="flex items-center gap-2 text-sm">
+                                                                    <span className="text-lg">
+                                                                        {isDone ? "✅" : "⏳"}
+                                                                    </span>
 
-                                                                <span
-                                                                    className={`font-medium ${isDone ? "text-green-700" : "text-gray-600"
-                                                                        }`}
-                                                                >
-                                                                    {isDone ? "Completed" : "In Progress"}
-                                                                </span>
-                                                            </div>
+                                                                    <span
+                                                                        className={`font-medium ${isDone ? "text-green-700" : "text-gray-600"
+                                                                            }`}
+                                                                    >
+                                                                        {isDone ? "Completed" : "In Progress"}
+                                                                    </span>
+                                                                </div>
 
-                                                            {/* Goal */}
-                                                            {m.goal && (
-                                                                <p className="text-sm text-muted-foreground line-clamp-2">
-                                                                    {m.goal}
-                                                                </p>
-                                                            )}
+                                                                {/* Goal */}
+                                                                {m.goal && (
+                                                                    <p className="text-sm text-muted-foreground line-clamp-2">
+                                                                        {m.goal}
+                                                                    </p>
+                                                                )}
 
-                                                            {/* Date */}
-                                                            {m.target_date && (
-                                                                <p className="text-xs text-muted-foreground">
-                                                                    📅 {m.target_date instanceof Date ? m.target_date.toLocaleDateString() : m.target_date}
-                                                                </p>
-                                                            )}
-                                                        </CardContent>
+                                                                {/* Date */}
+                                                                {m.target_date && (
+                                                                    <p className="text-xs text-muted-foreground">
+                                                                        📅 {m.target_date instanceof Date ? m.target_date.toLocaleDateString() : m.target_date}
+                                                                    </p>
+                                                                )}
+                                                            </CardContent>
 
 
-                                                    </Card>
-                                                );
+                                                        </Card>
+                                                    );
 
-                                            })}
-                                            <CardFooter className="col-span-2 flex-col items-start gap-2 mt-4 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    Milestones are your stepping stones to success <Sparkles className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    Celebrate each achievement as you progress through your exam journey
-                                                </div>
-                                            </CardFooter>
+                                                })}
 
-                                        </Card>
+                                                <CardFooter className="col-span-3 flex-col items-start gap-2 mt-4 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        Milestones are your stepping stones to success <Sparkles className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        Celebrate each achievement as you progress through your exam journey
+                                                    </div>
+                                                </CardFooter>
+
+                                            </Card>
+                                        </motion.div>
 
 
                                     </div>
@@ -1248,523 +1305,661 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
 
                                     <div className="grid gap-6 md:grid-cols-4">
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Performance Score
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Overall readiness
-                                                    </CardDescription>
-                                                </div>
 
-                                                <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-950">
-                                                    <TrendingUp className="h-5 w-5 text-emerald-600" />
-                                                </div>
-                                            </CardHeader>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.5 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Performance Score
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Overall readiness
+                                                        </CardDescription>
+                                                    </div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-emerald-600">
-                                                    {performanceScore}%
-                                                </div>
+                                                    <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-950">
+                                                        <TrendingUp className="h-5 w-5 text-emerald-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    Based on your latest performance
-                                                </p>
-                                            </CardContent>
-                                        </Card>
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Highest Score
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Best test performance
-                                                    </CardDescription>
-                                                </div>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-emerald-600">
+                                                        {performanceScore}%
+                                                    </div>
 
-                                                <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-950">
-                                                    <Award className="h-5 w-5 text-blue-600" />
-                                                </div>
-                                            </CardHeader>
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Based on your latest performance
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-blue-600">
-                                                    {highestScore}%
-                                                </div>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.7 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Highest Score
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Best test performance
+                                                        </CardDescription>
+                                                    </div>
 
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    Your personal best
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                                    <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-950">
+                                                        <Award className="h-5 w-5 text-blue-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Lowest Score
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Room for improvement
-                                                    </CardDescription>
-                                                </div>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-blue-600">
+                                                        {highestScore}%
+                                                    </div>
 
-                                                <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-950">
-                                                    <TrendingDown className="h-5 w-5 text-orange-600" />
-                                                </div>
-                                            </CardHeader>
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Your personal best
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-orange-600">
-                                                    {lowestScore}%
-                                                </div>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.9 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Lowest Score
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Room for improvement
+                                                        </CardDescription>
+                                                    </div>
 
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    Lowest recorded score
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                                    <div className="rounded-lg bg-orange-100 p-2 dark:bg-orange-950">
+                                                        <TrendingDown className="h-5 w-5 text-orange-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Last Test
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Most recent attempt
-                                                    </CardDescription>
-                                                </div>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-orange-600">
+                                                        {lowestScore}%
+                                                    </div>
 
-                                                <div className="rounded-lg bg-violet-100 p-2 dark:bg-violet-950">
-                                                    <Clock3 className="h-5 w-5 text-violet-600" />
-                                                </div>
-                                            </CardHeader>
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Lowest recorded score
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-violet-600">
-                                                    {lastTestScore}%
-                                                </div>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.5 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Last Test
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Most recent attempt
+                                                        </CardDescription>
+                                                    </div>
 
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    Latest recorded score
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                                    <div className="rounded-lg bg-violet-100 p-2 dark:bg-violet-950">
+                                                        <Clock3 className="h-5 w-5 text-violet-600" />
+                                                    </div>
+                                                </CardHeader>
+
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-violet-600">
+                                                        {lastTestScore}%
+                                                    </div>
+
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Latest recorded score
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
                                     </div>
 
 
                                     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mt-6">
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Generated Tests
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Total AI generated tests
-                                                    </CardDescription>
-                                                </div>
 
-                                                <div className="rounded-lg bg-slate-100 p-2 dark:bg-slate-900">
-                                                    <FileText className="h-5 w-5 text-slate-600" />
-                                                </div>
-                                            </CardHeader>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.5 }}
+                                        >
+                                            <Card className="h-full">
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold">
-                                                    {testsGenerated}
-                                                </div>
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Generated Tests
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Total AI generated tests
+                                                        </CardDescription>
+                                                    </div>
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    {totalTests} total tests available
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                                    <div className="rounded-lg bg-slate-100 p-2 dark:bg-slate-900">
+                                                        <FileText className="h-5 w-5 text-slate-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Attempted
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Tests you've completed
-                                                    </CardDescription>
-                                                </div>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold">
+                                                        {testsGenerated}
+                                                    </div>
 
-                                                <div className="rounded-lg bg-indigo-100 p-2 dark:bg-indigo-950">
-                                                    <ClipboardCheck className="h-5 w-5 text-indigo-600" />
-                                                </div>
-                                            </CardHeader>
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        {totalTests} total tests available
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-indigo-600">
-                                                    {testsAttempted}
-                                                </div>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.7 }}
+                                        >
+                                            <Card className="h-full">
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    {totalTests > 0
-                                                        ? `${Math.round((testsAttempted / totalTests) * 100)}% completed`
-                                                        : "No tests yet"}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Attempted
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Tests you've completed
+                                                        </CardDescription>
+                                                    </div>
 
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Passed
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Successfully cleared
-                                                    </CardDescription>
-                                                </div>
+                                                    <div className="rounded-lg bg-indigo-100 p-2 dark:bg-indigo-950">
+                                                        <ClipboardCheck className="h-5 w-5 text-indigo-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                                <div className="rounded-lg bg-green-100 p-2 dark:bg-green-950">
-                                                    <BadgeCheck className="h-5 w-5 text-green-600" />
-                                                </div>
-                                            </CardHeader>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-indigo-600">
+                                                        {testsAttempted}
+                                                    </div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-green-600">
-                                                    {testsPassed}
-                                                </div>
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        {totalTests > 0
+                                                            ? `${Math.round((testsAttempted / totalTests) * 100)}% completed`
+                                                            : "No tests yet"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    {testsAttempted > 0
-                                                        ? `${Math.round((testsPassed / testsAttempted) * 100)}% pass rate`
-                                                        : "No attempts yet"}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.9 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Passed
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Successfully cleared
+                                                        </CardDescription>
+                                                    </div>
 
-                                        <Card>
-                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                                <div>
-                                                    <CardTitle className="mb-2 font-semibold">
-                                                        Failed
-                                                    </CardTitle>
-                                                    <CardDescription>
-                                                        Tests to improve
-                                                    </CardDescription>
-                                                </div>
+                                                    <div className="rounded-lg bg-green-100 p-2 dark:bg-green-950">
+                                                        <BadgeCheck className="h-5 w-5 text-green-600" />
+                                                    </div>
+                                                </CardHeader>
 
-                                                <div className="rounded-lg bg-red-100 p-2 dark:bg-red-950">
-                                                    <CircleX className="h-5 w-5 text-red-600" />
-                                                </div>
-                                            </CardHeader>
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-green-600">
+                                                        {testsPassed}
+                                                    </div>
 
-                                            <CardContent>
-                                                <div className="text-3xl font-bold text-red-600">
-                                                    {testsFailed}
-                                                </div>
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        {testsAttempted > 0
+                                                            ? `${Math.round((testsPassed / testsAttempted) * 100)}% pass rate`
+                                                            : "No attempts yet"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    {testsAttempted > 0
-                                                        ? `${Math.round((testsFailed / testsAttempted) * 100)}% failure rate`
-                                                        : "No attempts yet"}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                                        </motion.div>
+
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 25 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 1.1 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                    <div>
+                                                        <CardTitle className="mb-2 font-semibold">
+                                                            Failed
+                                                        </CardTitle>
+                                                        <CardDescription>
+                                                            Tests to improve
+                                                        </CardDescription>
+                                                    </div>
+
+                                                    <div className="rounded-lg bg-red-100 p-2 dark:bg-red-950">
+                                                        <CircleX className="h-5 w-5 text-red-600" />
+                                                    </div>
+                                                </CardHeader>
+
+                                                <CardContent>
+                                                    <div className="text-3xl font-bold text-red-600">
+                                                        {testsFailed}
+                                                    </div>
+
+                                                    <p className="mt-1 text-xs text-muted-foreground">
+                                                        {testsAttempted > 0
+                                                            ? `${Math.round((testsFailed / testsAttempted) * 100)}% failure rate`
+                                                            : "No attempts yet"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
                                     </div>
 
                                     <div className="grid gap-6 md:grid-cols-2 mt-6">
 
-                                        <Card className="">
-                                            <CardHeader>
-                                                <CardTitle>Performance Trend</CardTitle>
-                                                <CardDescription>
-                                                    Score progression across all tests
-                                                </CardDescription>
-                                            </CardHeader>
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.5 }}
+                                        >
+                                            <Card className="">
+                                                <CardHeader>
+                                                    <CardTitle>Performance Trend</CardTitle>
+                                                    <CardDescription>
+                                                        Score progression across all tests
+                                                    </CardDescription>
+                                                </CardHeader>
 
-                                            <CardContent>
-                                                <ChartContainer
-                                                    config={performanceChartConfig}
-                                                    className="h-75 w-full"
-                                                >
-                                                    <LineChart
-                                                        accessibilityLayer
-                                                        data={performanceTrend.length > 0 ? performanceTrend : [{ test: "No Data", score: 0, type: "N/A" }]}
+                                                <CardContent>
+                                                    <ChartContainer
+                                                        config={performanceChartConfig}
+                                                        className="h-75 w-full"
                                                     >
-                                                        <CartesianGrid vertical={true} />
+                                                        <LineChart
+                                                            accessibilityLayer
+                                                            data={performanceTrend.length > 0 ? performanceTrend : [{ test: "No Data", score: 0, type: "N/A" }]}
+                                                        >
+                                                            <CartesianGrid vertical={true} />
 
-                                                        <XAxis
-                                                            dataKey="test"
-                                                            tickLine={true}
-                                                            axisLine={true}
-                                                        />
+                                                            <XAxis
+                                                                dataKey="test"
+                                                                tickLine={true}
+                                                                axisLine={true}
+                                                            />
 
-                                                        <YAxis
-                                                            domain={[0, 100]}
-                                                            tickLine={true}
-                                                            axisLine={true}
-                                                        />
+                                                            <YAxis
+                                                                domain={[0, 100]}
+                                                                tickLine={true}
+                                                                axisLine={true}
+                                                            />
 
-                                                        <ChartTooltip
-                                                            cursor={true}
-                                                            content={<ChartTooltipContent />}
-                                                        />
+                                                            <ChartTooltip
+                                                                cursor={true}
+                                                                content={<ChartTooltipContent />}
+                                                            />
 
-                                                        <Line
-                                                            dataKey="score"
-                                                            type="monotone"
-                                                            stroke="var(--color-score)"
-                                                            strokeWidth={3}
-                                                            dot={{
-                                                                r: 7,
-                                                                fill: "var(--color-score)",
-                                                                stroke: "var(--color-score)",
-                                                            }}
-                                                            activeDot={{
-                                                                r: 7,
-                                                                fill: "#16a34a",
-                                                                stroke: "var(--color-score)",
-                                                            }}
-                                                        />
-                                                        <Line
-                                                            dataKey="type"
-                                                            type="monotone"
-                                                            stroke="var(--color-type)"
-                                                            strokeWidth={3}
-                                                            dot={{
-                                                                r: 5,
-                                                            }}
-                                                            activeDot={{
-                                                                r: 7,
-                                                            }}
-                                                        />
-                                                    </LineChart>
-                                                </ChartContainer>
-                                            </CardContent>
-                                            <CardFooter className="flex-col items-start gap-2 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    Your performance trend over time <TrendingUp className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    Track your score progression across all tests
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
+                                                            <Line
+                                                                dataKey="score"
+                                                                type="monotone"
+                                                                stroke="var(--color-score)"
+                                                                strokeWidth={3}
+                                                                dot={{
+                                                                    r: 7,
+                                                                    fill: "var(--color-score)",
+                                                                    stroke: "var(--color-score)",
+                                                                }}
+                                                                activeDot={{
+                                                                    r: 7,
+                                                                    fill: "#16a34a",
+                                                                    stroke: "var(--color-score)",
+                                                                }}
+                                                            />
+                                                            <Line
+                                                                dataKey="type"
+                                                                type="monotone"
+                                                                stroke="var(--color-type)"
+                                                                strokeWidth={3}
+                                                                dot={{
+                                                                    r: 5,
+                                                                }}
+                                                                activeDot={{
+                                                                    r: 7,
+                                                                }}
+                                                            />
+                                                        </LineChart>
+                                                    </ChartContainer>
+                                                </CardContent>
+                                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        Your performance trend over time <TrendingUp className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        Track your score progression across all tests
+                                                    </div>
+                                                </CardFooter>
+                                            </Card>
+                                        </motion.div>
 
                                         {/* Pass Fail Pie Chart */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle>Pass Rate</CardTitle>
-                                                <CardDescription className="text-sm text-muted-foreground">
-                                                    Your overall test performance distribution
-                                                </CardDescription>
-                                            </CardHeader>
+                                        <motion.div
+                                            initial={{ opacity: 0, x: 50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.2, delay: 0.7 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardHeader>
+                                                    <CardTitle>Pass Rate</CardTitle>
+                                                    <CardDescription className="text-sm text-muted-foreground">
+                                                        Your overall test performance distribution
+                                                    </CardDescription>
+                                                </CardHeader>
 
 
-                                            <CardContent>
-                                                <ChartContainer
-                                                    config={pfChartConfig}
-                                                    className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
-                                                >
-                                                    <PieChart>
-                                                        <ChartTooltip
-                                                            content={<ChartTooltipContent hideLabel />}
-                                                        />
+                                                <CardContent>
+                                                    <ChartContainer
+                                                        config={pfChartConfig}
+                                                        className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+                                                    >
+                                                        <PieChart>
+                                                            <ChartTooltip
+                                                                content={<ChartTooltipContent hideLabel />}
+                                                            />
 
-                                                        <Pie
-                                                            data={pfPieChartData}
-                                                            dataKey="value"
-                                                            nameKey="status"
-                                                            label={({ percent }) =>
-                                                                `${((percent ?? 0) * 100).toFixed(0)}%`
-                                                            }
-                                                        />
-                                                    </PieChart>
-                                                </ChartContainer>
+                                                            <Pie
+                                                                data={pfPieChartData}
+                                                                dataKey="value"
+                                                                nameKey="status"
+                                                                label={({ percent }) =>
+                                                                    `${((percent ?? 0) * 100).toFixed(0)}%`
+                                                                }
+                                                            />
+                                                        </PieChart>
+                                                    </ChartContainer>
 
-                                                <p className="text-center text-lg font-semibold">
-                                                    {testsAttempted > 0
-                                                        ? `${Math.round((testsPassed / testsAttempted) * 100)}%`
-                                                        : "0%"} Passing Rate
-                                                </p>
-                                            </CardContent>
+                                                    <p className="text-center text-lg font-semibold">
+                                                        {testsAttempted > 0
+                                                            ? `${Math.round((testsPassed / testsAttempted) * 100)}%`
+                                                            : "0%"} Passing Rate
+                                                    </p>
+                                                </CardContent>
 
-                                            <CardFooter className="flex-col items-start gap-2 text-sm">
-                                                <div className="flex gap-2 leading-none font-medium">
-                                                    {(pfPieChartData[0]?.value ?? 0) >= 70
-                                                        ? "Strong progress — you're close to the finish line"
-                                                        : (pfPieChartData[0]?.value ?? 0) >= 40
-                                                            ? "Good pace — stay consistent"
-                                                            : "Just getting started — build the habit"}
-                                                    <TrendingUp className="h-4 w-4" />
-                                                </div>
-                                                <div className="leading-none text-muted-foreground">
-                                                    {(pfPieChartData[0]?.value ?? 0)}% of your exam journey is complete
-                                                </div>
-                                            </CardFooter>
-                                        </Card>
+                                                <CardFooter className="flex-col items-start gap-2 text-sm">
+                                                    <div className="flex gap-2 leading-none font-medium">
+                                                        {(pfPieChartData[0]?.value ?? 0) >= 70
+                                                            ? "Strong progress — you're close to the finish line"
+                                                            : (pfPieChartData[0]?.value ?? 0) >= 40
+                                                                ? "Good pace — stay consistent"
+                                                                : "Just getting started — build the habit"}
+                                                        <TrendingUp className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="leading-none text-muted-foreground">
+                                                        {(pfPieChartData[0]?.value ?? 0)}% of your exam journey is complete
+                                                    </div>
+                                                </CardFooter>
+                                            </Card>
+                                        </motion.div>
                                     </div>
 
                                     {/* Performance Summary */}
 
                                     <h1 className="text-2xl font-bold mt-12 mb-6">Your {selectedExam?.exam.name} Summary</h1>
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center gap-2">
-                                                <Sparkles className="h-5 w-5 text-emerald-600" />
-                                                A quick overview of your current progress and performance.
-                                            </CardTitle>
-                                        </CardHeader>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 25 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.2, delay: 0.5 }}
+                                    >
+                                        <Card className="h-full">
+                                            <CardHeader>
+                                                <CardTitle className="flex items-center gap-2">
+                                                    <Sparkles className="h-5 w-5 text-emerald-600" />
+                                                    A quick overview of your current progress and performance.
+                                                </CardTitle>
+                                            </CardHeader>
 
-                                        <CardContent className="space-y-6">
-                                            <div className="space-y-4">
+                                            <CardContent className="space-y-6">
+                                                <div className="space-y-4">
 
-                                                <div className="flex items-start gap-3">
-                                                    <TrendingUp className="mt-1 h-4 w-4 text-emerald-600" />
-                                                    <div>
-                                                        <p className="font-medium">Overall Performance</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {overallPerformanceSummary}
-                                                        </p>
+                                                    <div className="flex items-start gap-3">
+                                                        <TrendingUp className="mt-1 h-4 w-4 text-emerald-600" />
+                                                        <div>
+                                                            <p className="font-medium">Overall Performance</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {overallPerformanceSummary}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <Separator />
+
+                                                    <div className="flex items-start gap-3">
+                                                        <Route className="mt-1 h-4 w-4 text-blue-600" />
+                                                        <div>
+                                                            <p className="font-medium">Roadmap Progress</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {roadmapSummary}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <Separator />
+
+                                                    <div className="flex items-start gap-3">
+                                                        <ClipboardCheck className="mt-1 h-4 w-4 text-violet-600" />
+                                                        <div>
+                                                            <p className="font-medium">Tests</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {testsSummary}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <Separator />
+
+                                                    <div className="flex items-start gap-3">
+                                                        <BadgeCheck className="mt-1 h-4 w-4 text-green-600" />
+                                                        <div>
+                                                            <p className="font-medium">Pass Rate</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {passRateSummary}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <Separator />
+
+                                                    <div className="flex items-start gap-3">
+                                                        <Clock3 className="mt-1 h-4 w-4 text-orange-600" />
+                                                        <div>
+                                                            <p className="font-medium">Latest Performance</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {latestPerformanceSummary}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <Separator />
-
-                                                <div className="flex items-start gap-3">
-                                                    <Route className="mt-1 h-4 w-4 text-blue-600" />
-                                                    <div>
-                                                        <p className="font-medium">Roadmap Progress</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {roadmapSummary}
-                                                        </p>
+                                                <div className="rounded-lg border bg-muted/40 p-4">
+                                                    <div className="mb-3 flex items-center gap-2">
+                                                        <Lightbulb className="h-4 w-4 text-yellow-500" />
+                                                        <h4 className="font-semibold">
+                                                            Suggestions
+                                                        </h4>
                                                     </div>
+
+                                                    <ul className="space-y-2 text-sm text-muted-foreground">
+                                                        {suggestions.map((suggestion, index) => (
+                                                            <li key={index} className="flex items-start gap-2">
+                                                                <span className="mt-1 text-yellow-500">💡</span>
+                                                                {suggestion}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+
                                                 </div>
-
-                                                <Separator />
-
-                                                <div className="flex items-start gap-3">
-                                                    <ClipboardCheck className="mt-1 h-4 w-4 text-violet-600" />
-                                                    <div>
-                                                        <p className="font-medium">Tests</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {testsSummary}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <Separator />
-
-                                                <div className="flex items-start gap-3">
-                                                    <BadgeCheck className="mt-1 h-4 w-4 text-green-600" />
-                                                    <div>
-                                                        <p className="font-medium">Pass Rate</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {passRateSummary}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <Separator />
-
-                                                <div className="flex items-start gap-3">
-                                                    <Clock3 className="mt-1 h-4 w-4 text-orange-600" />
-                                                    <div>
-                                                        <p className="font-medium">Latest Performance</p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {latestPerformanceSummary}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="rounded-lg border bg-muted/40 p-4">
-                                                <div className="mb-3 flex items-center gap-2">
-                                                    <Lightbulb className="h-4 w-4 text-yellow-500" />
-                                                    <h4 className="font-semibold">
-                                                        Suggestions
-                                                    </h4>
-                                                </div>
-
-                                                <ul className="space-y-2 text-sm text-muted-foreground">
-                                                    {suggestions.map((suggestion, index) => (
-                                                        <li key={index} className="flex items-start gap-2">
-                                                            <span className="mt-1 text-yellow-500">💡</span>
-                                                            {suggestion}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                                            </CardContent>
+                                        </Card>
+                                    </motion.div>
 
 
                                     {/* DELETE EXAM */}
-                                    <div className=" border-t mt-8 pt-8">
-                                        <h2 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
+                                    <motion.section
+                                        initial={{ opacity: 0, y: 25 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true, amount: 0.2 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="mt-16"
+                                    >
+                                        <div className="flex flex-col gap-3 mb-6">
 
-                                        <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
-                                            <div>
-                                                <p className="font-medium text-red-700">Delete your {exam?.exam?.name ?? "exam"} exam.</p>
-                                                <p className="text-sm text-red-500">
-                                                    This action is permanent and cannot be undone.
+                                                <h2 className="text-2xl font-bold text-red-600">
+                                                    Danger Zone
+                                                </h2>
+
+                                                <p className="text-sm text-muted-foreground">
+                                                    Permanent actions that cannot be undone.
                                                 </p>
-                                            </div>
-                                            <Dialog open={dltDialogOpen} onOpenChange={setDltDialogOpen}>
-                                                <DialogTrigger asChild>
-                                                    <button onClick={() => setDltDialogOpen(true)} className="bg-transparent text-red-600 font-medium cursor-pointer hover:text-white border border-red-600 px-4 py-2 rounded-md hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled={deleting}>
-                                                        {deleting ? "Deleting..." : "Delete Exam"}
-                                                    </button>
-                                                </DialogTrigger>
+                                        </div>
 
-                                                <DialogContent className="sm:max-w-md">
-                                                    <DialogHeader>
-                                                        <DialogTitle className="text-red-600 mb-2">
-                                                            Delete Exam ?
-                                                        </DialogTitle>
+                                        <div className="rounded-2xl border border-red-200 bg-linear-to-r from-white via-red-50 to-red-100 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
 
-                                                        <DialogDescription>
-                                                            {deleting ? (
-                                                                <span className="font-medium text-black flex items-center gap-2">
-                                                                    <span className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 
-                                                                    Deleting {exam?.exam?.name ?? "this exam"}...
-                                                                </span>
-                                                            ) : (
-                                                                <>
-                                                                    Are you sure you want to delete{" "}
-                                                                    <span className="font-semibold text-black">
-                                                                        {exam?.exam?.name ?? "this exam"} exam
-                                                                    </span>
-                                                                    ? This action cannot be undone.
-                                                                </>
-                                                            )}
-                                                        </DialogDescription>
-                                                    </DialogHeader>
+                                                <div className="flex items-start gap-5">
 
-                                                    <DialogFooter className="mt-4">
-                                                        <DialogClose asChild>
-                                                            <button className="px-4 py-2 border rounded-md cursor-pointer hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50" disabled={deleting}>
-                                                                Cancel
-                                                            </button>
-                                                        </DialogClose>
+                                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
+                                                        <Trash2 className="h-7 w-7 text-red-600" />
+                                                    </div>
 
-                                                        <button
-                                                            onClick={handleDelete}
-                                                            className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 hover:bg-red-700"
+                                                    <div>
+                                                        <h3 className="text-lg font-semibold text-red-700">
+                                                            Delete {exam?.exam?.name ?? ""} Exam
+                                                        </h3>
+
+                                                        <p className="mt-2 max-w-xl text-sm text-red-600">
+                                                            Permanently remove this exam, its roadmap, progress,
+                                                            milestones, and associated learning data. This action
+                                                            cannot be reversed.
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+
+                                                <Dialog open={dltDialogOpen} onOpenChange={setDltDialogOpen}>
+                                                    <DialogTrigger asChild>
+                                                        <Button
+                                                            className="cursor-pointer text-base font-semibold rounded-lg bg-transparent border border-red-600 hover:bg-red-700 px-6 py-2 text-red-600 hover:text-white transition-all duration-300"
                                                             disabled={deleting}
+                                                            onClick={() => setDltDialogOpen(true)}
                                                         >
-                                                            {deleting ? "Deleting..." : "Yes, Delete"}
-                                                        </button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
+                                                            {deleting ? "Deleting..." : "Delete Exam"}
+                                                        </Button>
+                                                    </DialogTrigger>
+
+                                                    <DialogContent className="sm:max-w-md rounded-2xl">
+
+                                                        <DialogHeader>
+
+                                                            <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                                                                <TriangleAlert className="h-8 w-8 text-red-600" />
+                                                            </div>
+
+                                                            <DialogTitle className="text-center text-red-600">
+                                                                Delete Exam?
+                                                            </DialogTitle>
+
+                                                            <DialogDescription className="text-center">
+
+                                                                {deleting ? (
+                                                                    <span className="flex items-center justify-center gap-2 font-medium text-black">
+                                                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+                                                                        Deleting {exam?.exam?.name ?? "this exam"}...
+                                                                    </span>
+                                                                ) : (
+                                                                    <>
+                                                                        You are about to permanently delete{" "}
+                                                                        <span className="font-semibold text-black">
+                                                                            {exam?.exam?.name ?? "this exam"}
+                                                                        </span>.
+                                                                        <br />
+                                                                        This action cannot be undone.
+                                                                    </>
+                                                                )}
+
+                                                            </DialogDescription>
+
+                                                        </DialogHeader>
+
+                                                        <DialogFooter className="mt-6">
+
+                                                            <DialogClose asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="cursor-pointer"
+                                                                    disabled={deleting}
+                                                                >
+                                                                    Cancel
+                                                                </Button>
+                                                            </DialogClose>
+
+                                                            <Button
+                                                                variant="destructive"
+                                                                onClick={handleDelete}
+                                                                disabled={deleting}
+                                                                className="cursor-pointer"
+                                                            >
+                                                                {deleting ? "Deleting..." : "Yes, Delete"}
+                                                            </Button>
+
+                                                        </DialogFooter>
+
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                            </div>
 
                                         </div>
-                                    </div>
+                                    </motion.section>
 
                                 </div>
 

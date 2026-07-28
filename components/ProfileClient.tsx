@@ -6,12 +6,14 @@ import ProfileImageUploader from "@/components/ProfilePicUpdater";
 import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
 import { DeleteAccountDialog } from "./DeleteAccountDialoge";
-import { CheckCircle, CheckCircle2 } from "lucide-react";
+import { BellRing, CheckCircle, CheckCircle2, GraduationCap, ShieldCheck } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import { markNotificationAsRead } from "@/app/actions/action";
 import { toast } from "sonner";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { PiExam } from "react-icons/pi";
 
 export default function ProfilePage({ user }: { user: any }) {
 
@@ -37,143 +39,294 @@ export default function ProfilePage({ user }: { user: any }) {
     }
 
     return (
-        <div className="max-w-5xl mx-auto py-12 px-6 mt-16">
+        <div className="max-w-5xl mx-auto py-12 px-6 mt-24">
             {/* Profile Card */}
-            <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 border">
-                <ProfileImageUploader initialImage={user.image ?? ""} />
+            <motion.div
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="relative overflow-hidden rounded-3xl border bg-linear-to-br from-white via-slate-50 to-blue-50 p-8 shadow-lg">
 
-                <div className="text-center md:text-left">
-                    <h1 className="text-2xl font-semibold">{user.name || "Unnamed User"}</h1>
-                    <p className="text-gray-600">{user.email}</p>
-                    <p className="text-sm text-gray-500 mt-1">
-                        Joined {format(new Date(user.createdAt), "dd MMM yyyy")}
-                    </p>
+                    {/* Decorative Background */}
+                    <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-blue-100/50 blur-3xl" />
+                    <div className="absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-slate-200/40 blur-3xl" />
 
-                    {user.role?.toLowerCase() === "admin" && (
-                        <span className="inline-block mt-2 bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
-                            ADMIN
-                        </span>
-                    )}
+                    <div className="relative flex flex-col md:flex-row items-center gap-8">
+
+                        {/* Avatar */}
+                        <div className="rounded-full ring-4 ring-white shadow-xl">
+                            <ProfileImageUploader initialImage={user.image ?? ""} />
+                        </div>
+
+                        {/* User Info */}
+                        <div className="flex-1 text-center md:text-left">
+
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                                <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                                    {user.name || "Unnamed User"}
+                                </h1>
+
+                                {user.role?.toLowerCase() === "admin" && (
+                                    <span className="rounded-full ml-2 bg-blue-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                                        Admin
+                                    </span>
+                                )}
+                            </div>
+
+                            <p className="mt-2 text-base text-slate-600">
+                                {user.email}
+                            </p>
+
+                            <p className="mt-1 text-sm text-slate-500">
+                                Joined {format(new Date(user.createdAt), "dd MMM yyyy")}
+                            </p>
+
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* Exams Section */}
-            <section className="mt-10">
-                <h2 className="text-xl font-semibold mb-4">Your Exams</h2>
+            <motion.section
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5 }}
+                className="mt-14"
+            >
+                <div className="flex flex-col gap-4 mb-6">
+                    <h2 className="text-2xl font-bold">Learning Progress</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Track your enrolled exams and progress.
+                    </p>
+                </div>
 
                 {user.exams.length > 0 ? (
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {user.exams.map((ue: any) => (
-                            <div
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {user.exams.map((ue: any, index: number) => (
+                            <motion.div
                                 key={ue.id}
-                                className="bg-white border rounded-xl p-5 hover:shadow-md transition"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                    duration: 0.4,
+                                    delay: index * 0.08,
+                                }}
                             >
-                                <h3 className="font-semibold text-lg">{ue.exam.name}</h3>
+                                <div className="rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
 
-                                {/* Progress Bar */}
-                                <div className="mt-3">
-                                    <div className="w-full bg-gray-200 h-2 rounded-full">
-                                        <div
-                                            className="bg-blue-600 h-2 rounded-full"
-                                            style={{ width: `${ue.progress_percent || 0}%` }}
-                                        />
+                                    <div className="flex items-start justify-between">
+                                        <h3 className="text-xl font-semibold">
+                                            {ue.exam.name}
+                                        </h3>
+
+
+                                        <GraduationCap size={28} className="text-blue-600" />
                                     </div>
-                                    <p className="text-xs md:text-sm text-gray-500 mt-2">
-                                        {ue.progress_percent?.toFixed(1) || 0}% completed
-                                    </p>
-                                </div>
 
-                                <p className="text-xs md:text-sm text-gray-600 mt-3 text-right">
-                                    {format(new Date(ue.start_date), "dd MMM yyyy")} →{" "}
-                                    {format(new Date(ue.end_date), "dd MMM yyyy")}
-                                </p>
-                            </div>
+                                    {/* Progress */}
+                                    <div className="mt-6">
+
+                                        <div className="mb-2 flex justify-between text-sm">
+                                            <span className="text-slate-500">
+                                                Progress
+                                            </span>
+
+                                            <span className="font-medium">
+                                                {ue.progress_percent?.toFixed(1) || 0}%
+                                            </span>
+                                        </div>
+
+                                        <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                whileInView={{
+                                                    width: `${ue.progress_percent || 0}%`,
+                                                }}
+                                                viewport={{ once: true }}
+                                                transition={{
+                                                    duration: 1,
+                                                    ease: "easeOut",
+                                                }}
+                                                className="h-full rounded-full bg-blue-600"
+                                            />
+                                        </div>
+
+                                    </div>
+
+                                    <div className="mt-6 flex items-center justify-between text-sm text-slate-500">
+
+                                        <div>
+                                            <p className="font-medium text-slate-700">
+                                                Started
+                                            </p>
+
+                                            <p>
+                                                {format(new Date(ue.start_date), "dd MMM yyyy")}
+                                            </p>
+                                        </div>
+
+                                        <div className="text-right">
+                                            <p className="font-medium text-slate-700">
+                                                Ends
+                                            </p>
+
+                                            <p>
+                                                {format(new Date(ue.end_date), "dd MMM yyyy")}
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </motion.div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-500">No exams enrolled yet.</p>
+                    <div className="rounded-2xl border border-dashed bg-slate-50 py-12 text-center">
+                        <p className="text-slate-500">
+                            No exams enrolled yet.
+                        </p>
+                    </div>
                 )}
-            </section>
+            </motion.section>
 
             {/* Notifications */}
-            <section className="mt-10">
-                <h2 className="text-xl font-semibold mb-4">Recent Notifications</h2>
+            <motion.section
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5 }}
+                className="mt-14"
+            >
+                <div className="flex flex-col gap-3 mb-6">
+                    <h2 className="text-2xl font-bold">Recent Activity</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Stay updated with your latest account notifications.
+                    </p>
+                </div>
 
                 {user.notifications.length > 0 ? (
-                    <div className="space-y-3">
-                        {notifications.map((n: any) => (
-                            <div
+                    <div className="space-y-6">
+                        {notifications.map((n: any, index: number) => (
+                            <motion.div
                                 key={n.id}
-                                className="flex items-center gap-3 bg-white border py-4 px-6 rounded-xl hover:shadow-sm"
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                    duration: 0.35,
+                                    delay: index * 0.06,
+                                }}
                             >
-                                <IoIosNotifications size={44} className="text-blue-600 mr-2" />
-                                <div>
-                                    <p className="text-sm md:text-base">{n.message}</p>
-                                    <span className="text-sm text-gray-500">
-                                        {format(new Date(n.created_at), "dd MMM yyyy")}
-                                    </span>
+                                <div
+                                    className={`flex hover:scale-102 items-center gap-5 rounded-2xl border p-5 shadow-sm transition-all duration-300 hover:shadow-lg ${n.is_read
+                                        ? "bg-white border-slate-200"
+                                        : "bg-blue-50 border-blue-200 border-l-4 border-l-blue-600"
+                                        }`}
+                                >
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100">
+                                        <BellRing className="h-7 w-7 text-blue-600" />
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <p className="font-medium text-slate-800">
+                                            {n.message}
+                                        </p>
+
+                                        <p className="mt-1 text-sm text-slate-500">
+                                            {format(new Date(n.created_at), "dd MMM yyyy")}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center">
+                                        {n.is_read ? (
+                                            <div className="flex items-center gap-2 text-green-600">
+                                                <CheckCircle2 className="h-5 w-5" />
+                                                <span className="hidden md:block text-sm font-medium">
+                                                    Read
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                className="cursor-pointer hover:bg-blue-600 hover:text-white"
+                                                onClick={() => handleNotification(n.id)}
+                                            >
+                                                Mark as Read
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex justify-end w-full">
-                                    {n.is_read ? (
-                                        <CheckCircle2
-                                            size={22}
-                                            className="text-green-600"
-                                        />
-                                    ) : (
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            className="hover:bg-blue-500 hover:text-white cursor-pointer"
-                                            onClick={() => handleNotification(n.id)}
-                                        >
-                                            Mark as Read
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-500">No recent notifications.</p>
+                    <div className="rounded-2xl border border-dashed bg-slate-50 py-12 text-center">
+                        <BellRing className="mx-auto mb-3 h-10 w-10 text-slate-400" />
+                        <p className="text-slate-500">
+                            No recent notifications.
+                        </p>
+                    </div>
                 )}
-            </section>
+            </motion.section>
 
-            {/* Danger Zone */}
-            {/* <section className="mt-16 border-t pt-8">
-                <h2 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
-
-                <div className="bg-red-50 border border-red-200 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div>
-                        <p className="font-medium text-red-700">Delete your account</p>
-                        <p className="text-sm text-red-500">
-                            This action is permanent and cannot be undone.
-                        </p>
-                    </div>
-
-                    <DeleteAccountDialog />
-                </div>
-            </section > */}
             {/* Security */}
-            <section className="mt-16 border-t pt-8">
-                <h2 className="text-lg font-semibold mb-3">Security</h2>
+            <motion.section
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="mt-16"
+            >
+                <div className="flex flex-col gap-3 mb-6">
 
-                <div className="bg-gray-50 border rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div>
-                        <p className="font-medium">Manage your account security</p>
-                        <p className="text-sm text-gray-500">
-                            Change your password, manage sign-in methods, and delete your account.
-                        </p>
+                    <h2 className="text-2xl font-bold">Account Security</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Keep your account protected and manage your security settings.
+                    </p>
+                </div>
+                <div className="rounded-2xl border bg-linear-to-r from-white via-slate-50 to-red-50 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
+
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+
+                        <div className="flex items-start gap-5">
+
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
+                                <ShieldCheck className="h-7 w-7 text-red-600" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-semibold">
+                                    Manage your account security
+                                </h3>
+
+                                <p className="mt-2 max-w-xl text-sm text-slate-600">
+                                    Update your password, manage sign-in methods, review
+                                    account access, and permanently delete your account
+                                    whenever needed.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <Button
+                            asChild
+                            className="cursor-pointer text-base rounded-lg font-semibold border bg-transparent border-red-600 hover:bg-red-700 px-6 py-2 text-red-600 hover:text-white transition-all duration-300"
+                        >
+                            <Link href="/profile/security">
+                                Open Security
+                            </Link>
+                        </Button>
+
                     </div>
 
-                    <Button asChild
-                        className="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition cursor-pointer"
-                    >
-                        <Link href="/profile/security">
-                            Open Security
-                        </Link>
-                    </Button>
                 </div>
-            </section>
+            </motion.section>
         </div >
     )
 };

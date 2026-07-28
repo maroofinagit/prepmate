@@ -63,7 +63,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full py-2 z-50 bg-white backdrop-blur-md shadow-md border-b border-gray-200">
+        <nav className="fixed top-0 left-0 w-full py-2 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-4 text-xl md:text-3xl font-bold text-[#004ba0]">
                     <Image
@@ -85,8 +85,6 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                         </Link>
                     </div>
                 )}
-
-
 
                 {/* Nav Links */}
                 {isLoggedIn ? (
