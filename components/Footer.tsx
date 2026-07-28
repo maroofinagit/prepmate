@@ -6,92 +6,116 @@ export default function Footer() {
 
     const currentYear = 2026; // You can dynamically get the current year if needed
 
+    const socialLinks = [
+        { href: "https://x.com/maroofalysyed", icon: FaXTwitter },
+        { href: "https://instagram.com/maroofalysyed", icon: FaInstagram },
+        { href: "https://linkedin.com/in/maroofalysyed", icon: FaLinkedin },
+        { href: "https://facebook.com/maroofalysyed", icon: FaFacebook },
+    ];
+
     return (
-        <footer className="bg-[#00203d] text-gray-300 border-t border-gray-800">
+        <footer className="bg-[#00203d] border-t border-slate-800 text-slate-300">
             <div className="max-w-7xl mx-auto px-6 py-12">
 
-                {/* GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
 
-                    {/* Logo + Tagline */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <div className="flex items-center gap-2 mb-4">
+                    {/* Brand */}
+                    <div className="md:col-span-5 text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start gap-3">
                             <Image
                                 src="/logo.jpg"
                                 alt="PrepMate"
-                                width={36}
-                                height={36}
-                                className="opacity-90 rounded-full"
+                                width={42}
+                                height={42}
+                                className="rounded-full"
                             />
-                            <span className="text-xl font-semibold text-white">
+
+                            <h2 className="text-2xl font-bold text-white">
                                 PrepMate
-                            </span>
+                            </h2>
                         </div>
 
-                        <p className="text-gray-400 leading-relaxed max-w-xs text-center md:text-left">
-                            Smart roadmaps, structured learning, and intelligent tools your companion for every exam journey.
+                        <p className="mt-4 text-slate-400 max-w-sm mx-auto md:mx-0 leading-7">
+                            Smart roadmaps, structured learning, and AI-powered tools built to
+                            make exam preparation simpler and more effective.
                         </p>
 
-                        {/* Social Icons */}
-                        <div className="flex gap-4 mt-5 justify-center md:justify-start">
-                            <Link href="#" className="hover:text-white transition">
-                                <FaXTwitter size={20} />
-                            </Link>
-                            <Link href="#" className="hover:text-white transition">
-                                <FaInstagram size={20} />
-                            </Link>
-                            <Link href="#" className="hover:text-white transition">
-                                <FaLinkedin size={20} />
-                            </Link>
-                            <Link href="#" className="hover:text-white transition">
-                                <FaFacebook size={20} />
-                            </Link>
+                        <div className="flex justify-center md:justify-start gap-3 mt-6">
+                            {socialLinks.map((link, i) => (
+                                <Link
+                                    key={i}
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="h-10 w-10 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition"
+                                >
+                                    <link.icon size={18} />
+                                </Link>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Features */}
-                    <div>
-                        <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
-                            Features
-                        </h4>
-                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
-                            <li className="hover:text-white transition cursor-pointer">Roadmaps</li>
-                            <li className="hover:text-white transition cursor-pointer">Weekly Tests</li>
-                            <li className="hover:text-white transition cursor-pointer">Smart Analytics</li>
-                            <li className="hover:text-white transition cursor-pointer">Syllabus Tracker</li>
-                        </ul>
+                    {/* Links */}
+                    <div className="md:col-span-7">
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-left">
+
+                            <div>
+                                <h4 className="text-white font-semibold mb-4 uppercase tracking-wider text-xs">
+                                    Features
+                                </h4>
+
+                                <ul className="space-y-3 text-sm">
+                                    <li><Link href="/dashboard">Roadmaps</Link></li>
+                                    <li><Link href="/dashboard">Weekly Tests</Link></li>
+                                    <li><Link href="/dashboard">Analytics</Link></li>
+                                    <li><Link href="/dashboard">Tracker</Link></li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 className="text-white font-semibold mb-4 uppercase tracking-wider text-xs">
+                                    Company
+                                </h4>
+
+                                <ul className="space-y-3 text-sm">
+                                    <li><Link href="#">About</Link></li>
+                                    <li><Link href="#">Contact</Link></li>
+                                    <li><Link href="#">Blog</Link></li>
+                                    <li><Link href="#">Careers</Link></li>
+                                </ul>
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-1">
+                                <h4 className="text-white font-semibold mb-4 uppercase tracking-wider text-xs">
+                                    Legal
+                                </h4>
+
+                                <ul className="space-y-3 text-sm">
+                                    <li><Link href="#">Privacy Policy</Link></li>
+                                    <li><Link href="#">Terms</Link></li>
+                                    <li><Link href="#">Cookies</Link></li>
+                                </ul>
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    {/* Company */}
-                    <div>
-                        <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
-                            Company
-                        </h4>
-                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
-                            <li className="hover:text-white transition cursor-pointer">About</li>
-                            <li className="hover:text-white transition cursor-pointer">Contact</li>
-                            <li className="hover:text-white transition cursor-pointer">Careers</li>
-                            <li className="hover:text-white transition cursor-pointer">Blog</li>
-                        </ul>
-                    </div>
-
-                    {/* Legal */}
-                    <div>
-                        <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">
-                            Legal
-                        </h4>
-                        <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
-                            <li className="hover:text-white transition cursor-pointer">Privacy Policy</li>
-                            <li className="hover:text-white transition cursor-pointer">Terms of Service</li>
-                            <li className="hover:text-white transition cursor-pointer">Cookie Policy</li>
-                        </ul>
-                    </div>
                 </div>
 
-                {/* Bottom */}
-                <div className="border-t border-gray-600 mt-10 pt-6 text-center text-gray-400 text-sm">
-                    © {currentYear} PrepMate — All rights reserved.
+                <div className="mt-12 pt-6 border-t border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+
+                    <p>
+                        © {currentYear} PrepMate. All rights reserved.
+                    </p>
+
+                    <p>
+                        Built with ❤️ for students.
+                    </p>
+
                 </div>
+
             </div>
         </footer>
     );

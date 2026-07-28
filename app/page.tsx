@@ -13,7 +13,7 @@ export default async function Home() {
   let userExams: any[] = user ? await getUserExams(user.id) : [];
 
   return (
-    <main className="relative min-h-screen bg-gray-50">
+    <main className=" min-h-screen overflow-hidden w-screen">
       <LandingPage user={user} exams={exams} userExams={userExams} />
     </main>
   );
