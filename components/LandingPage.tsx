@@ -108,7 +108,7 @@ export default function LandingPage({
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2, duration: 0.6 }}
                                 viewport={{ once: false, amount: 0.3 }}
-                                className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-4 py-2 text-sm text-blue-100 border border-white/10 mb-6">
+                                className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-4 py-2 text-xs md:text-sm text-blue-100 border border-white/10 mb-6">
                                 <Sparkles className="h-4 w-4" />
                                 Prepmate - Your AI Powered Learning Platform
                             </motion.div>
@@ -118,7 +118,7 @@ export default function LandingPage({
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.7 }}
                                 viewport={{ once: false, amount: 0.3 }}
-                                className="text-5xl lg:text-7xl font-black text-white leading-tight">
+                                className="text-4xl lg:text-7xl font-black text-white leading-tight">
                                 Study
                                 <span className="text-yellow-400"> Smarter</span>,
                                 <br />
@@ -130,7 +130,7 @@ export default function LandingPage({
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.45, duration: 0.6 }}
                                 viewport={{ once: false, amount: 0.3 }}
-                                className="mt-8 lg:text-lg leading-8 text-slate-300 max-w-xl">
+                                className="mt-8 text-sm lg:text-lg leading-relaxed tracking-wide text-slate-300 max-w-xl">
                                 PrepMate transforms overwhelming exam preparation into a
                                 structured, intelligent, and personalized journey with AI,
                                 adaptive roadmaps, and powerful analytics.
@@ -145,7 +145,7 @@ export default function LandingPage({
 
                                 <Link
                                     href={isGuest ? "/signup" : "/dashboard"}
-                                    className="rounded-xl bg-blue-600/50 border border-white/20 hover:bg-blue-700 px-7 py-4 text-white font-semibold transition flex items-center gap-2 text-sm md:text-base"
+                                    className="rounded-xl bg-blue-600/50 border border-white/20 hover:bg-blue-700 px-4 py-2 text-white font-semibold transition flex items-center gap-2 text-sm md:text-base"
                                 >
                                     Get Started
                                     <ArrowRight size={18} />
@@ -153,7 +153,7 @@ export default function LandingPage({
 
                                 <Link
                                     href="/dashboard"
-                                    className="rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur px-7 py-4 text-white font-semibold transition"
+                                    className="rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur  px-4 py-2 text-white font-semibold transition"
                                 >
                                     Explore Roadmaps
                                 </Link>
@@ -165,25 +165,25 @@ export default function LandingPage({
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.8, duration: 0.6 }}
                                 viewport={{ once: false, amount: 0.3 }}
-                                className="grid grid-cols-3 gap-8 mt-16">
+                                className="grid grid-cols-3 gap-8 mt-12">
 
                                 <div>
-                                    <h3 className="text-3xl font-bold text-white">10+</h3>
-                                    <p className="text-slate-400 mt-2">
+                                    <h3 className="text-xl md:text-3xl font-bold text-white">10+</h3>
+                                    <p className="text-xs md:text-base text-slate-400 mt-2">
                                         Relevant Roadmaps
                                     </p>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-3xl font-bold text-white">AI</h3>
-                                    <p className="text-slate-400 mt-2">
+                                    <h3 className="text-xl md:text-3xl font-bold text-white">AI</h3>
+                                    <p className="text-xs md:text-base text-slate-400 mt-2">
                                         Personalized Exams
                                     </p>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-3xl font-bold text-white">24/7</h3>
-                                    <p className="text-slate-400 mt-2">
+                                    <h3 className="text-xl md:text-3xl font-bold text-white">24/7</h3>
+                                    <p className="text-xs md:text-base text-slate-400 mt-2">
                                         Learning Support
                                     </p>
                                 </div>
@@ -289,8 +289,8 @@ export default function LandingPage({
                             viewport={{ once: false, amount: 0.3 }}
                             className="text-center mb-14"
                         >
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                                Welcome back,
+                            <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
+                                Welcome back,<br />
                                 <span className="text-indigo-700"> {user.name}</span>
                             </h2>
 
@@ -317,7 +317,7 @@ export default function LandingPage({
                                             <BookOpen className="h-4 text-indigo-700" />
                                         </div>
 
-                                        <h3 className="font-semibold text-lg text-gray-900">
+                                        <h3 className="font-semibold md:text-lg text-gray-900">
                                             {ue.exam.name}
                                         </h3>
                                     </div>
@@ -389,7 +389,7 @@ export default function LandingPage({
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 0.4 }}
-                            className="text-blue-600 bg-blue-100 w-fit text-sm font-semibold uppercase tracking-[0.3em] border border-blue-200 py-2 px-4 rounded-xl"
+                            className="text-blue-600 bg-blue-100 w-fit text-xs md:text-sm font-semibold uppercase tracking-[0.2em] border border-blue-200 py-2 px-4 rounded-xl"
                         >
                             Why PrepMate ?
                         </motion.span>
@@ -398,7 +398,7 @@ export default function LandingPage({
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
-                            className="mt-5 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+                            className="mt-5 text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
                         >
                             Studying shouldn't
                             <br />
@@ -409,7 +409,7 @@ export default function LandingPage({
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.5 }}
-                            className="mt-8 md:text-lg leading-8 text-slate-600 max-w-xl"
+                            className="mt-6 md:text-lg leading-relaxed md:leading-loose text-sm text-slate-600 max-w-xl"
                         >
                             Most students spend more time figuring out what to study than
                             actually learning. PrepMate removes that uncertainty with
@@ -441,7 +441,7 @@ export default function LandingPage({
 
                                     </div>
 
-                                    <span className="text-slate-700 font-semibold">
+                                    <span className="text-slate-700 font-medium md:font-semibold text-sm md:text-lg">
                                         {item}
                                     </span>
 
@@ -601,18 +601,18 @@ export default function LandingPage({
                             transition={{ duration: 0.8 }}
                             viewport={{ once: false, amount: 0.3 }}
                         >
-                            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-blue-300 font-semibold mb-5">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-blue-300 text-xs md:text-sm font-semibold mb-5">
                                 <Route size={18} />
 
                                 Smart Roadmaps
 
                             </div>
 
-                            <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-white">
+                            <h2 className="text-3xl lg:text-5xl font-bold leading-tight text-white">
                                 Every milestone planned before you even begin.
                             </h2>
 
-                            <p className="mt-8 text-sm md:text-lg leading-8 text-slate-300">
+                            <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-300">
                                 Whether you're preparing for placements, semester exams, or
                                 competitive tests, PrepMate creates structured roadmaps that
                                 guide you through each topic step-by-step.
@@ -642,11 +642,11 @@ export default function LandingPage({
                                             y: -6,
                                             scale: 1.02,
                                         }}
-                                        className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-5"
+                                        className="rounded-2xl border flex flex-row justify-start items-center border-white/10 bg-white/5 backdrop-blur-sm p-5 hover:shadow-lg hover:shadow-gray-800 transition-shadow duration-100"
                                     >
 
-                                        <CheckCircle2 className="text-blue-400 mb-3" />
-                                        <h3 className="font-semibold text-white">
+                                        <CheckCircle2 className="text-blue-400 mr-3" />
+                                        <h3 className="font-medium md:font-semibold text-sm md:text-lg text-white">
                                             {feature}
                                         </h3>
 
@@ -700,17 +700,17 @@ export default function LandingPage({
                             transition={{ duration: 0.8 }}
                             viewport={{ once: false, amount: 0.3 }}
                         >
-                            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-blue-700 font-semibold">
+                            <div className="inline-flex text-xs md:text-sm items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-blue-700 font-semibold">
                                 <Brain size={18} />
 
                                 AI Generated Exams
 
                             </div>
 
-                            <h2 className="mt-5 text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">                                Practice smarter with AI-generated assessments.
+                            <h2 className="mt-5 text-3xl lg:text-5xl font-bold text-slate-900 leading-tight">                                Practice smarter with AI-generated assessments.
                             </h2>
 
-                            <p className="mt-8 text-lg leading-8 text-slate-600">                                Create unlimited exams tailored to your roadmap. Every test is
+                            <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">                                Create unlimited exams tailored to your roadmap. Every test is
                                 generated based on your syllabus, completed topics, and desired
                                 difficulty level, giving you a personalized practice experience
                                 every time.
@@ -728,6 +728,11 @@ export default function LandingPage({
 
                                     <motion.div
                                         key={item}
+                                        whileHover={{
+                                            scale: 1.02,
+                                            y: -4,
+                                            transition: { duration: 0.2 },
+                                        }}
                                         initial={{ opacity: 0, x: -20 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         transition={{
@@ -735,12 +740,12 @@ export default function LandingPage({
                                             delay: index * 0.08,
                                         }}
                                         viewport={{ once: false, amount: 0.3 }}
-                                        className="flex items-center gap-4 rounded-xl bg-white border border-slate-200 p-4 shadow-sm"
+                                        className="flex hover:shadow-lg items-center gap-4 rounded-xl bg-white border border-slate-200 p-4 shadow-sm"
                                     >
 
                                         <CheckCircle2 className="text-blue-600" />
 
-                                        <span className="text-slate-700">
+                                        <span className="text-slate-700 text-sm md:text-lg font-medium md:font-semibold">
                                             {item}
                                         </span>
 
@@ -827,16 +832,16 @@ export default function LandingPage({
                             transition={{ duration: 0.8 }}
                             viewport={{ once: false, amount: 0.3 }}
                         >
-                            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-blue-700 font-semibold">
+                            <div className="inline-flex text-xs md:text-sm items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-blue-700 font-semibold">
                                 <BarChart3 size={18} />
                                 Analytics
                             </div>
 
-                            <h2 className="mt-5 text-4xl lg:text-5xl font-bold leading-tight text-slate-900">                                Understand your progress with meaningful insights.
+                            <h2 className="mt-5 text-3xl lg:text-5xl font-bold leading-tight text-slate-900">                                Understand your progress with meaningful insights.
                             </h2>
 
-                            <p className="mt-8 text-lg leading-8 text-slate-600">
-                                Great preparation isn't just about solving questions—it's about
+                            <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
+                                Great preparation isn't just about solving questions it's about
                                 understanding your strengths, fixing weak areas, and measuring
                                 improvement. PrepMate turns your study sessions into actionable
                                 insights.
@@ -857,21 +862,23 @@ export default function LandingPage({
                                         key={item}
                                         initial={{ opacity: 0, y: 25 }}
                                         whileInView={{ opacity: 1, y: 0 }}
+                                        whileHover={{
+                                            scale: 1.02,
+                                            y: -4,
+                                            transition: { duration: 0.2 },
+                                        }}
                                         transition={{
                                             duration: 0.45,
                                             delay: index * 0.08,
                                         }}
                                         viewport={{ once: false, amount: 0.3 }}
-                                        whileHover={{
-                                            y: -6,
-                                            transition: { duration: 0.2 },
-                                        }}
-                                        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-xl"
+                                        
+                                        className="flex items-center rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-xl"
                                     >
 
-                                        <CheckCircle2 className="text-blue-600 mb-3" />
+                                        <CheckCircle2 className="text-blue-600 mr-3" />
 
-                                        <h3 className="font-semibold text-slate-800">
+                                        <h3 className="font-medium md:font-semibold text-sm md:text-lg text-slate-800">
                                             {item}
                                         </h3>
 
@@ -912,26 +919,26 @@ export default function LandingPage({
                         viewport={{ once: false, amount: 0.3 }}
                         className="text-center"
                     >
-                        <h2 className="text-4xl lg:text-5xl font-bold text-white">
+                        <h2 className="text-3xl lg:text-5xl font-bold text-white">
                             Built to help students succeed.
                         </h2>
 
-                        <p className="mt-6 text-slate-300 max-w-2xl mx-auto text-lg">
+                        <p className="mt-6 text-slate-300 max-w-2xl mx-auto text-sm md:text-lg leading-relaxed md:leading-loose">
                             Every feature in PrepMate is focused on making learning simpler,
                             faster, and more effective.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-12 md:mt-16">
 
                         {[
                             {
-                                number: "100+",
+                                number: "10+",
                                 label: "Roadmaps",
                             },
                             {
                                 number: "1000+",
-                                label: "Practice Questions",
+                                label: "Topics Covered",
                             },
                             {
                                 number: "AI",
@@ -957,14 +964,14 @@ export default function LandingPage({
                                     scale: 1.03,
                                     transition: { duration: 0.2 },
                                 }}
-                                className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm p-8 text-center"
+                                className="rounded-3xl flex flex-col items-center border border-white/10 bg-white/5 backdrop-blur-sm p-6 md:p-8 text-center"
                             >
 
-                                <h3 className="text-3xl lg:text-5xl font-black text-yellow-300">
+                                <h3 className="text-2xl lg:text-4xl font-black text-yellow-300">
                                     {item.number}
                                 </h3>
 
-                                <p className="mt-4 text-slate-300 font-medium">
+                                <p className="mt-4 text-slate-300 text-xs md:text-lg font-medium">
                                     {item.label}
                                 </p>
 
@@ -985,7 +992,7 @@ export default function LandingPage({
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: false, amount: 0.3 }}
-                className="py-28 relative overflow-hidden"
+                className="py-20 relative overflow-hidden"
             >
                 <div className="max-w-4xl mx-auto px-12 text-center">
 
@@ -994,7 +1001,7 @@ export default function LandingPage({
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                         viewport={{ once: true }}
-                        className="uppercase tracking-widest text-blue-800 font-semibold"
+                        className="uppercase mx-auto text-xs md:text-sm bg-blue-100 text-blue-700 border w-fit border-blue-700 py-1 px-4 rounded-full font-semibold"
                     >
                         {cta.badge}
                     </motion.p>
@@ -1004,7 +1011,7 @@ export default function LandingPage({
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
                         viewport={{ once: true }}
-                        className="mt-4 text-5xl font-bold leading-tight"
+                        className="mt-4 text-3xl md:text-5xl font-bold leading-tight"
                     >
                         {cta.title}
                     </motion.h2>
@@ -1014,7 +1021,7 @@ export default function LandingPage({
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                         viewport={{ once: true }}
-                        className="mt-8 text-lg text-slate-600 leading-8"
+                        className="mt-8 text-sm md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed md:leading-loose"
                     >
                         {cta.description}
                     </motion.p>
@@ -1024,7 +1031,7 @@ export default function LandingPage({
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                         viewport={{ once: true }}
-                        className="flex flex-wrap justify-center gap-5 mt-12"
+                        className="flex md:flex-row flex-col gap-y-8 gap-4 justify-center mt-12"
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -1034,7 +1041,7 @@ export default function LandingPage({
                         >
                             <Link
                                 href={cta.primaryHref}
-                                className="rounded-xl bg-blue-800 hover:bg-blue-700 px-8 py-4 text-white font-semibold transition"
+                                className="rounded-lg bg-blue-800 hover:bg-blue-700 px-6 py-2 md:py-4 text-white font-medium md:font-semibold transition"
                             >
                                 {cta.primaryText}
                             </Link>
@@ -1048,7 +1055,7 @@ export default function LandingPage({
                         >
                             <Link
                                 href={cta.secondaryHref}
-                                className="rounded-xl border border-slate-300 px-8 py-4 font-semibold hover:bg-slate-100 transition"
+                                className="rounded-lg border border-slate-300 px-6 py-2 md:py-4 font-medium md:font-semibold hover:bg-slate-100 transition"
                             >
                                 {cta.secondaryText}
                             </Link>
