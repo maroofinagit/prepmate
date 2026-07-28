@@ -485,7 +485,7 @@ export default function LandingPage({
                         >
 
                             <Image
-                                src="/newdashboard.png"
+                                src="/newDashboard.png"
                                 alt="PrepMate Dashboard"
                                 width={1400}
                                 height={900}
@@ -584,7 +584,7 @@ export default function LandingPage({
                         >
                             <div className=" hidden md:block rounded-xl hover:shadow-2xl hover:scale-105 hover:grayscale-100 hover:shadow-black transition-transform duration-300 overflow-hidden border border-white/10 bg-white/5 backdrop-blur shadow-2xl">
                                 <Image
-                                    src="/newroadmap.png"
+                                    src="/newRoadmap.png"
                                     alt="roadmap"
                                     width={1400}
                                     height={900}
