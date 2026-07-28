@@ -114,9 +114,9 @@ model UserExam {
   end_date         DateTime
   progress_percent Float?         @default(0)
   performanceScore Float?         @default(0)
-  highestScore     Float?           @default(0)
-  lowestScore      Float?           @default(0)
-  lastTestScore    Float?           @default(0)
+  highestScore     Float?         @default(0)
+  lowestScore      Float?         @default(0)
+  lastTestScore    Float?         @default(0)
   created_at       DateTime       @default(now())
   roadmap          Roadmap?
   roadmap_status   RoadmapStatus  @default(pending)
@@ -262,7 +262,7 @@ model TestAttempt {
   totalMarks Int
   percentage Float
   isPassed   Boolean @default(false)
-  timeTaken  Int  @default(0)   // in seconds
+  timeTaken  Int     @default(0) // in seconds
 
   responses Json // { questionId: selectedOption }
 

@@ -459,6 +459,11 @@ export async function generateTestAttempt(testId: number) {
                 userExam: {
                     include: {
                         exam: true,
+                        user: {
+                            select: {
+                                id: true,
+                            }
+                        }
                     },
                 },
 
@@ -697,6 +702,10 @@ Return format:
         });
 
         updateTag(`test-${testId}`);
+        updateTag(`exam-${test.userExam.exam.id}`);
+        updateTag(`exams`);
+        updateTag(`userDashboard-${test.userExam.user_id}`);
+        updateTag(`userExams-${test.userExam.user_id}`);
 
         // =========================
         // SUCCESS
@@ -760,6 +769,16 @@ export async function submitTest(
             include: {
                 questions: true,
                 attempt: true,
+                userExam: {
+                    include: {
+                        exam: true,
+                        user: {
+                            select: {
+                                id: true,
+                            }
+                        }
+                    },
+                },  
             },
         });
 
@@ -864,6 +883,10 @@ export async function submitTest(
         });
 
         updateTag(`test-${testId}`);
+        updateTag(`exam-${test.userExam.exam.id}`);
+        updateTag(`exams`);
+        updateTag(`userDashboard-${test.userExam.user_id}`);
+        updateTag(`userExams-${test.userExam.user_id}`);
 
         return {
             success: true,
