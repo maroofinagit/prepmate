@@ -42,7 +42,7 @@ export default function LandingPage({
             primaryText: "Get Started",
             primaryHref: "/signup",
             secondaryText: "Explore Roadmaps",
-            secondaryHref: "/roadmaps",
+            secondaryHref: "/dashboard",
         }
         : isLoggedNoExam
             ? {
@@ -51,7 +51,7 @@ export default function LandingPage({
                 description:
                     "Choose an exam, generate a personalized roadmap, and let PrepMate guide you step by step toward exam day.",
                 primaryText: "Create Roadmap",
-                primaryHref: "/roadmaps",
+                primaryHref: "/dashboard",
                 secondaryText: "Browse Exams",
                 secondaryHref: "/exams",
             }
@@ -63,7 +63,7 @@ export default function LandingPage({
                 primaryText: "Continue Learning",
                 primaryHref: "/dashboard",
                 secondaryText: "View Roadmaps",
-                secondaryHref: "/roadmaps",
+                secondaryHref: "/dashboard",
             };
 
     return (
@@ -152,7 +152,7 @@ export default function LandingPage({
                                 </Link>
 
                                 <Link
-                                    href="/roadmaps"
+                                    href="/dashboard"
                                     className="rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur px-7 py-4 text-white font-semibold transition"
                                 >
                                     Explore Roadmaps
