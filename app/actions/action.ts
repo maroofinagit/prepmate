@@ -5,7 +5,9 @@ import { headers } from "next/headers";
 import { cacheLife, updateTag, cacheTag } from "next/cache";
 import { u } from "framer-motion/client";
 import { use } from "react";
+import { Resend } from "resend";
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 
 export async function getFullExams() {
@@ -418,7 +420,7 @@ export async function deleteUserExam(user_exam_id: number, userId: string) {
 }
 
 export async function markNotificationAsRead(notificationId: number) {
-    
+
     try {
         const updatedNotification = await db.notification.update({
             where: { id: notificationId },
@@ -443,7 +445,7 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
     if (!taskId) {
         throw new Error("Task ID is required.");
     }
-    
+
     updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
     updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
     updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
@@ -629,7 +631,7 @@ export async function checkEmailExistsLogin(email: string) {
     const hasCredentials = user.accounts.some(
         (account) => account.providerId === "credential"
     );
-    
+
     return {
         exists: true,
         provider: hasCredentials
@@ -760,6 +762,83 @@ export async function changePassword(
                 "Failed to change password.",
         };
     }
+}
+
+export async function contactFormSubmission(formData: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+}) {
+    try {
+        const { error } = await resend.emails.send({
+            from: "PrepMate Contact <onboarding@resend.dev>",
+            to: process.env.NEXT_PUBLIC_GMAIL_USER || "",
+            subject: `📩 Contact Form • ${formData.subject}`,
+
+            html: `
+                <div style="font-family:Arial,sans-serif;max-width:700px;margin:auto;padding:24px;">
+                    <h2 style="margin-bottom:20px;">
+                        New Contact Form Submission
+                    </h2>
+
+                    <table style="width:100%;border-collapse:collapse;">
+                        <tr>
+                            <td style="padding:10px;font-weight:bold;">Name</td>
+                            <td style="padding:10px;">${formData.name}</td>
+                        </tr>
+
+                        <tr style="background:#f8fafc;">
+                            <td style="padding:10px;font-weight:bold;">Email</td>
+                            <td style="padding:10px;">${formData.email}</td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding:10px;font-weight:bold;">Subject</td>
+                            <td style="padding:10px;">${formData.subject}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-top:30px;">
+                        <h3>Message</h3>
+
+                        <div
+                            style="
+                                background:#f8fafc;
+                                padding:18px;
+                                border-radius:10px;
+                                white-space:pre-wrap;
+                                line-height:1.6;
+                            "
+                        >
+                            ${formData.message}
+                        </div>
+                    </div>
+                </div>
+            `,
+        });
+
+        if (error) {
+            console.error(error);
+            return {
+                success: false,
+                message: "Unable to send email.",
+            };
+        }
+
+        return {
+            success: true,
+            message: "Message sent successfully.",
+        };
+    } catch (error) {
+        console.error(error);
+
+        return {
+            success: false,
+            message: "Something went wrong.",
+        };
+    }
+
 }
 
 

@@ -120,6 +120,7 @@ model UserExam {
   created_at       DateTime       @default(now())
   roadmap          Roadmap?
   roadmap_status   RoadmapStatus  @default(pending)
+  failure_reason     String?
   exam             Exam           @relation(fields: [exam_id], references: [id], onDelete: Cascade)
   user             User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tests            Test[]

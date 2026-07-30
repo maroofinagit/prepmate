@@ -3,8 +3,156 @@
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
 import { updateTag } from "next/cache";
+import { z } from "zod";
+
+const dateSchema = z.string().regex(
+    /^\d{4}-\d{2}-\d{2}$/,
+    "Date must be in YYYY-MM-DD format"
+);
+
+const TaskSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    start_date: dateSchema,
+    end_date: dateSchema,
+});
+
+const WeekSchema = z.object({
+    week_number: z.number().int().positive(),
+    focus: z.string(),
+    start_date: dateSchema,
+    end_date: dateSchema,
+    tasks: z.array(TaskSchema),
+});
+
+const PhaseSchema = z.object({
+    phase_name: z.string(),
+    description: z.string(),
+    duration: z.string(),
+    start_date: dateSchema,
+    end_date: dateSchema,
+    weeks: z.array(WeekSchema),
+});
+
+const MilestoneSchema = z.object({
+    name: z.string(),
+    goal: z.string(),
+    target_date: dateSchema,
+});
+
+export const RoadmapSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    start_date: dateSchema,
+    end_date: dateSchema,
+
+    phases: z.array(PhaseSchema),
+
+    milestones: z.array(MilestoneSchema),
+});
 
 const ai = new GoogleGenAI({});
+
+const MODELS = [
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+] as const;
+
+enum RoadmapFailureReason {
+    MODEL_UNAVAILABLE = "MODEL_UNAVAILABLE",
+    RATE_LIMITED = "RATE_LIMITED",
+    INVALID_AI_JSON = "INVALID_AI_JSON",
+    INVALID_ROADMAP_SCHEMA = "INVALID_ROADMAP_SCHEMA",
+    DATABASE_ERROR = "DATABASE_ERROR",
+    UNKNOWN = "UNKNOWN",
+}
+
+const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function generateWithFallback(prompt: string) {
+    let lastError: any;
+
+    for (const model of MODELS) {
+        // Try each model twice
+        for (let attempt = 1; attempt <= 2; attempt++) {
+            try {
+                console.log(
+                    `🤖 Trying ${model} (Attempt ${attempt}/2)`
+                );
+
+                const response =
+                    await ai.models.generateContent({
+                        model,
+                        contents: prompt,
+                    });
+
+                console.log(
+                    `✅ Success with ${model} (Attempt ${attempt})`
+                );
+
+                return response;
+            } catch (err: any) {
+                // Keep the latest error so we can throw it
+                // after all models have been exhausted.
+                err.model = model;
+                err.attempt = attempt;
+
+                lastError = err;
+
+                const status =
+                    err?.status ??
+                    err?.error?.code ??
+                    err?.code;
+
+                console.error(
+                    `❌ ${model} failed (Attempt ${attempt}/2)`,
+                    {
+                        status,
+                        message: err?.message,
+                    }
+                );
+
+                // Permanent errors → don't retry
+                if ([400, 401, 403].includes(status)) {
+                    throw err;
+                }
+
+                // Temporary errors → retry once, then move to next model
+                if ([429, 500, 503].includes(status)) {
+                    if (attempt < 2) {
+                        console.log(
+                            `⏳ Retrying ${model} in 2 seconds...`
+                        );
+
+                        await sleep(2000);
+                        continue;
+                    }
+
+                    console.log(
+                        `➡️ ${model} exhausted. Trying next model...`
+                    );
+
+                    break;
+                }
+
+                // Any unexpected error should stop immediately
+                console.error(
+                    `🚨 Unexpected error from ${model}`,
+                    err
+                );
+
+                throw err;
+            }
+        }
+    }
+
+    throw lastError;
+}
 
 export async function generateRoadmap(user_exam_id: number) {
     try {
@@ -54,7 +202,20 @@ export async function generateRoadmap(user_exam_id: number) {
         const prompt = `
 You are an expert academic planner.
 
-Create a study roadmap for the exam "${exam.name} taking context about the exam as ${exam.aiContext} which is out objective".
+Create a personalized study roadmap for the exam "${exam.name}".
+
+Exam objective:
+${exam.aiContext}
+
+Before generating the roadmap, analyze:
+
+- The total preparation duration.
+- The difficulty of each subject.
+- Dependencies between topics.
+- A logical learning order.
+- Revision and milestone placement.
+
+Then generate the roadmap.
 
 The roadmap should help a student prepare effectively by breaking down the syllabus into manageable phases, weeks, and tasks.
 
@@ -69,7 +230,7 @@ ${subjects
                 )
                 .join("\n")}
 
-                Roadmap Rules (VERY IMPORTANT):
+Roadmap Rules (VERY IMPORTANT):
 
 1. Every week should contain 2-5 tasks depending on difficulty.
 2. Task descriptions must be ONE SHORT SENTENCE (10-20 words maximum).
@@ -79,8 +240,34 @@ ${subjects
 6. Phases should group related subjects, not individual topics.
 7. The roadmap should feel like a university course with incremental progression.
 8. Roadmap description will be personalized (3–5 sentences) tailored to the user's profile, goals, current skill level, available time, and target exam. It should explain how this roadmap is specifically designed to help the user achieve their objective.
+9. Topics must appear in a logical prerequisite order.
+10. Avoid scheduling unrelated difficult topics in the same week.
+11. Reserve the final weeks for revision, mock tests, and weak-topic improvement.
+12. Do not repeat the same topic in multiple tasks unless it is a revision task.
 
-Output ONLY valid JSON in this exact structure, Ensure the roadmap start_date equals the first task's start date and the roadmap end_date equals the last task's end date. Each phase's dates should span all of its weeks, and each week's dates should span all of its tasks. Do not include markdown, explanations, comments, or additional fields. Every phase, week, task, and milestone must include all required properties :
+Date Constraints -
+
+- All dates must lie between the preparation start and end dates.
+- Task dates must never overlap outside their week.
+- Weeks must be consecutive.
+- Phases must be consecutive.
+- Roadmap start_date must equal the earliest task start_date.
+- Roadmap end_date must equal the latest task end_date.
+- Every phase date range must fully contain its weeks.
+- Every week date range must fully contain its tasks.
+- Milestone dates must fall within the roadmap duration.
+
+Return ONLY a single valid JSON object.
+
+The response must:
+
+- contain no markdown
+- contain no code fences
+- contain no explanations
+- contain no comments
+- contain no trailing commas
+- contain no additional keys
+- exactly match the schema below :
 
 {
   "title": "string",
@@ -124,25 +311,40 @@ Output ONLY valid JSON in this exact structure, Ensure the roadmap start_date eq
     }
   ]
 }
+
+Do NOT
+
+- invent extra fields
+- rename fields
+- omit required fields
+- return null values
+- leave empty arrays unless unavoidable
+- use placeholder text such as "Task 1" or "Description"
+
 `;
 
         // 5️⃣ Generate roadmap with AI
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
+        const response = await generateWithFallback(prompt);
 
         let textResponse = response.text ?? "";
 
         // Clean AI response
         const cleanedText = textResponse
-            .replace(/```json/i, "")
-            .replace(/```/g, "")
             .trim()
-            .replace(/,\s*}/g, "}")
-            .replace(/,\s*]/g, "]");
+            .replace(/^```json\s*/i, "")
+            .replace(/^```\s*/i, "")
+            .replace(/```$/g, "")
+            .trim();
 
-        const roadmapData = JSON.parse(cleanedText);
+        const resData = JSON.parse(cleanedText);
+        const parsed = RoadmapSchema.safeParse(resData);
+
+        if (!parsed.success) {
+            console.error(parsed.error.message);
+            throw new Error("Roadmap validation failed: " + parsed.error.message);
+        }
+
+        const roadmapData = parsed.data;
 
         console.log("✅ Roadmap generated Data:", roadmapData);
 
@@ -243,8 +445,7 @@ Output ONLY valid JSON in this exact structure, Ensure the roadmap start_date eq
                                             week.week_number ||
                                             weekIndex + 1,
                                         focus:
-                                            week.focus ||
-                                            null,
+                                            week.focus,
                                         order_index:
                                             weekIndex,
                                         start_date:
@@ -440,23 +641,46 @@ Output ONLY valid JSON in this exact structure, Ensure the roadmap start_date eq
         };
 
     } catch (err: any) {
-        console.error(
-            "❌ Roadmap generation failed:",
-            err
-        );
+        let failureReason = RoadmapFailureReason.UNKNOWN;
+
+        const status =
+            err?.status ??
+            err?.error?.code ??
+            err?.code;
+
+        if (err.message === "INVALID_AI_JSON") {
+            failureReason = RoadmapFailureReason.INVALID_AI_JSON;
+        } else if (err.message === "INVALID_ROADMAP_SCHEMA") {
+            failureReason = RoadmapFailureReason.INVALID_ROADMAP_SCHEMA;
+        } else if (status === 429) {
+            failureReason = RoadmapFailureReason.RATE_LIMITED;
+        } else if ([500, 503].includes(status)) {
+            failureReason = RoadmapFailureReason.MODEL_UNAVAILABLE;
+        } else if (
+            err.name === "PrismaClientKnownRequestError" ||
+            err.name === "PrismaClientUnknownRequestError"
+        ) {
+            failureReason = RoadmapFailureReason.DATABASE_ERROR;
+        }
 
         await db.userExam.update({
             where: { id: user_exam_id },
             data: {
                 roadmap_status: "failed",
+                failure_reason: failureReason,
             },
         });
 
+        console.error("❌ Roadmap generation failed", {
+            reason: failureReason,
+            status,
+            message: err?.message,
+            model: err?.model,
+        });
         return {
             success: false,
-            message:
-                err.message ||
-                "Roadmap generation failed",
+            error: err.message,
+            failureReason,
         };
     }
 }

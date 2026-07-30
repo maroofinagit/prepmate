@@ -21,13 +21,14 @@ import Image from "next/image";
 
 export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     const navLinksLP = [
-        { name: "Courses", href: "#courses" },
-        { name: "Onboarding", href: "/onboarding" }
+        { name: "Onboarding", href: "/onboarding" },
+        { name: "Contact", href: "/contact" },
     ];
 
     const navLinksAuth = [
         { name: "Dashboard", href: "/dashboard" },
         { name: "Onboarding", href: "/onboarding" },
+        { name: "Contact", href: "/contact" },
     ];
 
     const router = useRouter();

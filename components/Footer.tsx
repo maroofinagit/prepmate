@@ -104,7 +104,7 @@ export default function Footer() {
                                                 href={href}
                                                 className="text-slate-400 text-xs md:text-base hover:text-white transition hover:translate-x-1 inline-block"
                                             >
-                                              {title}
+                                                {title}
                                             </Link>
 
                                         </li>
@@ -128,8 +128,8 @@ export default function Footer() {
                                     {[
                                         ["About", "/about"],
                                         ["Contact", "/contact"],
-                                        ["Blog", "/blog"],
-                                        ["Careers", "/careers"],
+                                        ["Exams", "/onboarding"],
+                                        ["Roadmap", "/dashboard"],
                                     ].map(([title, href]) => (
 
                                         <li key={title}>
@@ -159,10 +159,10 @@ export default function Footer() {
 
                                 <ul className="space-y-3">
 
-                                    {[
-                                        ["Privacy Policy", "/privacy"],
-                                        ["Terms of Service", "/terms"],
-                                        ["Cookie Policy", "/cookies"],
+                                    {[["Legal Docs", "/legal"],
+                                    ["Privacy Policy", "/legal#privacy-policy"],
+                                    ["Terms of Service", "/legal#terms-of-service"],
+                                    ["Cookie Policy", "/legal#cookie-policy"],
                                     ].map(([title, href]) => (
 
                                         <li key={title}>

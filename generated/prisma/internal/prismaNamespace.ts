@@ -1983,7 +1983,8 @@ export const UserExamScalarFieldEnum = {
   lowestScore: 'lowestScore',
   lastTestScore: 'lastTestScore',
   created_at: 'created_at',
-  roadmap_status: 'roadmap_status'
+  roadmap_status: 'roadmap_status',
+  failure_reason: 'failure_reason'
 } as const
 
 export type UserExamScalarFieldEnum = (typeof UserExamScalarFieldEnum)[keyof typeof UserExamScalarFieldEnum]
