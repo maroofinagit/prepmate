@@ -121,9 +121,9 @@ export default function SignInPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 mt-16">
-            <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-lg border border-gray-200">
-                <h1 className="text-2xl font-semibold text-center mb-6">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-8 mt-16">
+            <div className="w-full md:max-w-xl rounded-3xl bg-white p-8 shadow-lg border border-gray-200">
+                <h1 className="md:text-2xl text-xl font-semibold text-center mb-6">
                     Sign in to PrepMate
                 </h1>
 
@@ -138,6 +138,7 @@ export default function SignInPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            className="placeholder:text-gray-400 placeholder:text-sm"
                             placeholder="you@example.com"
                         />
                     </div>
@@ -151,6 +152,7 @@ export default function SignInPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            className="placeholder:text-gray-400 placeholder:text-sm"
                             placeholder="••••••••"
                         />
                     </div>

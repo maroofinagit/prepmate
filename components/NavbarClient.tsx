@@ -14,6 +14,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+
+import { Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
@@ -21,11 +30,13 @@ import Image from "next/image";
 
 export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     const navLinksLP = [
+        { name: "Home", href: "/" },
         { name: "Onboarding", href: "/onboarding" },
         { name: "Contact", href: "/contact" },
     ];
 
     const navLinksAuth = [
+        { name: "Home", href: "/" },
         { name: "Dashboard", href: "/dashboard" },
         { name: "Onboarding", href: "/onboarding" },
         { name: "Contact", href: "/contact" },
@@ -35,6 +46,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     const pathname = usePathname();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<{ name?: string; email?: string; image?: string } | null>(null);
+    const [sheetOpen, setSheetOpen] = useState(false);
 
     // Fetch session using Better Auth
     useEffect(() => {
@@ -60,12 +72,146 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
         router.push("/");
         setIsLoggedIn(false);
         sessionStorage.removeItem("show-login-toast");
+        setSheetOpen(false);
         toast.success("Logged out successfully.", { duration: 1500 });
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full py-2 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <nav className="fixed top-0 left-0 w-full md:py-2 py-0 z-50 bg-white shadow-gray-600 border-b border-slate-200/80 shadow-sm backdrop-blur-md">
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center md:justify-between justify-start gap-4">
+
+                <div className="md:hidden">
+                    <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full p-0"
+                            >
+                                <Menu className=" size-6 hover:rotate-90" />
+                            </Button>
+                        </SheetTrigger>
+
+                        <SheetContent side="left" className="w-75 p-0">
+                            <SheetHeader className="border-b p-6">
+                                <SheetTitle className="flex items-center gap-3 text-[#004ba0]">
+                                    <Image
+                                        src="/logo.jpg"
+                                        alt="PrepMate"
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full"
+                                    />
+                                    PrepMate
+                                </SheetTitle>
+                            </SheetHeader>
+
+                            {/* User */}
+                            {isLoggedIn && (
+                                <div className="flex items-center gap-4 border-b px-6 py-5">
+                                    <Avatar className="h-12 w-12">
+                                        <AvatarImage
+                                            src={user?.image || "/avatar.png"}
+                                        />
+                                        <AvatarFallback>
+                                            {user?.name?.charAt(0).toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+
+                                    <div>
+                                        <p className="font-semibold">
+                                            {user?.name}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Welcome back
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Links */}
+
+                            <div className="flex flex-col py-4">
+
+                                {isLoggedIn ? (
+                                    <>
+                                        {isAdmin && (
+                                            <Link
+                                                href="/admin"
+                                                className={`px-6 py-3 transition hover:bg-slate-100 ${pathname === "/admin"
+                                                    ? "bg-blue-50 text-blue-600 font-medium"
+                                                    : ""
+                                                    }`}
+                                            >
+                                                Admin
+                                            </Link>
+                                        )}
+
+                                        {navLinksAuth.map((link) => (
+                                            <Link
+                                                key={link.href}
+                                                href={link.href}
+                                                onClick={() => setSheetOpen(false)}
+                                                className={`px-6 py-3 transition hover:bg-slate-100 ${pathname === link.href
+                                                    ? "bg-blue-50 text-blue-600 font-medium"
+                                                    : ""
+                                                    }`}
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        ))}
+
+                                        <Link
+                                            href="/profile"
+                                            onClick={() => setSheetOpen(false)}
+                                            className="px-6 py-3 hover:bg-slate-100"
+                                        >
+                                            Profile
+                                        </Link>
+
+                                        <button
+                                            onClick={handleLogout}
+                                            className="px-6 py-3 text-left text-red-600 hover:bg-red-50"
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        {navLinksLP.map((link) => (
+                                            <Link
+                                                key={link.href}
+                                                href={link.href}
+                                                onClick={() => setSheetOpen(false)}
+                                                className={`px-6 py-3 transition hover:bg-slate-100 ${pathname === link.href
+                                                    ? "bg-blue-50 text-blue-600 font-medium"
+                                                    : ""
+                                                    }`}
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        ))}
+
+                                        <div className="mt-6 flex flex-col gap-3 px-6">
+                                            <Button asChild variant="outline" onClick={() => setSheetOpen(false)}>
+                                                <Link href="/signin">
+                                                    Sign In
+                                                </Link>
+                                            </Button>
+
+                                            <Button asChild onClick={() => setSheetOpen(false)}>
+                                                <Link href="/signup">
+                                                    Sign Up
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+
                 <Link href="/" className="flex items-center gap-4 text-xl md:text-3xl font-bold text-[#004ba0]">
                     <Image
                         src="/logo.jpg"
@@ -78,14 +224,6 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     />
                     PrepMate
                 </Link>
-
-                {isLoggedIn && (
-                    <div className="md:hidden">
-                        <Link href="/onboarding" className={`hover:text-blue-600 transition ${pathname === "/onboarding" ? "text-blue-600" : "text-gray-700"}`}>
-                            Onboarding
-                        </Link>
-                    </div>
-                )}
 
                 {/* Nav Links */}
                 {isLoggedIn ? (
@@ -126,7 +264,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                 )}
 
                 {/* Auth Buttons / User Menu */}
-                <div className="flex items-center space-x-4">
+                <div className="hidden md:flex items-center space-x-4">
                     {isLoggedIn ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

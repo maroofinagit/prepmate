@@ -98,7 +98,7 @@ export default function ContactPage() {
 
 
     return (
-        <main className="relative overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-white via-slate-50 to-blue-50 px-6 py-24 shadow-sm sm:px-10 pt-32 lg:px-16">
+        <main className="relative overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-white via-slate-50 to-blue-50 px-8 py-24 shadow-sm md:px-10 pt-32 lg:px-16">
 
             {/* Background Glow */}
             <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
@@ -109,19 +109,19 @@ export default function ContactPage() {
                 {/* Header */}
                 <section className="relative text-center">
 
-                    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-5 py-2 text-sm font-semibold text-blue-700 shadow-sm backdrop-blur">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-5 py-2 text-xs md:text-sm font-semibold text-blue-700 shadow-sm backdrop-blur">
                         <span className="h-2 w-2 rounded-full bg-blue-600" />
                         Contact PrepMate
                     </span>
 
-                    <h1 className="mt-8 text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
+                    <h1 className="mt-8 md:text-5xl text-3xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
                         We'd Love to
                         <span className="bg-linear-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                             {" "}Hear From You
                         </span>
                     </h1>
 
-                    <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
+                    <p className="mx-auto mt-8 max-w-3xl text-sm md:text-base tracking-wide leading-relaxed md:leading-loose text-slate-600">
                         Have a question, found a bug, or have an idea that could make
                         PrepMate even better? We'd love to hear your feedback and are here
                         to help whenever you need us.
@@ -130,7 +130,7 @@ export default function ContactPage() {
                 </section>
 
                 {/* Contact Information */}
-                <section className="mt-16">
+                <section className="mt-8 md:mt-16">
 
                     <div className="grid gap-8 lg:grid-cols-2">
 
@@ -142,15 +142,15 @@ export default function ContactPage() {
 
                             <div className="relative">
 
-                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100">
-                                    <Mail className="h-8 w-8 text-blue-600" />
+                                <div className="flex h-12 aspect-square items-center justify-center rounded-2xl bg-blue-100">
+                                    <Mail className=" size-6 md:size-8 text-blue-600" />
                                 </div>
 
-                                <h3 className="mt-8 text-3xl font-bold text-slate-900">
+                                <h3 className="md:mt-8 mt-6 text-lg md:text-3xl font-bold text-slate-900">
                                     Contact Email
                                 </h3>
 
-                                <p className="mt-4 leading-7 text-slate-600">
+                                <p className=" mt-2 md:mt-4 leading-relaxed md:leading-loose text-sm md:text-base text-slate-600">
                                     Whether you have a question, want to report a bug, suggest
                                     a new feature, or simply say hello, feel free to reach out.
                                     Every message is personally reviewed.
@@ -158,15 +158,15 @@ export default function ContactPage() {
 
                                 <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5">
 
-                                    <p className="text-sm text-slate-500">
+                                    <p className="text-sm md:text-base text-slate-500">
                                         Email Address
                                     </p>
 
                                     <a
-                                        href="mailto:support@prepmate.app"
-                                        className="mt-2 inline-block text-lg font-semibold text-blue-600 hover:underline"
+                                        href={`mailto:${process.env.NEXT_PUBLIC_GMAIL_USER}`}
+                                        className="mt-2 inline-block text-sm md:text-lg font-semibold text-blue-600 hover:underline"
                                     >
-                                        support@prepmate.app
+                                        {process.env.NEXT_PUBLIC_GMAIL_USER}
                                     </a>
 
                                 </div>
@@ -183,34 +183,32 @@ export default function ContactPage() {
 
                             <div className="relative">
 
-                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
-                                    <Clock3 className="h-8 w-8" />
+                                <div className="flex h-12 aspect-square items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
+                                    <Clock3 className=" size-6 md:size-8 text-blue-600" />
                                 </div>
 
-                                <h3 className="mt-8 text-3xl font-bold">
+                                <h3 className="mt-8 text-lg md:text-3xl font-bold">
                                     What to Expect
                                 </h3>
 
-                                <div className="mt-8 space-y-6">
+                                <div className="md:mt-8 mt-4 space-y-6">
 
                                     <div>
-                                        <p className="text-5xl font-black">
+                                        <p className="text-3xl md:text-5xl font-black">
                                             2–3
                                         </p>
 
-                                        <p className="mt-2 text-slate-600">
+                                        <p className="mt-2 text-slate-600 text-sm md:text-base">
                                             Business Days Response Time
                                         </p>
                                     </div>
-
-                                    <div className="h-px bg-white/10" />
 
                                     <div>
                                         <p className="font-semibold">
                                             Every email matters.
                                         </p>
 
-                                        <p className="mt-2 leading-7 text-slate-600">
+                                        <p className="mt-2 leading-relaxed md:leading-loose text-sm md:text-base text-slate-600">
                                             We carefully read every message and do our best to
                                             respond as quickly as possible. Your feedback helps
                                             us make PrepMate better for everyone.
@@ -229,7 +227,7 @@ export default function ContactPage() {
                 </section>
 
                 {/* Contact Form */}
-                <section className="mt-16 overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm">
+                <section className="mt-8 md:mt-16 overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-sm">
 
                     <div className="grid lg:grid-cols-5">
 
@@ -237,15 +235,15 @@ export default function ContactPage() {
 
                         <div className="lg:col-span-3 p-8 md:p-10 lg:p-12">
 
-                            <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-medium text-blue-700">
+                            <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-xs md:text-sm font-medium text-blue-700">
                                 Contact Form
                             </span>
 
-                            <h2 className="mt-5 text-4xl font-bold tracking-tight text-slate-900">
+                            <h2 className="mt-5 text-xl md:text-4xl font-bold tracking-tight text-slate-900">
                                 Send us a Message
                             </h2>
 
-                            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+                            <p className="mt-4 max-w-2xl text-sm md:text-base leading-relaxed md:leading-loose text-slate-600">
                                 We'd love to hear from you. Whether it's a question, feedback,
                                 bug report, or feature request, simply fill out the form below
                                 and we'll get back to you as soon as possible.
@@ -279,7 +277,7 @@ export default function ContactPage() {
                                             placeholder="John Doe"
                                             value={form.name}
                                             onChange={handleChange}
-                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:text-sm placeholder:md:text-base"
                                         />
 
                                         {errors.name && (
@@ -309,7 +307,7 @@ export default function ContactPage() {
                                             placeholder="john@example.com"
                                             value={form.email}
                                             onChange={handleChange}
-                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:text-sm placeholder:md:text-base"
                                         />
 
                                         {errors.email && (
@@ -340,7 +338,7 @@ export default function ContactPage() {
                                         placeholder="How can we help?"
                                         value={form.subject}
                                         onChange={handleChange}
-                                        className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                        className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-5 py-3.5 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:text-sm placeholder:md:text-base"
                                     />
 
                                     {errors.subject && (
@@ -377,7 +375,7 @@ export default function ContactPage() {
                                         placeholder="Tell us a little more..."
                                         value={form.message}
                                         onChange={handleChange}
-                                        className="w-full resize-none rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                                        className="w-full resize-none rounded-2xl border border-slate-300 bg-slate-50 px-5 py-4 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 placeholder:text-slate-400 placeholder:text-sm placeholder:md:text-base"
                                     />
 
                                     <p className="mt-2 text-sm text-slate-500">
@@ -394,7 +392,7 @@ export default function ContactPage() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-transparent hover:bg-black px-8 py-4 font-semibold border-black border cursor-pointer hover:text-white transition hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-transparent hover:bg-black px-4 m:px-8 md:py-4 py-2 text-sm md:text-base font-semibold border-black border cursor-pointer hover:text-white transition hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 "
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -496,24 +494,27 @@ export default function ContactPage() {
 
                 </section>
 
-                <section className="mt-16">
+                {/* Separator */}
+                <div className="my-12 h-px bg-slate-200" />
+
+                <section>
 
                     <div className="text-center">
-                        <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+                        <span className=" text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
                             FAQs
                         </span>
 
-                        <h2 className="mt-3 text-4xl font-bold text-slate-900">
+                        <h2 className="mt-3 text-2xl md:text-4xl font-bold text-slate-900">
                             Frequently Asked Questions
                         </h2>
 
-                        <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+                        <p className="mx-auto mt-4 px-4 max-w-2xl text-sm md:text-lg text-slate-600">
                             Here are answers to some of the questions we receive most often.
                             If you don't find what you're looking for, feel free to contact us.
                         </p>
                     </div>
 
-                    <div className="mt-12 grid gap-6">
+                    <div className="mt-6 md:mt-8 grid gap-6">
 
                         {/* FAQ Item */}
 
@@ -522,15 +523,15 @@ export default function ContactPage() {
                             <div className="flex items-start gap-5">
 
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                                    <Bug className="h-6 w-6" />
+                                    <Bug className="size-6" />
                                 </div>
 
                                 <div>
-                                    <h3 className="text-xl font-semibold text-slate-900">
+                                    <h3 className="text-base md:text-xl font-semibold text-slate-900">
                                         I found a bug. What should I do?
                                     </h3>
 
-                                    <p className="mt-3 leading-7 text-slate-600">
+                                    <p className="mt-3 leading-relaxed md:leading-loose text-xs md:text-base text-slate-600">
                                         Please send us an email describing the issue in as much
                                         detail as possible. If you can include screenshots,
                                         error messages, or steps to reproduce the problem, it
@@ -549,15 +550,15 @@ export default function ContactPage() {
                             <div className="flex items-start gap-5">
 
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                                    <Lightbulb className="h-6 w-6" />
+                                    <Lightbulb className="size-6" />
                                 </div>
 
                                 <div>
-                                    <h3 className="text-xl font-semibold text-slate-900">
+                                    <h3 className="text-base md:text-xl font-semibold text-slate-900">
                                         Can I suggest new features?
                                     </h3>
 
-                                    <p className="mt-3 leading-7 text-slate-600">
+                                    <p className="mt-3 leading-relaxed md:leading-loose text-xs md:text-base text-slate-600">
                                         Absolutely. We love hearing ideas from our users.
                                         Feature suggestions play an important role in shaping
                                         PrepMate, and every submission is carefully reviewed.
@@ -575,15 +576,15 @@ export default function ContactPage() {
                             <div className="flex items-start gap-5">
 
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                                    <Clock3 className="h-6 w-6" />
+                                    <Clock3 className="size-6" />
                                 </div>
 
                                 <div>
-                                    <h3 className="text-xl font-semibold text-slate-900">
+                                    <h3 className="text-base md:text-xl font-semibold text-slate-900">
                                         How long does support take?
                                     </h3>
 
-                                    <p className="mt-3 leading-7 text-slate-600">
+                                    <p className="mt-3 leading-relaxed md:leading-loose text-xs md:text-base text-slate-600">
                                         We typically respond within <strong>2–3 business days</strong>.
                                         During periods of high demand, responses may take a
                                         little longer, but every message is answered as soon as
@@ -601,11 +602,11 @@ export default function ContactPage() {
 
                 <section className="mt-12 rounded-3xl bg-slate-900 px-10 py-16 text-center text-white">
 
-                    <h2 className="text-4xl font-bold">
+                    <h2 className=" text-2xl md:text-4xl font-bold">
                         We're Always Improving PrepMate
                     </h2>
 
-                    <p className="mx-auto mt-6 max-w-2xl text-slate-300">
+                    <p className="mx-auto mt-6 text-sm md:text-base max-w-2xl text-slate-300">
                         Every question, bug report, and feature suggestion helps us build a
                         better learning platform for everyone.
                     </p>

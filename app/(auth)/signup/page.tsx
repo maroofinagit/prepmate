@@ -70,9 +70,9 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-            <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg">
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h1>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-8">
+            <div className="max-w-xl w-full bg-white p-8 rounded-xl shadow-lg">
+                <h1 className="md:text-2xl text-xl font-bold mb-6 text-center text-gray-800">Sign Up</h1>
 
                 {errorMsg && (
                     <div className="mb-4 p-2 text-red-700 bg-red-100 rounded">{errorMsg}</div>
@@ -80,38 +80,38 @@ export default function SignUpPage() {
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
-                        <label className="block text-gray-700 font-medium mb-1">Name</label>
+                        <label className="block text-gray-700 font-medium mb-2">Name</label>
                         <input
                             type="text"
                             name="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Your full name"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400 placeholder:text-sm"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-gray-700 font-medium mb-1">Email</label>
+                        <label className="block text-gray-700 font-medium mb-2">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="you@example.com"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400 placeholder:text-sm"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-gray-700 font-medium mb-1">Password</label>
+                        <label className="block text-gray-700 font-medium mb-2">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="At least 8 characters"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400 placeholder:text-sm"
                             required
                         />
                     </div>
@@ -119,14 +119,14 @@ export default function SignUpPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full py-2 px-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
+                        className={`w-full py-2 px-4 md:text-base text-sm bg-black text-white font-semibold rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {loading ? "Signing Up..." : "Sign Up"}
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-gray-600">
+                <p className="mt-6 md:text-base text-sm text-center text-gray-600">
                     Already have an account?{" "}
                     <a href="/signin" className="text-blue-700 font-medium hover:underline">
                         Sign In

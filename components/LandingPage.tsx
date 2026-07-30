@@ -271,6 +271,7 @@ export default function LandingPage({
                 </motion.div>
 
             </section >
+            <VisitMobile />
 
             {/* USER EXAMS */}
             {
@@ -362,7 +363,6 @@ export default function LandingPage({
             }
 
             <ToastLogin />
-            <VisitMobile />
 
             {/* ================= WHY PREPMATE ================= */}
 
