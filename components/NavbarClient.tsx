@@ -212,7 +212,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     </Sheet>
                 </div>
 
-                <Link href="/" className="flex items-center gap-4 text-xl md:text-3xl font-bold text-[#004ba0]">
+                <Link href="/" className="flex items-center gap-4 w-full text-xl md:text-3xl font-bold text-[#004ba0]">
                     <Image
                         src="/logo.jpg"
                         alt="PrepMate Logo"
@@ -220,7 +220,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                         height={36}
                         loading="eager"
                         fill={false}
-                        className="hidden md:block object-cover rounded-full"
+                        className="object-cover rounded-full"
                     />
                     PrepMate
                 </Link>
