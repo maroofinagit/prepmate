@@ -608,7 +608,7 @@ export default function LandingPage({
 
                             </div>
 
-                            <h2 className="text-3xl lg:text-5xl font-bold leading-tight text-white">
+                            <h2 className="text-2xl lg:text-5xl font-bold leading-tight text-white">
                                 Every milestone planned before you even begin.
                             </h2>
 
@@ -642,11 +642,11 @@ export default function LandingPage({
                                             y: -6,
                                             scale: 1.02,
                                         }}
-                                        className="rounded-2xl border flex flex-row justify-start items-center border-white/10 bg-white/5 backdrop-blur-sm p-5 hover:shadow-lg hover:shadow-gray-800 transition-shadow duration-100"
+                                        className="rounded-2xl border flex flex-row justify-start items-center border-white/10 bg-white/5 backdrop-blur-sm p-4 hover:shadow-lg hover:shadow-gray-800 transition-shadow duration-100"
                                     >
 
-                                        <CheckCircle2 className="text-blue-400 mr-3" />
-                                        <h3 className="font-medium md:font-semibold text-sm md:text-lg text-white">
+                                        <CheckCircle2 className="text-blue-400 mr-3 size-5 md:size-6" />
+                                        <h3 className="font-medium md:font-semibold text-xs md:text-sm text-white">
                                             {feature}
                                         </h3>
 
@@ -707,7 +707,7 @@ export default function LandingPage({
 
                             </div>
 
-                            <h2 className="mt-5 text-3xl lg:text-5xl font-bold text-slate-900 leading-tight">                                Practice smarter with AI-generated assessments.
+                            <h2 className="mt-5 text-2xl lg:text-5xl font-bold text-slate-900 leading-tight">                                Practice smarter with AI-generated assessments.
                             </h2>
 
                             <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">                                Create unlimited exams tailored to your roadmap. Every test is
@@ -743,9 +743,9 @@ export default function LandingPage({
                                         className="flex hover:shadow-lg items-center gap-4 rounded-xl bg-white border border-slate-200 p-4 shadow-sm"
                                     >
 
-                                        <CheckCircle2 className="text-blue-600" />
+                                        <CheckCircle2 className="text-blue-600 size-5 md:size-6" />
 
-                                        <span className="text-slate-700 text-sm md:text-lg font-medium md:font-semibold">
+                                        <span className="text-slate-700 text-xs md:text-base font-medium md:font-semibold">
                                             {item}
                                         </span>
 
@@ -837,7 +837,7 @@ export default function LandingPage({
                                 Analytics
                             </div>
 
-                            <h2 className="mt-5 text-3xl lg:text-5xl font-bold leading-tight text-slate-900">                                Understand your progress with meaningful insights.
+                            <h2 className="mt-5 text-2xl lg:text-5xl font-bold leading-tight text-slate-900">                                Understand your progress with meaningful insights.
                             </h2>
 
                             <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
@@ -873,12 +873,12 @@ export default function LandingPage({
                                         }}
                                         viewport={{ once: false, amount: 0.3 }}
                                         
-                                        className="flex items-center rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-xl"
+                                        className="flex items-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-xl"
                                     >
 
-                                        <CheckCircle2 className="text-blue-600 mr-3" />
+                                        <CheckCircle2 className="text-blue-600 mr-3 size-5 md:size-6" />
 
-                                        <h3 className="font-medium md:font-semibold text-sm md:text-lg text-slate-800">
+                                        <h3 className="font-medium md:font-semibold text-xs md:text-base text-slate-800">
                                             {item}
                                         </h3>
 
@@ -919,7 +919,7 @@ export default function LandingPage({
                         viewport={{ once: false, amount: 0.3 }}
                         className="text-center"
                     >
-                        <h2 className="text-3xl lg:text-5xl font-bold text-white">
+                        <h2 className="text-2xl lg:text-5xl font-bold text-white">
                             Built to help students succeed.
                         </h2>
 

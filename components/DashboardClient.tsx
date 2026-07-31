@@ -405,38 +405,40 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         width={60}
                         height={60}
                         alt="User"
-                        className="rounded-full aspect-square w-15 object-cover object-center"
+                        className="rounded-full aspect-square w-10 md:w-15 object-cover object-center"
                     />
                     <div>
-                        <h1 className="md:text-2xl tracking-wide text-xl font-bold">Welcome, <span className="text-emerald-600">{dashboardUser?.name ?? "Student"}</span></h1>
-                        <p className="text-muted-foreground md:text-base text-sm">Your Exam Analytics Dashboard</p>
+                        <h1 className="md:text-2xl tracking-wide text-xl font-bold">Welcome,<br />
+                            <span className="text-emerald-600">{dashboardUser?.name ?? "Student"}</span>
+                        </h1>
+                        <p className="text-muted-foreground mt-2 text-sm">Your Exam Analytics Dashboard</p>
                     </div>
                 </div>
 
                 {/* Top Cards */}
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-6 grid-cols-2 xl:grid-cols-4">
                     {/* Exams */}
                     <motion.div
                         initial={{ opacity: 0, y: 25 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: 0 }}
                     >
-                        <Card className="relative h-full flex flex-col">
+                        <Card className="relative h-full md flex flex-col py-4 md:py-6">
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <div>
-                                    <CardTitle className="text-xl font-semibold">
+                                    <CardTitle className="md:text-xl text-sm font-semibold">
                                         Exams Enrolled
                                     </CardTitle>
-                                    <CardDescription className="text-sm text-muted-foreground">
+                                    <CardDescription className="text-xs mt-2 md:text-sm text-muted-foreground">
                                         Total exams you are enrolled in
                                     </CardDescription>
                                 </div>
 
-                                <BookOpen className="h-6 absolute top-5 right-5 text-emerald-600" />
+                                <BookOpen className="h-6 hidden md:block absolute top-5 right-5 text-emerald-600" />
                             </CardHeader>
 
                             <CardContent>
-                                <div className="text-5xl font-bold">
+                                <div className="md:text-5xl text-3xl font-bold">
                                     {totalUserExams}
                                 </div>
                             </CardContent>
@@ -449,23 +451,23 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: 0.1 }}
                     >
-                        <Card className="relative h-full flex flex-col">
+                        <Card className="relative h-full flex flex-col py-4 md:py-6">
                             <CardHeader>
-                                <CardTitle className="text-xl font-semibold">
+                                <CardTitle className="md:text-xl text-sm font-semibold">
                                     {currentSelectedExam?.exam.name || "Selected Exam"}
                                 </CardTitle>
-                                <CardDescription className="text-sm text-muted-foreground">
+                                <CardDescription className="text-xs mt-2 md:text-sm text-muted-foreground">
                                     Your progress in this exam
                                 </CardDescription>
                             </CardHeader>
 
                             <CardContent>
-                                <div className="mb-3 flex items-center justify-between">
-                                    <span className="text-3xl font-bold">
+                                <div className="mb-3 flex md:flex-row flex-col items-center justify-between">
+                                    <span className="text-xl md:text-3xl font-bold">
                                         {selectedProgress || 0}%
                                     </span>
 
-                                    <span className="text-sm text-muted-foreground">
+                                    <span className="text-xs md:text-sm text-muted-foreground">
                                         Completed
                                     </span>
                                 </div>
@@ -476,7 +478,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 />
                             </CardContent>
 
-                            <TrendingUp className="h-6 absolute top-5 right-5 text-emerald-600" />
+                            <TrendingUp className="h-6 hidden md:block absolute top-5 right-5 text-emerald-600" />
                         </Card>
                     </motion.div>
 
@@ -486,22 +488,22 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: 0.2 }}
                     >
-                        <Card className="flex flex-col relative h-full">
+                        <Card className="flex flex-col relative h-full py-4 md:py-6">
                             <CardHeader className="flex-row items-center justify-between space-y-0">
                                 <div>
-                                    <CardTitle className="text-xl font-semibold">
+                                    <CardTitle className="md:text-xl text-sm font-semibold">
                                         Roadmap
                                     </CardTitle>
 
-                                    <CardDescription className="text-sm text-muted-foreground mt-2">
+                                    <CardDescription className="text-xs md:text-sm text-muted-foreground mt-2">
                                         Your learning path
                                     </CardDescription>
                                 </div>
 
-                                <Route className="h-6 absolute top-5 right-5 text-blue-600" />
+                                <Route className="h-6 hidden md:block absolute top-5 right-5 text-blue-600" />
                             </CardHeader>
 
-                            <CardContent className="mt-auto">
+                            <CardContent className="px-4 md:px-6 mt-auto">
                                 {!exam ? (
                                     <Link href="/onboarding">
                                         <Button className="w-full cursor-pointer">
@@ -510,20 +512,23 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     </Link>
                                 ) : roadmapStatus === RoadmapStatus.completed ? (
                                     <Link href={`/dashboard/roadmap/${selectedId}`}>
-                                        <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                        <Button className="md:hidden w-full h-full text-xs md:text-sm cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                            Open <br />Roadmap
+                                        </Button>
+                                        <Button className="hidden md:block w-full h-full text-xs md:text-sm cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
                                             Open Roadmap
                                         </Button>
                                     </Link>
                                 ) : roadmapStatus === RoadmapStatus.in_progress ? (
                                     <Button
                                         disabled
-                                        className="w-full"
+                                        className="w-full text-xs md:text-sm cursor-not-allowed bg-gray-300 text-gray-600"
                                     >
                                         ⏳ Generating...
                                     </Button>
                                 ) : (
                                     <Button
-                                        className="w-full cursor-pointer bg-red-700 hover:bg-red-600 text-white transition-colors duration-200"
+                                        className="w-full text-xs md:text-sm cursor-pointer bg-red-700 hover:bg-red-600 text-white transition-colors duration-200"
                                         onClick={handleRegenerate}
                                     >
                                         🔁 Regenerate Roadmap
@@ -539,24 +544,24 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: 0.3 }}
                     >
-                        <Card className="flex flex-col relative h-full">
+                        <Card className="flex flex-col relative h-full py-4 md:py-6">
                             <CardHeader className="flex-row items-center justify-between space-y-0">
                                 <div>
-                                    <CardTitle className="text-xl font-semibold">
+                                    <CardTitle className="md:text-xl text-sm font-semibold">
                                         Practice Tests
                                     </CardTitle>
 
-                                    <CardDescription className="text-sm text-muted-foreground mt-2">
+                                    <CardDescription className="text-xs md:text-sm text-muted-foreground mt-2">
                                         Evaluate your progress
                                     </CardDescription>
                                 </div>
 
-                                <ClipboardCheck className="h-6 absolute top-5 right-5 text-violet-600" />
+                                <ClipboardCheck className="h-6 hidden md:block absolute top-5 right-5 text-violet-600" />
                             </CardHeader>
 
-                            <CardContent className="mt-auto">
+                            <CardContent className="px-4 md:px-6 mt-auto">
                                 <Link href={`/user-exam/${selectedId}/tests`}>
-                                    <Button className="w-full cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
+                                    <Button className="w-full text-xs md:text-sm cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
                                         Give Tests
                                     </Button>
                                 </Link>
@@ -1689,7 +1694,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             <Card className="h-full">
                                                 <CardHeader>
                                                     <CardTitle>Pass Rate</CardTitle>
-                                                    <CardDescription className="text-sm text-muted-foreground">
+                                                    <CardDescription className="text-xs mt-2 md:text-sm text-muted-foreground">
                                                         Your overall test performance distribution
                                                     </CardDescription>
                                                 </CardHeader>
@@ -1852,13 +1857,13 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     >
                                         <div className="flex flex-col gap-3 mb-6">
 
-                                                <h2 className="text-2xl font-bold text-red-600">
-                                                    Danger Zone
-                                                </h2>
+                                            <h2 className="text-2xl font-bold text-red-600">
+                                                Danger Zone
+                                            </h2>
 
-                                                <p className="text-sm text-muted-foreground">
-                                                    Permanent actions that cannot be undone.
-                                                </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Permanent actions that cannot be undone.
+                                            </p>
                                         </div>
 
                                         <div className="rounded-2xl border border-red-200 bg-linear-to-r from-white via-red-50 to-red-100 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">

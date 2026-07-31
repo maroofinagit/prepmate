@@ -47,7 +47,15 @@ export default function ProfileImageUploader({ initialImage }: { initialImage: s
                 alt="Profile"
                 width={96}
                 height={96}
-                className="rounded-full object-cover object-center border aspect-square"
+                className="hidden md:block rounded-full object-cover object-center border aspect-square"
+            />
+
+            <Image
+                src={image || "/avatar.png"}
+                alt="Profile"
+                width={64}
+                height={64}
+                className="md:hidden rounded-full object-cover object-center border aspect-square"
             />
 
             <CldUploadWidget uploadPreset="prepmate_preset" onSuccess={handleUpload} options={{ maxFiles: 1 }}>

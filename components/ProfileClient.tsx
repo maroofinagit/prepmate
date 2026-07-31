@@ -39,7 +39,7 @@ export default function ProfilePage({ user }: { user: any }) {
     }
 
     return (
-        <div className="max-w-5xl mx-auto py-12 px-6 mt-24">
+        <div className="max-w-5xl mx-auto py-12 px-8 md:px-0 mt-24">
             {/* Profile Card */}
             <motion.div
                 initial={{ opacity: 0, y: 25 }}
@@ -63,18 +63,18 @@ export default function ProfilePage({ user }: { user: any }) {
                         <div className="flex-1 text-center md:text-left">
 
                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                                <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                                <h1 className="text-xl md:text-3xl font-bold tracking-tight text-slate-900">
                                     {user.name || "Unnamed User"}
                                 </h1>
 
                                 {user.role?.toLowerCase() === "admin" && (
-                                    <span className="rounded-full ml-2 bg-blue-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                                    <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
                                         Admin
                                     </span>
                                 )}
                             </div>
 
-                            <p className="mt-2 text-base text-slate-600">
+                            <p className="mt-2 text-sm md:text-base text-slate-600">
                                 {user.email}
                             </p>
 
@@ -97,14 +97,14 @@ export default function ProfilePage({ user }: { user: any }) {
                 className="mt-14"
             >
                 <div className="flex flex-col gap-4 mb-6">
-                    <h2 className="text-2xl font-bold">Learning Progress</h2>
+                    <h2 className="text-xl md:text-2xl font-bold">Learning Progress</h2>
                     <p className="text-sm text-muted-foreground">
                         Track your enrolled exams and progress.
                     </p>
                 </div>
 
                 {user.exams.length > 0 ? (
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-6">
                         {user.exams.map((ue: any, index: number) => (
                             <motion.div
                                 key={ue.id}
@@ -119,23 +119,23 @@ export default function ProfilePage({ user }: { user: any }) {
                                 <div className="rounded-2xl border bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
 
                                     <div className="flex items-start justify-between">
-                                        <h3 className="text-xl font-semibold">
+                                        <h3 className="md:text-xl text-sm font-semibold">
                                             {ue.exam.name}
                                         </h3>
 
 
-                                        <GraduationCap size={28} className="text-blue-600" />
+                                        <GraduationCap size={28} className="text-blue-600 hidden md:block" />
                                     </div>
 
                                     {/* Progress */}
                                     <div className="mt-6">
 
-                                        <div className="mb-2 flex justify-between text-sm">
-                                            <span className="text-slate-500">
+                                        <div className="mb-2 flex md:flex-row flex-col justify-between text-sm">
+                                            <span className="text-slate-500 text-xs md:text-base">
                                                 Progress
                                             </span>
 
-                                            <span className="font-medium">
+                                            <span className="font-medium text-xs md:text-base">
                                                 {ue.progress_percent?.toFixed(1) || 0}%
                                             </span>
                                         </div>
@@ -157,7 +157,7 @@ export default function ProfilePage({ user }: { user: any }) {
 
                                     </div>
 
-                                    <div className="mt-6 flex items-center justify-between text-sm text-slate-500">
+                                    <div className="mt-6 gap-y-4 flex md:flex-row flex-col text-xs items-center justify-between md:text-sm text-slate-500">
 
                                         <div>
                                             <p className="font-medium text-slate-700">
@@ -169,7 +169,7 @@ export default function ProfilePage({ user }: { user: any }) {
                                             </p>
                                         </div>
 
-                                        <div className="text-right">
+                                        <div className="md:text-right ">
                                             <p className="font-medium text-slate-700">
                                                 Ends
                                             </p>
@@ -203,7 +203,7 @@ export default function ProfilePage({ user }: { user: any }) {
                 className="mt-14"
             >
                 <div className="flex flex-col gap-3 mb-6">
-                    <h2 className="text-2xl font-bold">Recent Activity</h2>
+                    <h2 className="text-xl md:text-2xl font-bold">Recent Activity</h2>
                     <p className="text-sm text-muted-foreground">
                         Stay updated with your latest account notifications.
                     </p>
@@ -228,16 +228,16 @@ export default function ProfilePage({ user }: { user: any }) {
                                         : "bg-blue-50 border-blue-200 border-l-4 border-l-blue-600"
                                         }`}
                                 >
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100">
-                                        <BellRing className="h-7 w-7 text-blue-600" />
+                                    <div className="flex md:p-4 p-2 items-center justify-center rounded-md md:rounded-xl bg-blue-100">
+                                        <BellRing className="size-4 md:size-6 text-blue-600" />
                                     </div>
 
                                     <div className="flex-1">
-                                        <p className="font-medium text-slate-800">
+                                        <p className="font-medium text-xs md:text-base text-slate-800">
                                             {n.message}
                                         </p>
 
-                                        <p className="mt-1 text-sm text-slate-500">
+                                        <p className="mt-2 text-xs md:text-sm text-slate-500">
                                             {format(new Date(n.created_at), "dd MMM yyyy")}
                                         </p>
                                     </div>
@@ -245,7 +245,7 @@ export default function ProfilePage({ user }: { user: any }) {
                                     <div className="flex items-center">
                                         {n.is_read ? (
                                             <div className="flex items-center gap-2 text-green-600">
-                                                <CheckCircle2 className="h-5 w-5" />
+                                                <CheckCircle2 className="size-5 md:size-6" />
                                                 <span className="hidden md:block text-sm font-medium">
                                                     Read
                                                 </span>
@@ -267,7 +267,7 @@ export default function ProfilePage({ user }: { user: any }) {
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-dashed bg-slate-50 py-12 text-center">
-                        <BellRing className="mx-auto mb-3 h-10 w-10 text-slate-400" />
+                        <BellRing className="mx-auto mb-3 size-10 text-slate-400" />
                         <p className="text-slate-500">
                             No recent notifications.
                         </p>
@@ -285,7 +285,7 @@ export default function ProfilePage({ user }: { user: any }) {
             >
                 <div className="flex flex-col gap-3 mb-6">
 
-                    <h2 className="text-2xl font-bold">Account Security</h2>
+                    <h2 className="text-xl md:text-2xl font-bold">Account Security</h2>
                     <p className="text-sm text-muted-foreground">
                         Keep your account protected and manage your security settings.
                     </p>
@@ -296,19 +296,23 @@ export default function ProfilePage({ user }: { user: any }) {
 
                         <div className="flex items-start gap-5">
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
-                                <ShieldCheck className="h-7 w-7 text-red-600" />
+                            <div className="flex md:p-4 p-2 items-center justify-center rounded-md md:rounded-xl bg-red-100">
+                                <ShieldCheck className="size-5 md:size-7 text-red-600" />
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-semibold">
+                                <h3 className="text-base md:text-lg font-semibold">
                                     Manage your account security
                                 </h3>
 
-                                <p className="mt-2 max-w-xl text-sm text-slate-600">
+                                <p className="hidden md:block mt-2 max-w-xl text-sm text-slate-600">
                                     Update your password, manage sign-in methods, review
                                     account access, and permanently delete your account
                                     whenever needed.
+                                </p>
+
+                                <p className="md:hidden mt-2 max-w-xl text-xs text-slate-600">
+                                    Only on desktop version you can manage your account security settings. Please visit the website on a desktop device to access these features.
                                 </p>
                             </div>
 
@@ -316,7 +320,7 @@ export default function ProfilePage({ user }: { user: any }) {
 
                         <Button
                             asChild
-                            className="cursor-pointer text-base rounded-lg font-semibold border bg-transparent border-red-600 hover:bg-red-700 px-6 py-2 text-red-600 hover:text-white transition-all duration-300"
+                            className="cursor-pointer text-base rounded-lg font-semibold border bg-transparent border-red-600 hover:bg-red-700 px-6 py-2 text-red-600 hover:text-white transition-all duration-300 hidden md:flex"
                         >
                             <Link href="/profile/security">
                                 Open Security

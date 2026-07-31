@@ -139,8 +139,14 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                     </div>
                 )
             }
-            
-            <div className="relative min-h-screen pt-16 flex-col flex items-center justify-center overflow-hidden bg-[#ffffff]">
+
+            <div className="md:hidden relative min-h-screen pt-16 px-6 flex-col flex items-center justify-center overflow-hidden bg-[#ffffff]">
+                <p className="text-gray-700 text-sm md:text-base text-center px-4">
+                    ⚠️ This feature is only available on desktop. Please switch to a desktop device to start preparing for your exam.
+                </p>
+            </div>
+
+            <div className="hidden relative min-h-screen pt-16 flex-col md:flex items-center justify-center overflow-hidden bg-[#ffffff]">
 
                 {/* 🌤️ Soft Glow Background */}
                 <div className="absolute inset-0">

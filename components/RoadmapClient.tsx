@@ -292,7 +292,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         : localRoadmap.phases;
 
     return (
-        <div className=" px-6 mt-20 md:mt-36 pb-12 space-y-10 max-w-6xl mx-auto relative">
+        <div className=" px-6 mt-28 md:mt-36 pb-12 space-y-10 max-w-6xl mx-auto relative">
             <div className="absolute top-0 right-0 w-80 md:block hidden">
                 <Search
                     size={18}
@@ -314,7 +314,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     {localRoadmap.title}
                 </h1>
 
-                <p className="mt-2 text-lg text-muted-foreground">
+                <p className="mt-2 text-sm md:text-lg text-muted-foreground">
                     {localRoadmap.description}
                 </p>
 
@@ -336,7 +336,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     </Badge>
                 </div>
 
-                <p className="font-semibold text-black ">
+                <p className="font-semibold text-black text-sm md:text-lg mt-8">
                     Duration : {" "}
                     <span className="font-medium">
                         {localRoadmap.start_date &&
@@ -349,7 +349,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                     </span>
                 </p>
 
-                <div className="flex items-center justify-between">
+                <div className="md:flex items-center justify-between hidden">
 
                     <div className="flex gap-x-4 mt-4">
                         <Button

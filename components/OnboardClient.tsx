@@ -59,74 +59,84 @@ export default function OnboardingClient({
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 mt-12 px-10 py-10">
-            <div className="max-w-6xl mx-auto">
-                <h1 className="text-2xl md:text-4xl font-bold text-center mb-4 mt-10 text-gray-900">
-                    Choose Your Exam to Begin 🚀
+        <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-100 pt-32 pb-20">
+            <div className="max-w-6xl mx-auto text-center px-8 lg:px-12">
+
+                <span className="inline-flex text-xs md:text-sm items-center rounded-full border bg-blue-50 px-4 py-2 font-medium text-blue-700">
+                    🚀 Smart Exam Preparation
+                </span>
+
+                <h1 className="mt-6 text-2xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+                    Choose Your Exam
                 </h1>
 
-                <p className="text-gray-600 md:text-xl max-w-2xl text-center mx-auto mb-12">
-                    Plan, track, and master your exam journey with intelligent tools and personalized learning paths.
+                <p className="mt-5 text-sm md:text-lg max-w-xl text-center mx-auto text-slate-600 leading-relaxed">
+                    Start your personalized learning journey with AI-generated roadmaps,
+                    structured study plans, quizzes, and progress tracking.
                 </p>
 
                 {/* Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-10 mt-10">
                     {exams.map((exam) => {
                         const isExpanded = expandedExam === exam.id;
 
                         return (
                             <Card
                                 key={exam.id}
-                                className={`bg-white border p-0 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl overflow-hidden ${isExpanded ? "ring-2 ring-blue-200" : ""
+                                className={`flex flex-col pt-0 pb-2 h-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm hover:shadow-xl transition-all duration-300 ${isExpanded ? "ring-2 ring-blue-100" : ""
                                     }`}
                             >
-                                {/* Image Section */}
-                                <div className="relative h-40 md:h-52 aspect-auto">
+                                {/* Image */}
+                                <div className="relative h-48 md:h-56 overflow-hidden">
                                     <Image
                                         src={exam.imageUrl || "/placeholder.png"}
                                         alt={exam.name}
                                         fill
-                                        className="object-cover object-center"
                                         priority={false}
+                                        className="object-cover object-center transition-transform duration-500 hover:scale-105"
                                     />
+
+                                    {/* Overlay */}
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+
                                 </div>
 
-                                {/* Header: use a real button to ensure clicks are handled reliably */}
-                                <CardHeader className="border-b border-gray-100">
+                                <CardHeader className="px-6 py-4 border-b">
                                     <Button
-                                        type="button"
                                         variant="ghost"
-                                        aria-expanded={isExpanded}
                                         onClick={() => toggleExam(exam.id)}
-                                        className="w-full flex items-center justify-between text-left hover:bg-gray-100"
+                                        className="w-full justify-between rounded-lg px-0 hover:bg-transparent"
                                     >
-                                        <span className="md:text-xl text-lg font-semibold text-gray-800">
+                                        <span className="text-base md:text-xl font-bold text-slate-800">
                                             {exam.name}
                                         </span>
 
                                         {isExpanded ? (
-                                            <ChevronUp className="text-blue-600" />
+                                            <ChevronUp className="size-5 md:size-6 text-blue-600" />
                                         ) : (
-                                            <ChevronDown className="text-blue-600" />
+                                            <ChevronDown className="size-5 md:size-6 text-blue-600" />
                                         )}
                                     </Button>
-
                                 </CardHeader>
 
-                                <CardContent className="p-4 text-center md:text-left">
-                                    {/* Short Description */}
+                                <CardContent className="flex flex-1 flex-col px-6 py-5">
+
+                                    {/* Description */}
                                     {exam.description && (
-                                        <p className="text-gray-600 text-sm md:text-lg mb-3 line-clamp-3">
+                                        <p className="text-sm md:text-base leading-7 text-slate-600 mb-5">
                                             {exam.description}
                                         </p>
                                     )}
 
-                                    {/* Expanded Syllabus Preview */}
+                                    {/* Subjects */}
                                     <div
-                                        className={`transition-all duration-300 overflow-hidden ${isExpanded ? "max-h-112.5 opacity-100" : "max-h-0 opacity-0"
+                                        className={`overflow-hidden transition-all duration-300 ${isExpanded
+                                            ? "max-h-125 opacity-100"
+                                            : "max-h-0 opacity-0"
                                             }`}
                                     >
-                                        <div className="mt-2">
+                                        <div className="space-y-3">
+
                                             {exam.subjects.map((subject) => {
                                                 const isSubExpanded =
                                                     expandedSubject?.examId === exam.id &&
@@ -135,37 +145,33 @@ export default function OnboardingClient({
                                                 return (
                                                     <div
                                                         key={subject.id}
-                                                        className="bg-gray-100 rounded-lg border border-gray-200 p-2 mb-2"
+                                                        className="rounded-xl border border-slate-200 bg-slate-50 transition-colors hover:bg-blue-50"
                                                     >
-                                                        <div
-                                                            className="flex justify-between items-center cursor-pointer"
-                                                            onClick={() => toggleSubject(exam.id, subject.id)}
-                                                            role="button"
-                                                            tabIndex={0}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === "Enter" || e.key === " ") {
-                                                                    e.preventDefault();
-                                                                    toggleSubject(exam.id, subject.id);
-                                                                }
-                                                            }}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                toggleSubject(exam.id, subject.id)
+                                                            }
+                                                            className="flex w-full items-center justify-between px-4 py-3 text-left"
                                                         >
-                                                            <h3 className="text-sm font-medium text-gray-800">
+                                                            <h3 className="font-medium text-xs md:text-sm text-slate-800">
                                                                 {subject.name}
                                                             </h3>
+
                                                             {isSubExpanded ? (
-                                                                <ChevronUp className="text-blue-500 h-4 w-4" />
+                                                                <ChevronUp className="h-4 w-4 text-blue-600" />
                                                             ) : (
-                                                                <ChevronDown className="text-blue-500 h-4 w-4" />
+                                                                <ChevronDown className="h-4 w-4 text-slate-500" />
                                                             )}
-                                                        </div>
+                                                        </button>
 
                                                         <div
-                                                            className={`transition-all duration-300 overflow-hidden ${isSubExpanded
-                                                                ? "max-h-28 opacity-100 mt-1"
+                                                            className={`overflow-hidden transition-all duration-300 ${isSubExpanded
+                                                                ? "max-h-32 opacity-100 px-4 pb-3"
                                                                 : "max-h-0 opacity-0"
                                                                 }`}
                                                         >
-                                                            <p className="text-gray-500 text-xs">
+                                                            <p className="text-sm leading-6 text-slate-500">
                                                                 {subject.topics
                                                                     .slice(0, 5)
                                                                     .map((t) => t.name)
@@ -176,41 +182,51 @@ export default function OnboardingClient({
                                                     </div>
                                                 );
                                             })}
+
                                         </div>
                                     </div>
 
-                                    {/* Buttons */}
-                                    <div className=" flex gap-2 pt-3 border-gray-200">
+                                    {/* Footer */}
+                                    <div className="mt-6 border-t border-slate-200 pt-5 flex flex-col sm:flex-row gap-3">
+
                                         <Button
                                             asChild
                                             variant="outline"
-                                            className="border border-gray-500 hover:bg-gray-500 hover:text-white flex-1"
+                                            className="h-11 flex-1 rounded-lg border-slate-300 hover:bg-slate-900 hover:text-white"
                                         >
-                                            <Link href={`/syllabus/exam/${exam.id}`}>Syllabus</Link>
+                                            <Link href={`/syllabus/exam/${exam.id}`}>
+                                                Syllabus
+                                            </Link>
                                         </Button>
 
                                         {userExams.some((ue) => ue.exam_id === exam.id) ? (
                                             <Button
                                                 asChild
-                                                className=" hover:bg-blue-800 flex-1"
+                                                className="h-11 flex-1 rounded-lg bg-black hover:bg-blue-700"
                                             >
-                                                <Link href={`/dashboard`}>Continue progress</Link>
+                                                <Link href="/dashboard">
+                                                    Continue Progress
+                                                </Link>
                                             </Button>
                                         ) : (
                                             <Button
                                                 asChild
-                                                className=" hover:bg-blue-800 flex-1"
+                                                className="h-11 flex-1 rounded-lg bg-black hover:bg-blue-700"
                                             >
-                                                <Link href={`/onboarding/${exam.id}`}>Start Preparation</Link>
+                                                <Link href={`/onboarding/${exam.id}`}>
+                                                    Start Preparation
+                                                </Link>
                                             </Button>
                                         )}
+
                                     </div>
+
                                 </CardContent>
                             </Card>
                         );
                     })}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
