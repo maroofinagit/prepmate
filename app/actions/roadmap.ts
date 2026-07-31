@@ -133,12 +133,6 @@ export async function generateRoadmap(user_exam_id: number) {
 
         const { exam, start_date, end_date } = userExam;
 
-        updateTag(`roadmap-${user_exam_id}`);
-        updateTag(`exam-${exam.id}`);
-        updateTag(`exams`);
-        updateTag(`userDashboard-${userExam.user_id}`);
-        updateTag(`userExams-${userExam.user_id}`);
-
         // 2️⃣ Mark generation started
         await db.userExam.update({
             where: { id: user_exam_id },
@@ -589,6 +583,12 @@ Do NOT
                 roadmap_id: roadmap.id,
             },
         });
+
+        updateTag(`roadmap-${user_exam_id}`);
+        updateTag(`exam-${exam.id}`);
+        updateTag(`exams`);
+        updateTag(`userDashboard-${userExam.user_id}`);
+        updateTag(`userExams-${userExam.user_id}`);
 
         return {
             success: true,

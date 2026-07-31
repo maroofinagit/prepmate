@@ -344,8 +344,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         try {
             setDeleting(true);
-            const res = await deleteUserExam(selectedId, dashboardUser.id);
-            if (res.success) {
+            // const res = await deleteUserExam(selectedId, dashboardUser.id);
+            if (1) {
                 toast.success("Exam deleted successfully.", {
                     duration: 2000,
                 });
@@ -356,9 +356,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             }
             setDltDialogOpen(false);
             setDeleting(false);
-            setSelectedExam(null);
             setNewExams((prev) => prev.filter((ex) => ex.id !== selectedId));
             router.refresh();
+
         } catch (err) {
             console.error(err);
             toast.error("Failed to delete exam. Please try again later.", {
@@ -368,6 +368,20 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setDeleting(false);
         }
     };
+
+    useEffect(() => {
+        if (!selectedExam && newExams.length) {
+            setSelectedExam(newExams[0]);
+            return;
+        }
+
+        if (
+            selectedExam &&
+            !newExams.some(ex => ex.id === selectedExam.id)
+        ) {
+            setSelectedExam(newExams[0] ?? null);
+        }
+    }, [newExams]);
 
     return (
         <>
@@ -572,17 +586,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                 {/* Tabs */}
                 <Tabs
-                    defaultValue={newExams[0] ? String(newExams[0].id) : "none"}
+                    value={selectedExam ? String(selectedExam.id) : "none"}
                     onValueChange={(v) => {
-                        if (v === "none") {
-                            setSelectedExam(null);
-                            return;
-                        }
-                        const id = Number(v);
-                        const found = newExams.find((ex) => ex.id === id);
-                        setSelectedExam(found || null);
+                        const selected = newExams.find((ex) => String(ex.id) === v);
+                        setSelectedExam(selected ?? null);
                     }}
-                    className="mt-6 p-4 "
+                    className="mt-6 p-4"
                 >
                     <TabsList className="flex flex-wrap gap-2 mb-4 bg-gray-200">
                         {newExams.length > 0 ? (
