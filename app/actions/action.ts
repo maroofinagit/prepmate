@@ -911,8 +911,6 @@ export async function getTodaysTasks(userId: string) {
             },
         });
 
-
-
         return {
             success: true,
             tasks,
