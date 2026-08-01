@@ -285,7 +285,8 @@ export const TestScalarFieldEnum = {
   duration: 'duration',
   nOfFinalTests: 'nOfFinalTests',
   isGenerated: 'isGenerated',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  failureReason: 'failureReason'
 } as const
 
 export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
@@ -294,10 +295,10 @@ export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof Test
 export const QuestionScalarFieldEnum = {
   id: 'id',
   testId: 'testId',
+  topicId: 'topicId',
   question: 'question',
   options: 'options',
   correctAns: 'correctAns',
-  topic: 'topic',
   difficulty: 'difficulty',
   marks: 'marks',
   createdAt: 'createdAt'

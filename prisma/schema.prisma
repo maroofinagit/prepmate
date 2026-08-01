@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
 }
 
 model User {
@@ -95,13 +94,15 @@ model Subject {
 }
 
 model Topic {
-  id          Int        @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   description String?
   difficulty  Difficulty
-  created_at  DateTime   @default(now())
+  created_at  DateTime      @default(now())
   subject_id  Int
-  subject     Subject    @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subject     Subject       @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  questions   Question[]
+  tasks       RoadmapTask[]
 
   @@unique([subject_id, name])
 }
@@ -120,7 +121,7 @@ model UserExam {
   created_at       DateTime       @default(now())
   roadmap          Roadmap?
   roadmap_status   RoadmapStatus  @default(pending)
-  failure_reason     String?
+  failure_reason   String?
   exam             Exam           @relation(fields: [exam_id], references: [id], onDelete: Cascade)
   user             User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tests            Test[]
@@ -187,6 +188,7 @@ model RoadmapTask {
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
   week_id      Int
+  topics       Topic[]
   week         RoadmapWeek @relation(fields: [week_id], references: [id], onDelete: Cascade)
 }
 
@@ -222,7 +224,8 @@ model Test {
 
   questions Question[]
 
-  attempt TestAttempt?
+  attempt       TestAttempt?
+  failureReason String?
 
   // relations
   userExam UserExam      @relation(fields: [userExamId], references: [id], onDelete: Cascade)
@@ -237,20 +240,21 @@ model Test {
 model Question {
   id Int @id @default(autoincrement())
 
-  testId Int
+  testId  Int
+  topicId Int
 
   question   String
   options    Json
   correctAns String
 
-  topic      String
   difficulty Difficulty
 
   marks Int @default(1)
 
   createdAt DateTime @default(now())
 
-  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test  Test  @relation(fields: [testId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
 }
 
 model TestAttempt {

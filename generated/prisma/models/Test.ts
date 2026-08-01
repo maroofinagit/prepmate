@@ -59,6 +59,7 @@ export type TestMinAggregateOutputType = {
   nOfFinalTests: number | null
   isGenerated: boolean | null
   createdAt: Date | null
+  failureReason: string | null
 }
 
 export type TestMaxAggregateOutputType = {
@@ -74,6 +75,7 @@ export type TestMaxAggregateOutputType = {
   nOfFinalTests: number | null
   isGenerated: boolean | null
   createdAt: Date | null
+  failureReason: string | null
 }
 
 export type TestCountAggregateOutputType = {
@@ -89,6 +91,7 @@ export type TestCountAggregateOutputType = {
   nOfFinalTests: number
   isGenerated: number
   createdAt: number
+  failureReason: number
   _all: number
 }
 
@@ -126,6 +129,7 @@ export type TestMinAggregateInputType = {
   nOfFinalTests?: true
   isGenerated?: true
   createdAt?: true
+  failureReason?: true
 }
 
 export type TestMaxAggregateInputType = {
@@ -141,6 +145,7 @@ export type TestMaxAggregateInputType = {
   nOfFinalTests?: true
   isGenerated?: true
   createdAt?: true
+  failureReason?: true
 }
 
 export type TestCountAggregateInputType = {
@@ -156,6 +161,7 @@ export type TestCountAggregateInputType = {
   nOfFinalTests?: true
   isGenerated?: true
   createdAt?: true
+  failureReason?: true
   _all?: true
 }
 
@@ -258,6 +264,7 @@ export type TestGroupByOutputType = {
   nOfFinalTests: number | null
   isGenerated: boolean
   createdAt: Date
+  failureReason: string | null
   _count: TestCountAggregateOutputType | null
   _avg: TestAvgAggregateOutputType | null
   _sum: TestSumAggregateOutputType | null
@@ -296,6 +303,7 @@ export type TestWhereInput = {
   nOfFinalTests?: Prisma.IntNullableFilter<"Test"> | number | null
   isGenerated?: Prisma.BoolFilter<"Test"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Test"> | Date | string
+  failureReason?: Prisma.StringNullableFilter<"Test"> | string | null
   questions?: Prisma.QuestionListRelationFilter
   attempt?: Prisma.XOR<Prisma.TestAttemptNullableScalarRelationFilter, Prisma.TestAttemptWhereInput> | null
   userExam?: Prisma.XOR<Prisma.UserExamScalarRelationFilter, Prisma.UserExamWhereInput>
@@ -316,6 +324,7 @@ export type TestOrderByWithRelationInput = {
   nOfFinalTests?: Prisma.SortOrderInput | Prisma.SortOrder
   isGenerated?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
   questions?: Prisma.QuestionOrderByRelationAggregateInput
   attempt?: Prisma.TestAttemptOrderByWithRelationInput
   userExam?: Prisma.UserExamOrderByWithRelationInput
@@ -342,6 +351,7 @@ export type TestWhereUniqueInput = Prisma.AtLeast<{
   nOfFinalTests?: Prisma.IntNullableFilter<"Test"> | number | null
   isGenerated?: Prisma.BoolFilter<"Test"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Test"> | Date | string
+  failureReason?: Prisma.StringNullableFilter<"Test"> | string | null
   questions?: Prisma.QuestionListRelationFilter
   attempt?: Prisma.XOR<Prisma.TestAttemptNullableScalarRelationFilter, Prisma.TestAttemptWhereInput> | null
   userExam?: Prisma.XOR<Prisma.UserExamScalarRelationFilter, Prisma.UserExamWhereInput>
@@ -362,6 +372,7 @@ export type TestOrderByWithAggregationInput = {
   nOfFinalTests?: Prisma.SortOrderInput | Prisma.SortOrder
   isGenerated?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TestCountOrderByAggregateInput
   _avg?: Prisma.TestAvgOrderByAggregateInput
   _max?: Prisma.TestMaxOrderByAggregateInput
@@ -385,6 +396,7 @@ export type TestScalarWhereWithAggregatesInput = {
   nOfFinalTests?: Prisma.IntNullableWithAggregatesFilter<"Test"> | number | null
   isGenerated?: Prisma.BoolWithAggregatesFilter<"Test"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Test"> | Date | string
+  failureReason?: Prisma.StringNullableWithAggregatesFilter<"Test"> | string | null
 }
 
 export type TestCreateInput = {
@@ -396,6 +408,7 @@ export type TestCreateInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptCreateNestedOneWithoutTestInput
   userExam: Prisma.UserExamCreateNestedOneWithoutTestsInput
@@ -416,6 +429,7 @@ export type TestUncheckedCreateInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptUncheckedCreateNestedOneWithoutTestInput
 }
@@ -429,6 +443,7 @@ export type TestUpdateInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUpdateOneWithoutTestNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutTestsNestedInput
@@ -449,6 +464,7 @@ export type TestUncheckedUpdateInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUncheckedUpdateOneWithoutTestNestedInput
 }
@@ -466,6 +482,7 @@ export type TestCreateManyInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
 }
 
 export type TestUpdateManyMutationInput = {
@@ -477,6 +494,7 @@ export type TestUpdateManyMutationInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TestUncheckedUpdateManyInput = {
@@ -492,6 +510,7 @@ export type TestUncheckedUpdateManyInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TestListRelationFilter = {
@@ -532,6 +551,7 @@ export type TestCountOrderByAggregateInput = {
   nOfFinalTests?: Prisma.SortOrder
   isGenerated?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  failureReason?: Prisma.SortOrder
 }
 
 export type TestAvgOrderByAggregateInput = {
@@ -557,6 +577,7 @@ export type TestMaxOrderByAggregateInput = {
   nOfFinalTests?: Prisma.SortOrder
   isGenerated?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  failureReason?: Prisma.SortOrder
 }
 
 export type TestMinOrderByAggregateInput = {
@@ -572,6 +593,7 @@ export type TestMinOrderByAggregateInput = {
   nOfFinalTests?: Prisma.SortOrder
   isGenerated?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  failureReason?: Prisma.SortOrder
 }
 
 export type TestSumOrderByAggregateInput = {
@@ -756,6 +778,7 @@ export type TestCreateWithoutUserExamInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptCreateNestedOneWithoutTestInput
   week?: Prisma.RoadmapWeekCreateNestedOneWithoutTestsInput
@@ -774,6 +797,7 @@ export type TestUncheckedCreateWithoutUserExamInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptUncheckedCreateNestedOneWithoutTestInput
 }
@@ -820,6 +844,7 @@ export type TestScalarWhereInput = {
   nOfFinalTests?: Prisma.IntNullableFilter<"Test"> | number | null
   isGenerated?: Prisma.BoolFilter<"Test"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Test"> | Date | string
+  failureReason?: Prisma.StringNullableFilter<"Test"> | string | null
 }
 
 export type TestCreateWithoutPhaseInput = {
@@ -831,6 +856,7 @@ export type TestCreateWithoutPhaseInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptCreateNestedOneWithoutTestInput
   userExam: Prisma.UserExamCreateNestedOneWithoutTestsInput
@@ -849,6 +875,7 @@ export type TestUncheckedCreateWithoutPhaseInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptUncheckedCreateNestedOneWithoutTestInput
 }
@@ -888,6 +915,7 @@ export type TestCreateWithoutWeekInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptCreateNestedOneWithoutTestInput
   userExam: Prisma.UserExamCreateNestedOneWithoutTestsInput
@@ -906,6 +934,7 @@ export type TestUncheckedCreateWithoutWeekInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTestInput
   attempt?: Prisma.TestAttemptUncheckedCreateNestedOneWithoutTestInput
 }
@@ -945,6 +974,7 @@ export type TestCreateWithoutQuestionsInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   attempt?: Prisma.TestAttemptCreateNestedOneWithoutTestInput
   userExam: Prisma.UserExamCreateNestedOneWithoutTestsInput
   week?: Prisma.RoadmapWeekCreateNestedOneWithoutTestsInput
@@ -964,6 +994,7 @@ export type TestUncheckedCreateWithoutQuestionsInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   attempt?: Prisma.TestAttemptUncheckedCreateNestedOneWithoutTestInput
 }
 
@@ -992,6 +1023,7 @@ export type TestUpdateWithoutQuestionsInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempt?: Prisma.TestAttemptUpdateOneWithoutTestNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutTestsNestedInput
   week?: Prisma.RoadmapWeekUpdateOneWithoutTestsNestedInput
@@ -1011,6 +1043,7 @@ export type TestUncheckedUpdateWithoutQuestionsInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempt?: Prisma.TestAttemptUncheckedUpdateOneWithoutTestNestedInput
 }
 
@@ -1023,6 +1056,7 @@ export type TestCreateWithoutAttemptInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutTestInput
   userExam: Prisma.UserExamCreateNestedOneWithoutTestsInput
   week?: Prisma.RoadmapWeekCreateNestedOneWithoutTestsInput
@@ -1042,6 +1076,7 @@ export type TestUncheckedCreateWithoutAttemptInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTestInput
 }
 
@@ -1070,6 +1105,7 @@ export type TestUpdateWithoutAttemptInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUpdateManyWithoutTestNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutTestsNestedInput
   week?: Prisma.RoadmapWeekUpdateOneWithoutTestsNestedInput
@@ -1089,6 +1125,7 @@ export type TestUncheckedUpdateWithoutAttemptInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutTestNestedInput
 }
 
@@ -1104,6 +1141,7 @@ export type TestCreateManyUserExamInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
 }
 
 export type TestUpdateWithoutUserExamInput = {
@@ -1115,6 +1153,7 @@ export type TestUpdateWithoutUserExamInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUpdateOneWithoutTestNestedInput
   week?: Prisma.RoadmapWeekUpdateOneWithoutTestsNestedInput
@@ -1133,6 +1172,7 @@ export type TestUncheckedUpdateWithoutUserExamInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUncheckedUpdateOneWithoutTestNestedInput
 }
@@ -1149,6 +1189,7 @@ export type TestUncheckedUpdateManyWithoutUserExamInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TestCreateManyPhaseInput = {
@@ -1163,6 +1204,7 @@ export type TestCreateManyPhaseInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
 }
 
 export type TestUpdateWithoutPhaseInput = {
@@ -1174,6 +1216,7 @@ export type TestUpdateWithoutPhaseInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUpdateOneWithoutTestNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutTestsNestedInput
@@ -1192,6 +1235,7 @@ export type TestUncheckedUpdateWithoutPhaseInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUncheckedUpdateOneWithoutTestNestedInput
 }
@@ -1208,6 +1252,7 @@ export type TestUncheckedUpdateManyWithoutPhaseInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type TestCreateManyWeekInput = {
@@ -1222,6 +1267,7 @@ export type TestCreateManyWeekInput = {
   nOfFinalTests?: number | null
   isGenerated?: boolean
   createdAt?: Date | string
+  failureReason?: string | null
 }
 
 export type TestUpdateWithoutWeekInput = {
@@ -1233,6 +1279,7 @@ export type TestUpdateWithoutWeekInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUpdateOneWithoutTestNestedInput
   userExam?: Prisma.UserExamUpdateOneRequiredWithoutTestsNestedInput
@@ -1251,6 +1298,7 @@ export type TestUncheckedUpdateWithoutWeekInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutTestNestedInput
   attempt?: Prisma.TestAttemptUncheckedUpdateOneWithoutTestNestedInput
 }
@@ -1267,6 +1315,7 @@ export type TestUncheckedUpdateManyWithoutWeekInput = {
   nOfFinalTests?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isGenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1313,6 +1362,7 @@ export type TestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   nOfFinalTests?: boolean
   isGenerated?: boolean
   createdAt?: boolean
+  failureReason?: boolean
   questions?: boolean | Prisma.Test$questionsArgs<ExtArgs>
   attempt?: boolean | Prisma.Test$attemptArgs<ExtArgs>
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
@@ -1334,6 +1384,7 @@ export type TestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   nOfFinalTests?: boolean
   isGenerated?: boolean
   createdAt?: boolean
+  failureReason?: boolean
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
   week?: boolean | Prisma.Test$weekArgs<ExtArgs>
   phase?: boolean | Prisma.Test$phaseArgs<ExtArgs>
@@ -1352,6 +1403,7 @@ export type TestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   nOfFinalTests?: boolean
   isGenerated?: boolean
   createdAt?: boolean
+  failureReason?: boolean
   userExam?: boolean | Prisma.UserExamDefaultArgs<ExtArgs>
   week?: boolean | Prisma.Test$weekArgs<ExtArgs>
   phase?: boolean | Prisma.Test$phaseArgs<ExtArgs>
@@ -1370,9 +1422,10 @@ export type TestSelectScalar = {
   nOfFinalTests?: boolean
   isGenerated?: boolean
   createdAt?: boolean
+  failureReason?: boolean
 }
 
-export type TestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "type" | "description" | "userExamId" | "weekId" | "phaseId" | "totalMarks" | "duration" | "nOfFinalTests" | "isGenerated" | "createdAt", ExtArgs["result"]["test"]>
+export type TestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "type" | "description" | "userExamId" | "weekId" | "phaseId" | "totalMarks" | "duration" | "nOfFinalTests" | "isGenerated" | "createdAt" | "failureReason", ExtArgs["result"]["test"]>
 export type TestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   questions?: boolean | Prisma.Test$questionsArgs<ExtArgs>
   attempt?: boolean | Prisma.Test$attemptArgs<ExtArgs>
@@ -1414,6 +1467,7 @@ export type $TestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     nOfFinalTests: number | null
     isGenerated: boolean
     createdAt: Date
+    failureReason: string | null
   }, ExtArgs["result"]["test"]>
   composites: {}
 }
@@ -1854,6 +1908,7 @@ export interface TestFieldRefs {
   readonly nOfFinalTests: Prisma.FieldRef<"Test", 'Int'>
   readonly isGenerated: Prisma.FieldRef<"Test", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Test", 'DateTime'>
+  readonly failureReason: Prisma.FieldRef<"Test", 'String'>
 }
     
 

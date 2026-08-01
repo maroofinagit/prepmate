@@ -1,4 +1,4 @@
-"use server";
+'use server';
 import { db } from "@/app/lib/db";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
@@ -241,9 +241,11 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 
 
 export async function getDashboardUser(userId: string) {
+
     'use cache';
     cacheTag(`userDashboard-${userId}`);
     cacheLife('minutes'); // Cache for 30 seconds
+
     try {
         const dashboardUser = await db.user.findUnique({
             where: { id: userId },
@@ -446,9 +448,6 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
         throw new Error("Task ID is required.");
     }
 
-    updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
-    updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
-    updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
     try {
         await db.$transaction(async (tx) => {
             // 1️⃣ Mark task as completed and fetch hierarchy
@@ -548,9 +547,17 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
                 },
             });
         });
+
+        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
+        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
+        updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+        updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+
         return {
             success: true,
         };
+
     } catch (error) {
         console.error("❌ Error completing roadmap task:", error);
         return {
@@ -585,16 +592,19 @@ export async function completeMilestone(
             return { success: true };
         }
 
-        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific milestone
-        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
-        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
-
         await db.milestone.update({
             where: { id: milestoneId },
             data: {
                 achieved: true,
             },
         });
+
+        'use cache';
+        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific milestone
+        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
+        updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+        updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
 
         return { success: true };
     } catch (error) {
@@ -839,6 +849,82 @@ export async function contactFormSubmission(formData: {
         };
     }
 
+}
+
+export async function getTodaysTasks(userId: string) {
+
+    'use cache';
+    cacheTag(`todaysTasks-${userId}`);
+    cacheLife('minutes'); // Cache for 30 seconds
+
+    try {
+
+        const tasks = await db.roadmapTask.findMany({
+            where: {
+                week: {
+                    phase: {
+                        roadmap: {
+                            userExam: {
+                                user_id: userId,
+                                roadmap_status: "completed",
+                            },
+                        },
+                    },
+                },
+            },
+            include: {
+                week: {
+                    include: {
+                        phase: {
+                            include: {
+                                roadmap: {
+                                    include: {
+                                        userExam: {
+                                            select: {
+                                                id: true,
+                                                exam_id: true,
+                                                start_date: true,
+                                                end_date: true,
+                                                exam: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true,
+                                                    },
+                                                },
+                                                user: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                start_date: "asc",
+            },
+        });
+
+
+
+        return {
+            success: true,
+            tasks,
+        }
+
+    } catch (error) {
+        console.error("❌ Error fetching today's tasks:", error);
+        return {
+            success: false,
+            message: "Failed to fetch today's tasks.",
+        }
+    }
 }
 
 

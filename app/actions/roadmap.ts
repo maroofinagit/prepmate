@@ -119,12 +119,19 @@ export async function generateRoadmap(user_exam_id: number) {
                     include: {
                         subjects: {
                             include: {
-                                topics: true,
+                                topics: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        difficulty: true,
+                                        description: true,
+                                    }
+                                },
                             },
                         },
                     },
                 },
-            },
+            }
         });
 
         if (!userExam) {
@@ -144,7 +151,12 @@ export async function generateRoadmap(user_exam_id: number) {
         // 3️⃣ Build subjects/topics
         const subjects = exam.subjects.map((s: any) => ({
             name: s.name,
-            topics: s.topics.map((t: any) => t.name),
+            topics: s.topics.map((t: any) => ({
+                id: t.id,
+                name: t.name,
+                difficulty: t.difficulty,
+                description: t.description,
+            })),
         }));
 
         // 4️⃣ AI Prompt
@@ -172,31 +184,36 @@ Preparation duration:
 ${start_date.toDateString()} to ${end_date.toDateString()}
 
 Subjects and topics:
-${subjects
-                .map(
-                    (s: any) =>
-                        `- ${s.name}: ${s.topics.join(", ")}`
-                )
-                .join("\n")}
 
-Roadmap Rules (VERY IMPORTANT):
+${subjects.map(subject => `
+Subject: ${subject.name}
 
-1. Every week should contain 2-5 tasks depending on difficulty.
-2. Task descriptions must be ONE SHORT SENTENCE (10-20 words maximum).
+${subject.topics.map((topic: any) => `
+- Topic ID: ${topic.id}
+  Name: ${topic.name}
+  Difficulty: ${topic.difficulty}
+  Description: ${topic.description ?? "N/A"}
+`).join("\n")}
+`).join("\n")}
+
+Roadmap Rules(VERY IMPORTANT):
+
+    1. Every week should contain 2 - 5 tasks depending on difficulty.
+2. Task descriptions must be ONE SHORT SENTENCE(10 - 20 words maximum).
 3. Do NOT write paragraphs.
-4. Keep titles short (2-6 words).
+4. Keep titles short(2 - 6 words).
 5. Spread difficult topics across multiple weeks instead of merging them.
 6. Phases should group related subjects, not individual topics.
 7. The roadmap should feel like a university course with incremental progression.
-8. Roadmap description will be personalized (3–5 sentences) tailored to the user's profile, goals, current skill level, available time, and target exam. It should explain how this roadmap is specifically designed to help the user achieve their objective.
-9. Topics must appear in a logical prerequisite order.
+8. Roadmap description will be personalized(3–5 sentences) tailored to the user's profile, goals, current skill level, available time, and target exam. It should explain how this roadmap is specifically designed to help the user achieve their objective.
+    9. Topics must appear in a logical prerequisite order.
 10. Avoid scheduling unrelated difficult topics in the same week.
-11. Reserve the final weeks for revision, mock tests, and weak-topic improvement.
+11. Reserve the final weeks for revision, mock tests, and weak - topic improvement.
 12. Do not repeat the same topic in multiple tasks unless it is a revision task.
 
 Date Constraints -
 
-- All dates must lie between the preparation start and end dates.
+        -All dates must lie between the preparation start and end dates.
 - Task dates must never overlap outside their week.
 - Weeks must be consecutive.
 - Phases must be consecutive.
@@ -206,81 +223,98 @@ Date Constraints -
 - Every week date range must fully contain its tasks.
 - Milestone dates must fall within the roadmap duration.
 
+VERY IMPORTANT
+
+Every task MUST include a "topics" field that contains an array of integer topic IDs.
+The value must be an array of integers.
+Examples:
+"topics": [1, 2, 3]
+or
+"topics": [5]
+
+Never omit topics.
+Never return topic names.
+Never return topic objects.
+Return ONLY integer IDs.
+
 Return ONLY a single valid JSON object.
 
 The response must:
 
-- contain no markdown
-- contain no code fences
-- contain no explanations
-- contain no comments
-- contain no trailing commas
-- contain no additional keys
-- exactly match the schema below :
+    -contain no markdown
+        - contain no code fences
+            - contain no explanations
+                - contain no comments
+                    - contain no trailing commas
+                        - contain no additional keys
+                            - exactly match the schema below:
 
-{
-  "title": "string",
-  "description": "string",
-  "start_date": "YYYY-MM-DD",
-  "end_date": "YYYY-MM-DD",
-
-  "phases": [
     {
-      "phase_name": "string",
-      "description": "string",
-      "duration": "string",
-      "start_date": "YYYY-MM-DD",
-      "end_date": "YYYY-MM-DD",
+        "title": "string",
+            "description": "string",
+                "start_date": "YYYY-MM-DD",
+                    "end_date": "YYYY-MM-DD",
 
-      "weeks": [
-        {
-          "week_number": 1,
-          "focus": "string",
-          "start_date": "YYYY-MM-DD",
-          "end_date": "YYYY-MM-DD",
+                        "phases": [
+                            {
+                                "phase_name": "string",
+                                "description": "string",
+                                "duration": "string",
+                                "start_date": "YYYY-MM-DD",
+                                "end_date": "YYYY-MM-DD",
 
-          "tasks": [
-            {
-              "title": "string",
-              "description": "string",
-              "start_date": "YYYY-MM-DD",
-              "end_date": "YYYY-MM-DD",
-            }
-          ]
-        }
-      ]
+                                "weeks": [
+                                    {
+                                        "week_number": 1,
+                                        "focus": "string",
+                                        "start_date": "YYYY-MM-DD",
+                                        "end_date": "YYYY-MM-DD",
+
+                                        "tasks": [
+                                            {
+                                                "title": "string",
+                                                "description": "string",
+                                                "start_date": "YYYY-MM-DD",
+                                                "end_date": "YYYY-MM-DD",
+                                                "topics": [1, 2, 3]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+
+                            "milestones": [
+                                {
+                                    "name": "string",
+                                    "goal": "string",
+                                    "target_date": "YYYY-MM-DD"
+                                }
+                            ]
     }
-  ],
-
-  "milestones": [
-    {
-      "name": "string",
-      "goal": "string",
-      "target_date": "YYYY-MM-DD"
-    }
-  ]
-}
 
 Do NOT
 
-- invent extra fields
-- rename fields
-- omit required fields
-- return null values
-- leave empty arrays unless unavoidable
-- use placeholder text such as "Task 1" or "Description"
+        - invent extra fields
+            - rename fields
+                - omit required fields
+                    - return null values
+                        - leave empty arrays unless unavoidable
+                            - use placeholder text such as "Task 1" or "Description"
 
-`;
+                                `;
 
         // 5️⃣ Generate roadmap with AI
         const response = await generateWithFallback(prompt);
 
         let textResponse = response.text ?? "";
 
+        // console.log("Raw AI Response:", textResponse);
+
         // Clean AI response
         const cleanedText = textResponse
             .trim()
-            .replace(/^```json\s*/i, "")
+            .replace(/^```json\s */i, "")
             .replace(/^```\s*/i, "")
             .replace(/```$/g, "")
             .trim();
@@ -295,12 +329,16 @@ Do NOT
 
         const roadmapData = parsed.data;
 
-        // console.log("✅ Roadmap generated Data:", roadmapData);
-
         // 6️⃣ Save everything in TRANSACTION
         const roadmap = await db.$transaction(async (tx) => {
-
             // Create roadmap
+
+            await tx.test.deleteMany({
+                where: {
+                    userExamId: user_exam_id,
+                },
+            });
+
             const createdRoadmap = await tx.roadmap.create({
                 data: {
                     user_exam_id,
@@ -439,37 +477,28 @@ Do NOT
                                     week.tasks
                                 )
                             ) {
-                                await tx.roadmapTask.createMany({
-                                    data:
-                                        week.tasks.map(
-                                            (
-                                                task: any,
-                                                taskIndex: number
-                                            ) => ({
-                                                week_id:
-                                                    createdWeek.id,
-                                                title:
-                                                    task.title,
-                                                description:
-                                                    task.description ||
-                                                    null,
-                                                start_date:
-                                                    task.start_date
-                                                        ? new Date(
-                                                            task.start_date
-                                                        )
-                                                        : null,
-                                                end_date:
-                                                    task.end_date
-                                                        ? new Date(
-                                                            task.end_date
-                                                        )
-                                                        : null,
-                                                order_index:
-                                                    taskIndex,
-                                            })
-                                        ),
-                                });
+                                for (const [taskIndex, task] of week.tasks.entries()) {
+                                    await tx.roadmapTask.create({
+                                        data: {
+                                            week_id: createdWeek.id,
+                                            title: task.title,
+                                            description: task.description || null,
+                                            start_date: task.start_date
+                                                ? new Date(task.start_date)
+                                                : null,
+                                            end_date: task.end_date
+                                                ? new Date(task.end_date)
+                                                : null,
+                                            order_index: taskIndex,
+
+                                            topics: {
+                                                connect: task.topics.map((id: number) => ({
+                                                    id,
+                                                })),
+                                            },
+                                        },
+                                    });
+                                }
                             }
                         }
                     }
@@ -632,6 +661,12 @@ Do NOT
             message: err?.message,
             model: err?.model,
         });
+
+        updateTag(`roadmap-${user_exam_id}`);
+        updateTag(`exams`);
+        updateTag(`userDashboard-${err?.user_id}`);
+        updateTag(`userExams-${err?.user_id}`);
+
         return {
             success: false,
             error: err.message,

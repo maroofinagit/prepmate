@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
-import { u } from "framer-motion/client";
+import { TestAttemptSchema } from "../lib/zodSchema";
 
 export async function getTestsForUserExam(userExamId: number) {
     'use cache';
@@ -242,7 +242,6 @@ export async function getTestById(testId: number) {
                 id: q.id,
                 question: q.question,
                 options: q.options as string[],
-                topic: q.topic,
                 difficulty: q.difficulty,
                 marks: q.marks,
             })),
@@ -352,8 +351,6 @@ export async function getTestResult(testId: number) {
 
                     marks: question.marks,
 
-                    topic: question.topic,
-
                     difficulty: question.difficulty,
                 };
             });
@@ -432,6 +429,107 @@ export async function getTestResult(testId: number) {
 
 const ai = new GoogleGenAI({});
 
+const MODELS = [
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+] as const;
+
+enum RoadmapFailureReason {
+    MODEL_UNAVAILABLE = "MODEL_UNAVAILABLE",
+    RATE_LIMITED = "RATE_LIMITED",
+    INVALID_AI_JSON = "INVALID_AI_JSON",
+    INVALID_ROADMAP_SCHEMA = "INVALID_ROADMAP_SCHEMA",
+    DATABASE_ERROR = "DATABASE_ERROR",
+    UNKNOWN = "UNKNOWN",
+}
+
+const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function generateWithFallback(prompt: string) {
+    let lastError: any;
+
+    for (const model of MODELS) {
+        // Try each model twice
+        for (let attempt = 1; attempt <= 2; attempt++) {
+            try {
+                console.log(
+                    `🤖 Trying ${model} (Attempt ${attempt}/2)`
+                );
+
+                const response =
+                    await ai.models.generateContent({
+                        model,
+                        contents: prompt,
+                    });
+
+                console.log(
+                    `✅ Test Attempt generated with ${model} (Attempt ${attempt})`
+                );
+
+                return response;
+            } catch (err: any) {
+                // Keep the latest error so we can throw it
+                // after all models have been exhausted.
+                err.model = model;
+                err.attempt = attempt;
+
+                lastError = err;
+
+                const status =
+                    err?.status ??
+                    err?.error?.code ??
+                    err?.code;
+
+                console.error(
+                    `Test Attempt Error: ❌ ${model} failed (Attempt ${attempt}/2 for test generation) with status ${status}:`,
+                    {
+                        status,
+                        message: err?.message,
+                    }
+                );
+
+                // Permanent errors → don't retry
+                if ([400, 401, 403].includes(status)) {
+                    throw err;
+                }
+
+                // Temporary errors → retry once, then move to next model
+                if ([429, 500, 503].includes(status)) {
+                    if (attempt < 2) {
+                        console.log(
+                            `⏳ Retrying ${model} in 2 seconds...`
+                        );
+
+                        await sleep(2000);
+                        continue;
+                    }
+
+                    console.log(
+                        `Test Attempt Generation Error: ➡️ ${model} exhausted. Trying next model...`
+                    );
+
+                    break;
+                }
+
+                // Any unexpected error should stop immediately
+                console.error(
+                    `🚨 Test Attempt Generation Error: Unexpected error from ${model}`,
+                    err
+                );
+
+                throw err;
+            }
+        }
+    }
+
+    throw lastError;
+}
+
 export async function generateTestAttempt(testId: number) {
     try {
 
@@ -469,8 +567,12 @@ export async function generateTestAttempt(testId: number) {
 
                 week: {
                     include: {
-                        tasks: true,
                         phase: true,
+                        tasks: {
+                            include: {
+                                topics: true
+                            },
+                        },
                     },
                 },
 
@@ -478,7 +580,11 @@ export async function generateTestAttempt(testId: number) {
                     include: {
                         weeks: {
                             include: {
-                                tasks: true,
+                                tasks: {
+                                    include: {
+                                        topics: true
+                                    }
+                                }
                             },
                         },
                     },
@@ -511,34 +617,56 @@ export async function generateTestAttempt(testId: number) {
         // EXTRACT TOPICS
         // =========================
 
-        let topics: string[] = [];
+        let taskContext: {
+            focus: string;
+            tasks: {
+                name: string;
+                description: string | null;
+                topics: {
+                    id: number;
+                    name: string;
+                    description: string | null;
+                    difficulty: string;
+                }[];
+            }[];
+        }[] = [];
 
         // WEEKLY TEST
         if (test.type === "WEEKLY" && test.week) {
 
-            topics = [
-                test.week.focus,
-
-                ...test.week.tasks.map((task) => task.title),
-
-                ...test.week.tasks
-                    .map((task) => task.description || "")
-                    .filter(Boolean),
+            taskContext = [
+                {
+                    focus: test.week.focus,
+                    tasks: test.week.tasks.map((task) => ({
+                        name: task.title,
+                        description: task.description,
+                        topics: task.topics.map((topic) => ({
+                            id: topic.id,
+                            name: topic.name,
+                            description: topic.description,
+                            difficulty: topic.difficulty,
+                        })),
+                    })),
+                },
             ];
+
         }
 
         // PHASE TEST
         else if (test.type === "PHASE" && test.phase) {
-
-            topics = test.phase.weeks.flatMap((week) => [
-                week.focus,
-
-                ...week.tasks.map((task) => task.title),
-
-                ...week.tasks
-                    .map((task) => task.description || "")
-                    .filter(Boolean),
-            ]);
+            taskContext = test.phase.weeks.map((week) => ({
+                focus: week.focus,
+                tasks: week.tasks.map((task) => ({
+                    name: task.title,
+                    description: task.description,
+                    topics: task.topics.map((topic) => ({
+                        id: topic.id,
+                        name: topic.name,
+                        description: topic.description,
+                        difficulty: topic.difficulty,
+                    })),
+                })),
+            }));
         }
 
         // FINAL TEST
@@ -554,7 +682,11 @@ export async function generateTestAttempt(testId: number) {
                         include: {
                             weeks: {
                                 include: {
-                                    tasks: true,
+                                    tasks: {
+                                        include: {
+                                            topics: true
+                                        }
+                                    }
                                 },
                             },
                         },
@@ -563,77 +695,131 @@ export async function generateTestAttempt(testId: number) {
             });
 
             if (roadmap) {
-                topics = roadmap.phases.flatMap((phase) =>
-                    phase.weeks.flatMap((week) => [
-                        week.focus,
-
-                        ...week.tasks.map((task) => task.title),
-
-                        ...week.tasks
-                            .map((task) => task.description || "")
-                            .filter(Boolean),
-                    ])
+                taskContext = roadmap.phases.flatMap((phase) =>
+                    phase.weeks.map((week) => ({
+                        focus: week.focus,
+                        tasks: week.tasks.map((task) => ({
+                            name: task.title,
+                            description: task.description,
+                            topics: task.topics.map((topic) => ({
+                                id: topic.id,
+                                name: topic.name,
+                                description: topic.description,
+                                difficulty: topic.difficulty,
+                            })),
+                        })),
+                    }))
                 );
             }
         }
-
-        // REMOVE DUPLICATES
-        topics = [...new Set(topics)];
-
-        console.log("Extracted Topics:", topics);
 
         // =========================
         // GEMINI PROMPT
         // =========================
 
         const prompt = `
-Generate test questions for the following exam and test:
+You are an expert exam question setter.
 
-Exam Name:
+Generate high-quality multiple-choice questions for the following test.
+
+Exam:
 ${test.userExam.exam.name}
 
-Test Title:
+Test:
 ${test.title}
 
-Type of Test:
+Test Type:
 ${test.type}
 
-Topics:
-${topics.join(", ")}
+Study Context:
 
-Rules:
-- Generate ONLY valid JSON
-- No markdown
-- No explanation outside JSON
-- Each question must have:
-  - question
-  - options (array of 4 options)
-  - correctAns
-  - topic
-  - difficulty
-  - marks
+${taskContext
+                .map(
+                    (week) => `
+Week Focus: ${week.focus}
+
+${week.tasks
+                            .map(
+                                (task) => `
+Task: ${task.name}
+Description: ${task.description ?? "N/A"}
+
+Topics:
+${task.topics
+                                        .map(
+                                            (topic) => `- ID: ${topic.id}
+  Name: ${topic.name}
+  Difficulty: ${topic.difficulty}
+  Description: ${topic.description ?? "N/A"}`
+                                        )
+                                        .join("\n")}
+`
+                            )
+                            .join("\n")}
+`
+                )
+                .join("\n")}
+
+Instructions:
+
+1. Generate ONLY valid JSON.
+2. Do NOT wrap the response in markdown.
+3. Do NOT include explanations or additional text.
+4. Every question must belong to exactly one Topic listed above.
+5. Use the corresponding topicId for every question.
+6. Never invent new topics.
+7. Never use an ID that is not provided.
+8. Questions should primarily assess concepts covered by the associated task.
+9. Ensure every task contributes at least one question whenever possible.
+10. Every question must have exactly 4 unique options.
+11. Only one option should be correct.
+12. The correct answer must exactly match one option.
+13. Distractors should be realistic.
+14. Avoid duplicate or very similar questions.
+15. Questions should emphasize conceptual understanding, practical reasoning, and problem-solving instead of memorization.
+16. Distribute questions evenly across all provided tasks and topics.
+17. Difficulty should match the topic difficulty whenever reasonable.
+18. Use concise, grammatically correct English suitable for technical interviews and competitive exams.
 
 Question Count:
-- If the test type is "WEEKLY", generate exactly 10 MCQ questions.
-- If the test type is "PHASE", generate exactly 20 MCQ questions.
-- If the test type is "FINAL", generate exactly 50 MCQ questions.
+- WEEKLY: 10 questions
+- PHASE: 20 questions
+- FINAL: 50 questions
 
-Difficulty values allowed:
-easy, medium, hard
+Difficulty Distribution:
+- WEEKLY:
+  - 50% Easy
+  - 40% Medium
+  - 10% Hard
 
-Return format:
+- PHASE:
+  - 30% Easy
+  - 50% Medium
+  - 20% Hard
+
+- FINAL:
+  - 20% Easy
+  - 50% Medium
+  - 30% Hard
+
+Allowed difficulty values:
+- easy
+- medium
+- hard
+
+Return ONLY this JSON array:
 
 [
   {
-    "question": "Question here",
+    "question": "Question text",
     "options": [
       "Option A",
       "Option B",
       "Option C",
       "Option D"
     ],
-    "correctAns": "Option A",
-    "topic": "Topic Name",
+    "correctAns": "Option B",
+    "topicId": 3,
     "difficulty": "medium",
     "marks": 1
   }
@@ -644,10 +830,7 @@ Return format:
         // CALL GEMINI
         // =========================
 
-        const result = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
+        const result = await generateWithFallback(prompt);
 
         const responseText = result.text ?? "";
 
@@ -657,22 +840,14 @@ Return format:
             .replace(/```/g, "")
             .trim();
 
-        let generatedQuestions;
+        const parsed = TestAttemptSchema.safeParse(JSON.parse(cleanedText));
 
-        try {
-            generatedQuestions = JSON.parse(cleanedText);
-        } catch (err) {
-            console.error("JSON Parse Error:", err);
-
-            return {
-                success: false,
-                message: "Invalid AI response format",
-            };
+        if (!parsed.success) {
+            console.error(parsed.error.message);
+            throw new Error("Test Attempt validation failed: " + parsed.error.message);
         }
 
-        // =========================
-        // SAVE QUESTIONS
-        // =========================
+        let generatedQuestions = parsed.data;
 
         // =========================
         // SAVE QUESTIONS
@@ -683,7 +858,7 @@ Return format:
                 question: q.question,
                 options: q.options,
                 correctAns: q.correctAns,
-                topic: q.topic,
+                topicId: q.topicId,
                 difficulty: q.difficulty,
                 marks: q.marks || 1,
             })),
@@ -716,13 +891,50 @@ Return format:
             message: "Questions generated successfully",
         };
 
-    } catch (error) {
+    } catch (err: any) {
+        let failureReason = RoadmapFailureReason.UNKNOWN;
 
-        console.error("TEST GENERATION ERROR:", error);
+        const status =
+            err?.status ??
+            err?.error?.code ??
+            err?.code;
+
+        if (err.message === "INVALID_AI_JSON") {
+            failureReason = RoadmapFailureReason.INVALID_AI_JSON;
+        } else if (err.message === "INVALID_ROADMAP_SCHEMA") {
+            failureReason = RoadmapFailureReason.INVALID_ROADMAP_SCHEMA;
+        } else if (status === 429) {
+            failureReason = RoadmapFailureReason.RATE_LIMITED;
+        } else if ([500, 503].includes(status)) {
+            failureReason = RoadmapFailureReason.MODEL_UNAVAILABLE;
+        } else if (
+            err.name === "PrismaClientKnownRequestError" ||
+            err.name === "PrismaClientUnknownRequestError"
+        ) {
+            failureReason = RoadmapFailureReason.DATABASE_ERROR;
+        }
+
+        await db.test.update({
+            where: {
+                id: testId,
+            },
+            data: {
+                isGenerated: false,
+                failureReason,
+            },
+        });
+
+        console.error("❌ Test Attempt generation failed", {
+            reason: failureReason,
+            status,
+            message: err?.message,
+            model: err?.model,
+        });
 
         return {
             success: false,
-            message: "Internal Server Error",
+            error: err.message,
+            failureReason,
         };
     }
 }
@@ -778,7 +990,7 @@ export async function submitTest(
                             }
                         }
                     },
-                },  
+                },
             },
         });
 
@@ -885,8 +1097,8 @@ export async function submitTest(
         updateTag(`test-${testId}`);
         updateTag(`exam-${test.userExam.exam.id}`);
         updateTag(`exams`);
-        updateTag(`userDashboard-${test.userExam.user_id}`);
-        updateTag(`userExams-${test.userExam.user_id}`);
+        updateTag(`userDashboard-${test.userExam.user.id}`);
+        updateTag(`userExams-${test.userExam.user.id}`);
 
         return {
             success: true,

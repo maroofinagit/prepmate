@@ -10,6 +10,7 @@ const TaskSchema = z.object({
     description: z.string(),
     start_date: dateSchema,
     end_date: dateSchema,
+    topics: z.array(z.number().int().positive()),
 });
 
 const WeekSchema = z.object({
@@ -45,3 +46,36 @@ export const RoadmapSchema = z.object({
 
     milestones: z.array(MilestoneSchema),
 });
+
+
+export const QuestionSchema = z.object({
+    question: z
+        .string()
+        .min(10, "Question is too short"),
+
+    options: z
+        .array(z.string().min(1))
+        .length(4, "Exactly 4 options are required"),
+
+    correctAns: z
+        .string()
+        .min(1),
+
+    topicId: z
+        .number()
+        .int()
+        .positive(),
+
+    difficulty: z.enum([
+        "easy",
+        "medium",
+        "hard",
+    ]),
+
+    marks: z
+        .number()
+        .int()
+        .positive(),
+});
+
+export const TestAttemptSchema = z.array(QuestionSchema);

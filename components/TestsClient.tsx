@@ -34,6 +34,7 @@ export default function TestsClient({ data, baseId }: TestsClientProps) {
     const [generatingTestId, setGeneratingTestId] = useState<number | null>(null);
     const [newData, setNewData] = useState(data);
 
+
     const markTestAsGive = (testId: number) => {
         setNewData(prev => ({
             ...prev,
@@ -167,8 +168,6 @@ function TestSection({
         </div>
     );
 }
-
-
 
 function TestCard({
     test,

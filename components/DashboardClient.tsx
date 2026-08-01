@@ -38,25 +38,43 @@ import {
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { Award, BadgeCheck, BookOpen, CircleX, ClipboardCheck, Clock3, FileText, Lightbulb, Route, Sparkles, Trash2, TrendingDown, TrendingUp, TriangleAlert } from "lucide-react";
 import { generateRoadmap } from "@/app/actions/roadmap";
-import { deleteUserExam } from "@/app/actions/action";
-import { tr } from "date-fns/locale";
-import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { motion } from "framer-motion";
+import { format } from "date-fns"
 
 
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
-    const exams = dashboardUser?.exams || [];
-    // const exams: any[] = []
 
+    useEffect(() => {
+        setNewExams(dashboardUser.exams ?? []);
+    }, [dashboardUser.exams]);
+
+
+    const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
     const [selectedExam, setSelectedExam] = useState(newExams.length ? newExams[0] : null);
     const [regenerating, setRegenerating] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
     const [deleting, setDeleting] = useState(false);
     const [dltDialogOpen, setDltDialogOpen] = useState(false);
+
+    useEffect(() => {
+        if (!newExams.length) {
+            setSelectedExam(null);
+            return;
+        }
+
+        setSelectedExam((prev) => {
+            if (!prev) return newExams[0];
+
+            return (
+                newExams.find((exam) => exam.id === prev.id) ??
+                newExams[0]
+            );
+        });
+    }, [newExams]);
 
     function startMessageLoop(messages: string[], interval = 1500) {
         let index = 0;
@@ -1288,7 +1306,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                 {/* Date */}
                                                                 {m.target_date && (
                                                                     <p className="text-xs text-muted-foreground">
-                                                                        📅 {m.target_date instanceof Date ? m.target_date.toLocaleDateString() : m.target_date}
+                                                                        📅 <span className=" ml-2">{format(new Date(m.target_date), "MMM dd, yyyy")}</span>
                                                                     </p>
                                                                 )}
                                                             </CardContent>

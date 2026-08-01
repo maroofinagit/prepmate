@@ -229,6 +229,8 @@ export type TopicWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Topic"> | Date | string
   subject_id?: Prisma.IntFilter<"Topic"> | number
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
+  questions?: Prisma.QuestionListRelationFilter
+  tasks?: Prisma.RoadmapTaskListRelationFilter
 }
 
 export type TopicOrderByWithRelationInput = {
@@ -239,6 +241,8 @@ export type TopicOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   subject_id?: Prisma.SortOrder
   subject?: Prisma.SubjectOrderByWithRelationInput
+  questions?: Prisma.QuestionOrderByRelationAggregateInput
+  tasks?: Prisma.RoadmapTaskOrderByRelationAggregateInput
 }
 
 export type TopicWhereUniqueInput = Prisma.AtLeast<{
@@ -253,6 +257,8 @@ export type TopicWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Topic"> | Date | string
   subject_id?: Prisma.IntFilter<"Topic"> | number
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
+  questions?: Prisma.QuestionListRelationFilter
+  tasks?: Prisma.RoadmapTaskListRelationFilter
 }, "id" | "subject_id_name">
 
 export type TopicOrderByWithAggregationInput = {
@@ -287,6 +293,8 @@ export type TopicCreateInput = {
   difficulty: $Enums.Difficulty
   created_at?: Date | string
   subject: Prisma.SubjectCreateNestedOneWithoutTopicsInput
+  questions?: Prisma.QuestionCreateNestedManyWithoutTopicInput
+  tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutTopicsInput
 }
 
 export type TopicUncheckedCreateInput = {
@@ -296,6 +304,8 @@ export type TopicUncheckedCreateInput = {
   difficulty: $Enums.Difficulty
   created_at?: Date | string
   subject_id: number
+  questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTopicInput
+  tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutTopicsInput
 }
 
 export type TopicUpdateInput = {
@@ -304,6 +314,8 @@ export type TopicUpdateInput = {
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subject?: Prisma.SubjectUpdateOneRequiredWithoutTopicsNestedInput
+  questions?: Prisma.QuestionUpdateManyWithoutTopicNestedInput
+  tasks?: Prisma.RoadmapTaskUpdateManyWithoutTopicsNestedInput
 }
 
 export type TopicUncheckedUpdateInput = {
@@ -313,6 +325,8 @@ export type TopicUncheckedUpdateInput = {
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subject_id?: Prisma.IntFieldUpdateOperationsInput | number
+  questions?: Prisma.QuestionUncheckedUpdateManyWithoutTopicNestedInput
+  tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutTopicsNestedInput
 }
 
 export type TopicCreateManyInput = {
@@ -392,6 +406,11 @@ export type TopicSumOrderByAggregateInput = {
   subject_id?: Prisma.SortOrder
 }
 
+export type TopicScalarRelationFilter = {
+  is?: Prisma.TopicWhereInput
+  isNot?: Prisma.TopicWhereInput
+}
+
 export type TopicCreateNestedManyWithoutSubjectInput = {
   create?: Prisma.XOR<Prisma.TopicCreateWithoutSubjectInput, Prisma.TopicUncheckedCreateWithoutSubjectInput> | Prisma.TopicCreateWithoutSubjectInput[] | Prisma.TopicUncheckedCreateWithoutSubjectInput[]
   connectOrCreate?: Prisma.TopicCreateOrConnectWithoutSubjectInput | Prisma.TopicCreateOrConnectWithoutSubjectInput[]
@@ -438,11 +457,65 @@ export type EnumDifficultyFieldUpdateOperationsInput = {
   set?: $Enums.Difficulty
 }
 
+export type TopicCreateNestedManyWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput> | Prisma.TopicCreateWithoutTasksInput[] | Prisma.TopicUncheckedCreateWithoutTasksInput[]
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutTasksInput | Prisma.TopicCreateOrConnectWithoutTasksInput[]
+  connect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+}
+
+export type TopicUncheckedCreateNestedManyWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput> | Prisma.TopicCreateWithoutTasksInput[] | Prisma.TopicUncheckedCreateWithoutTasksInput[]
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutTasksInput | Prisma.TopicCreateOrConnectWithoutTasksInput[]
+  connect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+}
+
+export type TopicUpdateManyWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput> | Prisma.TopicCreateWithoutTasksInput[] | Prisma.TopicUncheckedCreateWithoutTasksInput[]
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutTasksInput | Prisma.TopicCreateOrConnectWithoutTasksInput[]
+  upsert?: Prisma.TopicUpsertWithWhereUniqueWithoutTasksInput | Prisma.TopicUpsertWithWhereUniqueWithoutTasksInput[]
+  set?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  disconnect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  delete?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  connect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  update?: Prisma.TopicUpdateWithWhereUniqueWithoutTasksInput | Prisma.TopicUpdateWithWhereUniqueWithoutTasksInput[]
+  updateMany?: Prisma.TopicUpdateManyWithWhereWithoutTasksInput | Prisma.TopicUpdateManyWithWhereWithoutTasksInput[]
+  deleteMany?: Prisma.TopicScalarWhereInput | Prisma.TopicScalarWhereInput[]
+}
+
+export type TopicUncheckedUpdateManyWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput> | Prisma.TopicCreateWithoutTasksInput[] | Prisma.TopicUncheckedCreateWithoutTasksInput[]
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutTasksInput | Prisma.TopicCreateOrConnectWithoutTasksInput[]
+  upsert?: Prisma.TopicUpsertWithWhereUniqueWithoutTasksInput | Prisma.TopicUpsertWithWhereUniqueWithoutTasksInput[]
+  set?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  disconnect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  delete?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  connect?: Prisma.TopicWhereUniqueInput | Prisma.TopicWhereUniqueInput[]
+  update?: Prisma.TopicUpdateWithWhereUniqueWithoutTasksInput | Prisma.TopicUpdateWithWhereUniqueWithoutTasksInput[]
+  updateMany?: Prisma.TopicUpdateManyWithWhereWithoutTasksInput | Prisma.TopicUpdateManyWithWhereWithoutTasksInput[]
+  deleteMany?: Prisma.TopicScalarWhereInput | Prisma.TopicScalarWhereInput[]
+}
+
+export type TopicCreateNestedOneWithoutQuestionsInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutQuestionsInput, Prisma.TopicUncheckedCreateWithoutQuestionsInput>
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutQuestionsInput
+  connect?: Prisma.TopicWhereUniqueInput
+}
+
+export type TopicUpdateOneRequiredWithoutQuestionsNestedInput = {
+  create?: Prisma.XOR<Prisma.TopicCreateWithoutQuestionsInput, Prisma.TopicUncheckedCreateWithoutQuestionsInput>
+  connectOrCreate?: Prisma.TopicCreateOrConnectWithoutQuestionsInput
+  upsert?: Prisma.TopicUpsertWithoutQuestionsInput
+  connect?: Prisma.TopicWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TopicUpdateToOneWithWhereWithoutQuestionsInput, Prisma.TopicUpdateWithoutQuestionsInput>, Prisma.TopicUncheckedUpdateWithoutQuestionsInput>
+}
+
 export type TopicCreateWithoutSubjectInput = {
   name: string
   description?: string | null
   difficulty: $Enums.Difficulty
   created_at?: Date | string
+  questions?: Prisma.QuestionCreateNestedManyWithoutTopicInput
+  tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutTopicsInput
 }
 
 export type TopicUncheckedCreateWithoutSubjectInput = {
@@ -451,6 +524,8 @@ export type TopicUncheckedCreateWithoutSubjectInput = {
   description?: string | null
   difficulty: $Enums.Difficulty
   created_at?: Date | string
+  questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTopicInput
+  tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutTopicsInput
 }
 
 export type TopicCreateOrConnectWithoutSubjectInput = {
@@ -491,6 +566,100 @@ export type TopicScalarWhereInput = {
   subject_id?: Prisma.IntFilter<"Topic"> | number
 }
 
+export type TopicCreateWithoutTasksInput = {
+  name: string
+  description?: string | null
+  difficulty: $Enums.Difficulty
+  created_at?: Date | string
+  subject: Prisma.SubjectCreateNestedOneWithoutTopicsInput
+  questions?: Prisma.QuestionCreateNestedManyWithoutTopicInput
+}
+
+export type TopicUncheckedCreateWithoutTasksInput = {
+  id?: number
+  name: string
+  description?: string | null
+  difficulty: $Enums.Difficulty
+  created_at?: Date | string
+  subject_id: number
+  questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutTopicInput
+}
+
+export type TopicCreateOrConnectWithoutTasksInput = {
+  where: Prisma.TopicWhereUniqueInput
+  create: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput>
+}
+
+export type TopicUpsertWithWhereUniqueWithoutTasksInput = {
+  where: Prisma.TopicWhereUniqueInput
+  update: Prisma.XOR<Prisma.TopicUpdateWithoutTasksInput, Prisma.TopicUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.TopicCreateWithoutTasksInput, Prisma.TopicUncheckedCreateWithoutTasksInput>
+}
+
+export type TopicUpdateWithWhereUniqueWithoutTasksInput = {
+  where: Prisma.TopicWhereUniqueInput
+  data: Prisma.XOR<Prisma.TopicUpdateWithoutTasksInput, Prisma.TopicUncheckedUpdateWithoutTasksInput>
+}
+
+export type TopicUpdateManyWithWhereWithoutTasksInput = {
+  where: Prisma.TopicScalarWhereInput
+  data: Prisma.XOR<Prisma.TopicUpdateManyMutationInput, Prisma.TopicUncheckedUpdateManyWithoutTasksInput>
+}
+
+export type TopicCreateWithoutQuestionsInput = {
+  name: string
+  description?: string | null
+  difficulty: $Enums.Difficulty
+  created_at?: Date | string
+  subject: Prisma.SubjectCreateNestedOneWithoutTopicsInput
+  tasks?: Prisma.RoadmapTaskCreateNestedManyWithoutTopicsInput
+}
+
+export type TopicUncheckedCreateWithoutQuestionsInput = {
+  id?: number
+  name: string
+  description?: string | null
+  difficulty: $Enums.Difficulty
+  created_at?: Date | string
+  subject_id: number
+  tasks?: Prisma.RoadmapTaskUncheckedCreateNestedManyWithoutTopicsInput
+}
+
+export type TopicCreateOrConnectWithoutQuestionsInput = {
+  where: Prisma.TopicWhereUniqueInput
+  create: Prisma.XOR<Prisma.TopicCreateWithoutQuestionsInput, Prisma.TopicUncheckedCreateWithoutQuestionsInput>
+}
+
+export type TopicUpsertWithoutQuestionsInput = {
+  update: Prisma.XOR<Prisma.TopicUpdateWithoutQuestionsInput, Prisma.TopicUncheckedUpdateWithoutQuestionsInput>
+  create: Prisma.XOR<Prisma.TopicCreateWithoutQuestionsInput, Prisma.TopicUncheckedCreateWithoutQuestionsInput>
+  where?: Prisma.TopicWhereInput
+}
+
+export type TopicUpdateToOneWithWhereWithoutQuestionsInput = {
+  where?: Prisma.TopicWhereInput
+  data: Prisma.XOR<Prisma.TopicUpdateWithoutQuestionsInput, Prisma.TopicUncheckedUpdateWithoutQuestionsInput>
+}
+
+export type TopicUpdateWithoutQuestionsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutTopicsNestedInput
+  tasks?: Prisma.RoadmapTaskUpdateManyWithoutTopicsNestedInput
+}
+
+export type TopicUncheckedUpdateWithoutQuestionsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subject_id?: Prisma.IntFieldUpdateOperationsInput | number
+  tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutTopicsNestedInput
+}
+
 export type TopicCreateManySubjectInput = {
   id?: number
   name: string
@@ -504,6 +673,8 @@ export type TopicUpdateWithoutSubjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  questions?: Prisma.QuestionUpdateManyWithoutTopicNestedInput
+  tasks?: Prisma.RoadmapTaskUpdateManyWithoutTopicsNestedInput
 }
 
 export type TopicUncheckedUpdateWithoutSubjectInput = {
@@ -512,6 +683,8 @@ export type TopicUncheckedUpdateWithoutSubjectInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  questions?: Prisma.QuestionUncheckedUpdateManyWithoutTopicNestedInput
+  tasks?: Prisma.RoadmapTaskUncheckedUpdateManyWithoutTopicsNestedInput
 }
 
 export type TopicUncheckedUpdateManyWithoutSubjectInput = {
@@ -522,6 +695,72 @@ export type TopicUncheckedUpdateManyWithoutSubjectInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type TopicUpdateWithoutTasksInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutTopicsNestedInput
+  questions?: Prisma.QuestionUpdateManyWithoutTopicNestedInput
+}
+
+export type TopicUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subject_id?: Prisma.IntFieldUpdateOperationsInput | number
+  questions?: Prisma.QuestionUncheckedUpdateManyWithoutTopicNestedInput
+}
+
+export type TopicUncheckedUpdateManyWithoutTasksInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  difficulty?: Prisma.EnumDifficultyFieldUpdateOperationsInput | $Enums.Difficulty
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subject_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+
+/**
+ * Count Type TopicCountOutputType
+ */
+
+export type TopicCountOutputType = {
+  questions: number
+  tasks: number
+}
+
+export type TopicCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  questions?: boolean | TopicCountOutputTypeCountQuestionsArgs
+  tasks?: boolean | TopicCountOutputTypeCountTasksArgs
+}
+
+/**
+ * TopicCountOutputType without action
+ */
+export type TopicCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TopicCountOutputType
+   */
+  select?: Prisma.TopicCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TopicCountOutputType without action
+ */
+export type TopicCountOutputTypeCountQuestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuestionWhereInput
+}
+
+/**
+ * TopicCountOutputType without action
+ */
+export type TopicCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoadmapTaskWhereInput
+}
 
 
 export type TopicSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -532,6 +771,9 @@ export type TopicSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   created_at?: boolean
   subject_id?: boolean
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
+  questions?: boolean | Prisma.Topic$questionsArgs<ExtArgs>
+  tasks?: boolean | Prisma.Topic$tasksArgs<ExtArgs>
+  _count?: boolean | Prisma.TopicCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["topic"]>
 
 export type TopicSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -566,6 +808,9 @@ export type TopicSelectScalar = {
 export type TopicOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "difficulty" | "created_at" | "subject_id", ExtArgs["result"]["topic"]>
 export type TopicInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
+  questions?: boolean | Prisma.Topic$questionsArgs<ExtArgs>
+  tasks?: boolean | Prisma.Topic$tasksArgs<ExtArgs>
+  _count?: boolean | Prisma.TopicCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TopicIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
@@ -578,6 +823,8 @@ export type $TopicPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Topic"
   objects: {
     subject: Prisma.$SubjectPayload<ExtArgs>
+    questions: Prisma.$QuestionPayload<ExtArgs>[]
+    tasks: Prisma.$RoadmapTaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -981,6 +1228,8 @@ readonly fields: TopicFieldRefs;
 export interface Prisma__TopicClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   subject<T extends Prisma.SubjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubjectDefaultArgs<ExtArgs>>): Prisma.Prisma__SubjectClient<runtime.Types.Result.GetResult<Prisma.$SubjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  questions<T extends Prisma.Topic$questionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Topic$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tasks<T extends Prisma.Topic$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Topic$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoadmapTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1414,6 +1663,54 @@ export type TopicDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Topics to delete.
    */
   limit?: number
+}
+
+/**
+ * Topic.questions
+ */
+export type Topic$questionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Question
+   */
+  select?: Prisma.QuestionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Question
+   */
+  omit?: Prisma.QuestionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuestionInclude<ExtArgs> | null
+  where?: Prisma.QuestionWhereInput
+  orderBy?: Prisma.QuestionOrderByWithRelationInput | Prisma.QuestionOrderByWithRelationInput[]
+  cursor?: Prisma.QuestionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuestionScalarFieldEnum | Prisma.QuestionScalarFieldEnum[]
+}
+
+/**
+ * Topic.tasks
+ */
+export type Topic$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoadmapTask
+   */
+  select?: Prisma.RoadmapTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RoadmapTask
+   */
+  omit?: Prisma.RoadmapTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoadmapTaskInclude<ExtArgs> | null
+  where?: Prisma.RoadmapTaskWhereInput
+  orderBy?: Prisma.RoadmapTaskOrderByWithRelationInput | Prisma.RoadmapTaskOrderByWithRelationInput[]
+  cursor?: Prisma.RoadmapTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RoadmapTaskScalarFieldEnum | Prisma.RoadmapTaskScalarFieldEnum[]
 }
 
 /**

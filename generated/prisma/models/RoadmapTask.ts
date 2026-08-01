@@ -264,6 +264,7 @@ export type RoadmapTaskWhereInput = {
   created_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
   week_id?: Prisma.IntFilter<"RoadmapTask"> | number
+  topics?: Prisma.TopicListRelationFilter
   week?: Prisma.XOR<Prisma.RoadmapWeekScalarRelationFilter, Prisma.RoadmapWeekWhereInput>
 }
 
@@ -278,6 +279,7 @@ export type RoadmapTaskOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   week_id?: Prisma.SortOrder
+  topics?: Prisma.TopicOrderByRelationAggregateInput
   week?: Prisma.RoadmapWeekOrderByWithRelationInput
 }
 
@@ -295,6 +297,7 @@ export type RoadmapTaskWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
   week_id?: Prisma.IntFilter<"RoadmapTask"> | number
+  topics?: Prisma.TopicListRelationFilter
   week?: Prisma.XOR<Prisma.RoadmapWeekScalarRelationFilter, Prisma.RoadmapWeekWhereInput>
 }, "id">
 
@@ -341,6 +344,7 @@ export type RoadmapTaskCreateInput = {
   order_index?: number | null
   created_at?: Date | string
   updated_at?: Date | string
+  topics?: Prisma.TopicCreateNestedManyWithoutTasksInput
   week: Prisma.RoadmapWeekCreateNestedOneWithoutTasksInput
 }
 
@@ -355,6 +359,7 @@ export type RoadmapTaskUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   week_id: number
+  topics?: Prisma.TopicUncheckedCreateNestedManyWithoutTasksInput
 }
 
 export type RoadmapTaskUpdateInput = {
@@ -366,6 +371,7 @@ export type RoadmapTaskUpdateInput = {
   order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  topics?: Prisma.TopicUpdateManyWithoutTasksNestedInput
   week?: Prisma.RoadmapWeekUpdateOneRequiredWithoutTasksNestedInput
 }
 
@@ -380,6 +386,7 @@ export type RoadmapTaskUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   week_id?: Prisma.IntFieldUpdateOperationsInput | number
+  topics?: Prisma.TopicUncheckedUpdateManyWithoutTasksNestedInput
 }
 
 export type RoadmapTaskCreateManyInput = {
@@ -480,6 +487,44 @@ export type RoadmapTaskSumOrderByAggregateInput = {
   week_id?: Prisma.SortOrder
 }
 
+export type RoadmapTaskCreateNestedManyWithoutTopicsInput = {
+  create?: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput> | Prisma.RoadmapTaskCreateWithoutTopicsInput[] | Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput[]
+  connectOrCreate?: Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput | Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput[]
+  connect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+}
+
+export type RoadmapTaskUncheckedCreateNestedManyWithoutTopicsInput = {
+  create?: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput> | Prisma.RoadmapTaskCreateWithoutTopicsInput[] | Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput[]
+  connectOrCreate?: Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput | Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput[]
+  connect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+}
+
+export type RoadmapTaskUpdateManyWithoutTopicsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput> | Prisma.RoadmapTaskCreateWithoutTopicsInput[] | Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput[]
+  connectOrCreate?: Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput | Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput[]
+  upsert?: Prisma.RoadmapTaskUpsertWithWhereUniqueWithoutTopicsInput | Prisma.RoadmapTaskUpsertWithWhereUniqueWithoutTopicsInput[]
+  set?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  disconnect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  delete?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  connect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  update?: Prisma.RoadmapTaskUpdateWithWhereUniqueWithoutTopicsInput | Prisma.RoadmapTaskUpdateWithWhereUniqueWithoutTopicsInput[]
+  updateMany?: Prisma.RoadmapTaskUpdateManyWithWhereWithoutTopicsInput | Prisma.RoadmapTaskUpdateManyWithWhereWithoutTopicsInput[]
+  deleteMany?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
+}
+
+export type RoadmapTaskUncheckedUpdateManyWithoutTopicsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput> | Prisma.RoadmapTaskCreateWithoutTopicsInput[] | Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput[]
+  connectOrCreate?: Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput | Prisma.RoadmapTaskCreateOrConnectWithoutTopicsInput[]
+  upsert?: Prisma.RoadmapTaskUpsertWithWhereUniqueWithoutTopicsInput | Prisma.RoadmapTaskUpsertWithWhereUniqueWithoutTopicsInput[]
+  set?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  disconnect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  delete?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  connect?: Prisma.RoadmapTaskWhereUniqueInput | Prisma.RoadmapTaskWhereUniqueInput[]
+  update?: Prisma.RoadmapTaskUpdateWithWhereUniqueWithoutTopicsInput | Prisma.RoadmapTaskUpdateWithWhereUniqueWithoutTopicsInput[]
+  updateMany?: Prisma.RoadmapTaskUpdateManyWithWhereWithoutTopicsInput | Prisma.RoadmapTaskUpdateManyWithWhereWithoutTopicsInput[]
+  deleteMany?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
+}
+
 export type RoadmapTaskCreateNestedManyWithoutWeekInput = {
   create?: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutWeekInput, Prisma.RoadmapTaskUncheckedCreateWithoutWeekInput> | Prisma.RoadmapTaskCreateWithoutWeekInput[] | Prisma.RoadmapTaskUncheckedCreateWithoutWeekInput[]
   connectOrCreate?: Prisma.RoadmapTaskCreateOrConnectWithoutWeekInput | Prisma.RoadmapTaskCreateOrConnectWithoutWeekInput[]
@@ -522,6 +567,68 @@ export type RoadmapTaskUncheckedUpdateManyWithoutWeekNestedInput = {
   deleteMany?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
 }
 
+export type RoadmapTaskCreateWithoutTopicsInput = {
+  title: string
+  description?: string | null
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  is_completed?: boolean
+  order_index?: number | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  week: Prisma.RoadmapWeekCreateNestedOneWithoutTasksInput
+}
+
+export type RoadmapTaskUncheckedCreateWithoutTopicsInput = {
+  id?: number
+  title: string
+  description?: string | null
+  start_date?: Date | string | null
+  end_date?: Date | string | null
+  is_completed?: boolean
+  order_index?: number | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  week_id: number
+}
+
+export type RoadmapTaskCreateOrConnectWithoutTopicsInput = {
+  where: Prisma.RoadmapTaskWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput>
+}
+
+export type RoadmapTaskUpsertWithWhereUniqueWithoutTopicsInput = {
+  where: Prisma.RoadmapTaskWhereUniqueInput
+  update: Prisma.XOR<Prisma.RoadmapTaskUpdateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedUpdateWithoutTopicsInput>
+  create: Prisma.XOR<Prisma.RoadmapTaskCreateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedCreateWithoutTopicsInput>
+}
+
+export type RoadmapTaskUpdateWithWhereUniqueWithoutTopicsInput = {
+  where: Prisma.RoadmapTaskWhereUniqueInput
+  data: Prisma.XOR<Prisma.RoadmapTaskUpdateWithoutTopicsInput, Prisma.RoadmapTaskUncheckedUpdateWithoutTopicsInput>
+}
+
+export type RoadmapTaskUpdateManyWithWhereWithoutTopicsInput = {
+  where: Prisma.RoadmapTaskScalarWhereInput
+  data: Prisma.XOR<Prisma.RoadmapTaskUpdateManyMutationInput, Prisma.RoadmapTaskUncheckedUpdateManyWithoutTopicsInput>
+}
+
+export type RoadmapTaskScalarWhereInput = {
+  AND?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
+  OR?: Prisma.RoadmapTaskScalarWhereInput[]
+  NOT?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
+  id?: Prisma.IntFilter<"RoadmapTask"> | number
+  title?: Prisma.StringFilter<"RoadmapTask"> | string
+  description?: Prisma.StringNullableFilter<"RoadmapTask"> | string | null
+  start_date?: Prisma.DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+  end_date?: Prisma.DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
+  is_completed?: Prisma.BoolFilter<"RoadmapTask"> | boolean
+  order_index?: Prisma.IntNullableFilter<"RoadmapTask"> | number | null
+  created_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
+  week_id?: Prisma.IntFilter<"RoadmapTask"> | number
+}
+
 export type RoadmapTaskCreateWithoutWeekInput = {
   title: string
   description?: string | null
@@ -531,6 +638,7 @@ export type RoadmapTaskCreateWithoutWeekInput = {
   order_index?: number | null
   created_at?: Date | string
   updated_at?: Date | string
+  topics?: Prisma.TopicCreateNestedManyWithoutTasksInput
 }
 
 export type RoadmapTaskUncheckedCreateWithoutWeekInput = {
@@ -543,6 +651,7 @@ export type RoadmapTaskUncheckedCreateWithoutWeekInput = {
   order_index?: number | null
   created_at?: Date | string
   updated_at?: Date | string
+  topics?: Prisma.TopicUncheckedCreateNestedManyWithoutTasksInput
 }
 
 export type RoadmapTaskCreateOrConnectWithoutWeekInput = {
@@ -571,20 +680,42 @@ export type RoadmapTaskUpdateManyWithWhereWithoutWeekInput = {
   data: Prisma.XOR<Prisma.RoadmapTaskUpdateManyMutationInput, Prisma.RoadmapTaskUncheckedUpdateManyWithoutWeekInput>
 }
 
-export type RoadmapTaskScalarWhereInput = {
-  AND?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
-  OR?: Prisma.RoadmapTaskScalarWhereInput[]
-  NOT?: Prisma.RoadmapTaskScalarWhereInput | Prisma.RoadmapTaskScalarWhereInput[]
-  id?: Prisma.IntFilter<"RoadmapTask"> | number
-  title?: Prisma.StringFilter<"RoadmapTask"> | string
-  description?: Prisma.StringNullableFilter<"RoadmapTask"> | string | null
-  start_date?: Prisma.DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
-  end_date?: Prisma.DateTimeNullableFilter<"RoadmapTask"> | Date | string | null
-  is_completed?: Prisma.BoolFilter<"RoadmapTask"> | boolean
-  order_index?: Prisma.IntNullableFilter<"RoadmapTask"> | number | null
-  created_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"RoadmapTask"> | Date | string
-  week_id?: Prisma.IntFilter<"RoadmapTask"> | number
+export type RoadmapTaskUpdateWithoutTopicsInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  week?: Prisma.RoadmapWeekUpdateOneRequiredWithoutTasksNestedInput
+}
+
+export type RoadmapTaskUncheckedUpdateWithoutTopicsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  week_id?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type RoadmapTaskUncheckedUpdateManyWithoutTopicsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  end_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  week_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type RoadmapTaskCreateManyWeekInput = {
@@ -608,6 +739,7 @@ export type RoadmapTaskUpdateWithoutWeekInput = {
   order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  topics?: Prisma.TopicUpdateManyWithoutTasksNestedInput
 }
 
 export type RoadmapTaskUncheckedUpdateWithoutWeekInput = {
@@ -620,6 +752,7 @@ export type RoadmapTaskUncheckedUpdateWithoutWeekInput = {
   order_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  topics?: Prisma.TopicUncheckedUpdateManyWithoutTasksNestedInput
 }
 
 export type RoadmapTaskUncheckedUpdateManyWithoutWeekInput = {
@@ -635,6 +768,35 @@ export type RoadmapTaskUncheckedUpdateManyWithoutWeekInput = {
 }
 
 
+/**
+ * Count Type RoadmapTaskCountOutputType
+ */
+
+export type RoadmapTaskCountOutputType = {
+  topics: number
+}
+
+export type RoadmapTaskCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  topics?: boolean | RoadmapTaskCountOutputTypeCountTopicsArgs
+}
+
+/**
+ * RoadmapTaskCountOutputType without action
+ */
+export type RoadmapTaskCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoadmapTaskCountOutputType
+   */
+  select?: Prisma.RoadmapTaskCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RoadmapTaskCountOutputType without action
+ */
+export type RoadmapTaskCountOutputTypeCountTopicsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TopicWhereInput
+}
+
 
 export type RoadmapTaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -647,7 +809,9 @@ export type RoadmapTaskSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   updated_at?: boolean
   week_id?: boolean
+  topics?: boolean | Prisma.RoadmapTask$topicsArgs<ExtArgs>
   week?: boolean | Prisma.RoadmapWeekDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.RoadmapTaskCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roadmapTask"]>
 
 export type RoadmapTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -693,7 +857,9 @@ export type RoadmapTaskSelectScalar = {
 
 export type RoadmapTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "start_date" | "end_date" | "is_completed" | "order_index" | "created_at" | "updated_at" | "week_id", ExtArgs["result"]["roadmapTask"]>
 export type RoadmapTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  topics?: boolean | Prisma.RoadmapTask$topicsArgs<ExtArgs>
   week?: boolean | Prisma.RoadmapWeekDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.RoadmapTaskCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoadmapTaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   week?: boolean | Prisma.RoadmapWeekDefaultArgs<ExtArgs>
@@ -705,6 +871,7 @@ export type RoadmapTaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $RoadmapTaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RoadmapTask"
   objects: {
+    topics: Prisma.$TopicPayload<ExtArgs>[]
     week: Prisma.$RoadmapWeekPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1112,6 +1279,7 @@ readonly fields: RoadmapTaskFieldRefs;
  */
 export interface Prisma__RoadmapTaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  topics<T extends Prisma.RoadmapTask$topicsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoadmapTask$topicsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TopicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   week<T extends Prisma.RoadmapWeekDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoadmapWeekDefaultArgs<ExtArgs>>): Prisma.Prisma__RoadmapWeekClient<runtime.Types.Result.GetResult<Prisma.$RoadmapWeekPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1550,6 +1718,30 @@ export type RoadmapTaskDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many RoadmapTasks to delete.
    */
   limit?: number
+}
+
+/**
+ * RoadmapTask.topics
+ */
+export type RoadmapTask$topicsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Topic
+   */
+  select?: Prisma.TopicSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Topic
+   */
+  omit?: Prisma.TopicOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TopicInclude<ExtArgs> | null
+  where?: Prisma.TopicWhereInput
+  orderBy?: Prisma.TopicOrderByWithRelationInput | Prisma.TopicOrderByWithRelationInput[]
+  cursor?: Prisma.TopicWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TopicScalarFieldEnum | Prisma.TopicScalarFieldEnum[]
 }
 
 /**

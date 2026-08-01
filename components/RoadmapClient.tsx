@@ -594,7 +594,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                                             key={task.id}
                                                                             className="border-l-4 border-blue-500 shadow-md px-6 py-4 bg-linear-to-r from-indigo-100 to-white rounded-md flex justify-between items-center"
                                                                         >
-                                                                            <div className="flex-1 gap-2 flex flex-col">
+                                                                            <div className="flex-1 gap-2 flex flex-col max-w-3xl">
                                                                                 <p className="font-medium">{task.title}</p>
                                                                                 {task.description && (
                                                                                     <p className="text-sm text-gray-600">

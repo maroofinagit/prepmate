@@ -80,11 +80,11 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.9.0
+ * Prisma Client JS version: 7.9.1
  * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.9.0",
+  client: "7.9.1",
   engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
@@ -2077,7 +2077,8 @@ export const TestScalarFieldEnum = {
   duration: 'duration',
   nOfFinalTests: 'nOfFinalTests',
   isGenerated: 'isGenerated',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  failureReason: 'failureReason'
 } as const
 
 export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
@@ -2086,10 +2087,10 @@ export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof Test
 export const QuestionScalarFieldEnum = {
   id: 'id',
   testId: 'testId',
+  topicId: 'topicId',
   question: 'question',
   options: 'options',
   correctAns: 'correctAns',
-  topic: 'topic',
   difficulty: 'difficulty',
   marks: 'marks',
   createdAt: 'createdAt'
