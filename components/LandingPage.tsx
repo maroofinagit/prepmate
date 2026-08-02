@@ -17,6 +17,7 @@ import {
     BarChart3,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "./ui/button";
 
 interface LandingPageProps {
     user: any | null;
@@ -358,6 +359,17 @@ export default function LandingPage({
                                 </motion.div>
                             ))}
                         </div>
+
+                        <h2 className="mt-16 text-center text-muted-foreground">
+                            Your learning journey continues today. Complete today's tasks and stay on track.
+                        </h2>
+
+                        <Button className=" mt-4 w-fit mx-auto flex items-center gap-2 px-4 py-6 rounded-xl text-lg border bg-transparent border-blue-700 text-blue-700 hover:bg-blue-700 duration-300 transition hover:text-white" asChild>
+                            <Link href="/dashboard/today">
+                                Look at Today's Tasks
+                            </Link>
+                        </Button>
+
                     </motion.section>
                 )
             }
@@ -872,7 +884,7 @@ export default function LandingPage({
                                             delay: index * 0.08,
                                         }}
                                         viewport={{ once: false, amount: 0.3 }}
-                                        
+
                                         className="flex items-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-xl"
                                     >
 

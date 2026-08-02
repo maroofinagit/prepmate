@@ -10,7 +10,6 @@ interface Question {
     id: number;
     question: string;
     options: string[];
-    topic: string;
     difficulty: string;
     marks: number;
 }
@@ -29,7 +28,9 @@ interface TestProps {
 }
 
 export default function TestClient({ test, userExamId }: TestProps) {
-    
+
+    console.log("Rendering TestClient with test:", test)
+
     const [currentQ, setCurrentQ] = useState(0);
 
     const [responses, setResponses] = useState<Record<number, string>>({});
@@ -142,7 +143,7 @@ export default function TestClient({ test, userExamId }: TestProps) {
     // =========================
     // FORMAT TIMER
     // =========================
-    const minutes = Math.floor(timeLeft/60);
+    const minutes = Math.floor(timeLeft / 60);
 
     const seconds = timeLeft % 60;
 
@@ -168,7 +169,7 @@ export default function TestClient({ test, userExamId }: TestProps) {
                 });
                 return;
             }
-            toast.success("Test submitted successfully!",{
+            toast.success("Test submitted successfully!", {
                 id: toastId,
             });
             setSubmitting(false);
@@ -261,15 +262,10 @@ export default function TestClient({ test, userExamId }: TestProps) {
                                 Question {currentQ + 1} of {test.questions.length}
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">
-                                    {question.topic}
-                                </span>
+                            <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">
+                                {question.marks} Marks
+                            </span>
 
-                                <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">
-                                    {question.marks} Marks
-                                </span>
-                            </div>
                         </div>
 
                         <h2 className="text-2xl font-semibold text-zinc-800 leading-relaxed">

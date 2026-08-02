@@ -16,6 +16,7 @@ export default async function TestPage({ params }: { params: Promise<{ id: strin
 
     const res = await getTestById(testId);
 
+
     if (!res.success || res.data === undefined) {
         console.log("Test not found or failed to load:", res);
         return <div className="text-center mt-10 font-semibold text-xl flex items-center justify-center h-screen">Test not found</div>;

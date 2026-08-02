@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     CalendarDays,
     CheckCircle2,
@@ -13,9 +13,32 @@ import { Progress } from "./ui/progress";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
+import { AnimatePresence, easeOut, motion, Variants } from "framer-motion";
+import { completeRoadmapTask } from "@/app/actions/action";
+import { toast } from "sonner";
+
 
 
 export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
+
+    const userId = todaysTasks[0]?.week.phase.roadmap.userExam.user.id;
+    const userExamId = todaysTasks[0]?.week.phase.roadmap.userExam.id;
+
+    const [tasks, setTasks] = useState(todaysTasks);
+
+    useEffect(() => {
+        setTasks(todaysTasks);
+    }, [todaysTasks]);
+
+    const container = {
+        hidden: {},
+        show: {
+            transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.2,
+            },
+        },
+    };
 
     const today = useMemo(() => {
         const d = new Date();
@@ -30,7 +53,6 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
     }, [today]);
 
     const stats = useMemo(() => {
-        const today = new Date();
         today.setHours(0, 0, 0, 0);
 
         const upcomingEnd = new Date(today);
@@ -42,7 +64,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
         let overdue = 0;
         let upcoming = 0;
 
-        todaysTasks.forEach((task) => {
+        tasks.forEach((task) => {
             const start = new Date(task.start_date);
             start.setHours(0, 0, 0, 0);
 
@@ -66,10 +88,16 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             }
 
             // Upcoming (next 3 days, excluding today)
-            if (start > today && start <= upcomingEnd) {
+            if (
+                !task.is_completed &&
+                today < start &&
+                start <= upcomingEnd
+            ) {
                 upcoming++;
             }
         });
+
+        console.log("Upcoming tasks:", upcoming);
 
         return {
             todayTasks,
@@ -77,7 +105,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             overdue,
             upcoming,
         };
-    }, [todaysTasks]);
+    }, [tasks]);
 
     const greeting = useMemo(() => {
         const hour = new Date().getHours();
@@ -102,11 +130,11 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             {
                 examId: number;
                 examName: string;
-                tasks: typeof todaysTasks;
+                tasks: typeof tasks;
             }
         >();
 
-        todaysTasks.forEach((task) => {
+        tasks.forEach((task) => {
             const start = new Date(task.start_date);
             start.setHours(0, 0, 0, 0);
 
@@ -129,7 +157,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
         });
 
         return Array.from(groups.values());
-    }, [todaysTasks]);
+    }, [tasks]);
 
     const overdueTasks = useMemo(() => {
 
@@ -138,11 +166,11 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             {
                 examId: number;
                 examName: string;
-                tasks: typeof todaysTasks;
+                tasks: typeof tasks;
             }
         >();
 
-        todaysTasks.forEach((task) => {
+        tasks.forEach((task) => {
             if (task.is_completed) return;
 
             const end = new Date(task.end_date);
@@ -164,7 +192,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
         });
 
         return Array.from(groups.values());
-    }, [todaysTasks]);
+    }, [tasks]);
 
     const upcomingTasks = useMemo(() => {
 
@@ -177,18 +205,20 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             {
                 examId: number;
                 examName: string;
-                tasks: typeof todaysTasks;
+                tasks: typeof tasks;
             }
         >();
 
-        todaysTasks.forEach((task) => {
+        tasks.forEach((task) => {
             if (task.is_completed) return;
 
             const start = new Date(task.start_date);
             start.setHours(0, 0, 0, 0);
 
+            if (task.is_completed) return;
+
             // Starts after today and within next 3 days
-            if (!(start > today && start <= upcomingEnd)) return;
+            if (!(today < start && start <= upcomingEnd)) return;
 
             const exam = task.week.phase.roadmap.userExam.exam;
 
@@ -204,66 +234,135 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
         });
 
         return Array.from(groups.values());
-    }, [todaysTasks]);
+    }, [tasks]);
+
+    const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
+    const [updatingTasks, setUpdatingTasks] = useState<Record<number, boolean>>({});
+
+    const handleCheckboxChange = (taskId: number) => {
+        setCheckedTasks((prev) => ({
+            ...prev,
+            [taskId]: !prev[taskId],
+        }));
+    };
+
+    const updateSingleTask = async (taskId: number) => {
+
+        const prevTasks = tasks;
+
+        try {
+
+            setUpdatingTasks((prev) => ({
+                ...prev,
+                [taskId]: true,
+            }));
+
+            setTasks((prev) =>
+                prev.map((task) =>
+                    task.id === taskId
+                        ? {
+                            ...task,
+                            is_completed: true,
+                        }
+                        : task
+                )
+            );
+
+            const res = await completeRoadmapTask(taskId, userExamId, userId);
+
+            if (!res.success) throw new Error("Failed to update task");
+
+            toast.success("Task completed!");
+
+        } catch (err) {
+
+            console.log(err);
+            toast.error("Something went wrong.");
+            setTasks(prevTasks);
+            setCheckedTasks((prev) => ({
+                ...prev,
+                [taskId]: false,
+            }));
+            setUpdatingTasks((prev) => ({
+                ...prev,
+                [taskId]: false,
+            }));
+
+        }
+    };
 
     return (
-        <section className="min-h-screen overflow-y-auto space-y-6 p-6 max-w-7xl mx-auto md:pt-36 pt-20">
+        <section className="min-h-screen space-y-6 pb-12 max-w-7xl mx-auto md:pt-36 pt-20">
+
             {/* Hero */}
             <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">
-                    {greeting} 👋 <br />
-                    {todaysTasks[0]?.week.phase.roadmap.userExam.user.name || "there"}
-                </h1>
+                <div className="flex gap-2 flex-col">
+                    <span className="text-lg font-medium text-muted-foreground">
+                        {greeting},
+                    </span>
+
+                    <h1 className="text-4xl font-bold tracking-tight">
+                        {tasks[0]?.week.phase.roadmap.userExam.user.name || "there"}
+                    </h1>
+                </div>
 
                 <p className="text-lg text-muted-foreground">
                     Here's your study plan for today.
                 </p>
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
                     <CalendarDays className="h-4 w-4" />
                     {formattedDate}
                 </div>
             </div>
 
             {/* Overview Cards */}
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <motion.div
+                className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+                variants={container}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: false, amount: 0.5 }}
+
+            >
                 <OverviewCard
                     title="Today's Tasks"
                     value={stats.todayTasks}
-                    icon={<Clock3 className="h-5 w-5" />}
+                    icon={<Clock3 className="size-6" />}
                 />
 
                 <OverviewCard
                     title="Completed"
                     value={stats.completed}
                     total={stats.todayTasks}
-                    icon={<CheckCircle2 className="h-5 w-5 text-green-500" />}
+                    icon={<CheckCircle2 className="size-6 text-green-500" />}
                 />
 
                 <OverviewCard
                     title="Overdue"
                     value={stats.overdue}
-                    icon={<Flame className="h-5 w-5 text-red-500" />}
+                    total={stats.todayTasks}
+                    icon={<Flame className="size-6 text-red-500" />}
                 />
 
                 <OverviewCard
                     title="Upcoming"
                     value={stats.upcoming}
-                    icon={<CalendarDays className="h-5 w-5 text-blue-500" />}
+                    icon={<CalendarDays className="size-6 text-blue-500" />}
                 />
-            </div>
+            </motion.div>
 
             {/* Today's Tasks */}
             <div className="mt-10 space-y-6">
-                <div>
-                    <h2 className="text-2xl font-bold">Today's Focus</h2>
+                <div className="flex flex-col gap-2">
+                    <h2 className="text-2xl font-bold text-blue-700">Today's Focus</h2>
 
                     <p className="text-muted-foreground">
                         Complete today's planned tasks across all your active exams.
                     </p>
                 </div>
 
-                {groupedTasks.length === 0 && (
+                {groupedTasks.length === 0 ? (
                     <Card>
                         <CardContent className="flex h-40 items-center justify-center">
                             <div className="text-center">
@@ -277,74 +376,150 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                             </div>
                         </CardContent>
                     </Card>
-                )}
+                ) : (
+                    <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
+                        {groupedTasks.map((group) => (
+                            <motion.div
+                                key={group.examId}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: false, amount: 0.5 }}
+                                transition={{ duration: 0.4 }}
+                            >
 
-                {groupedTasks.map((group) => (
-                    <Card key={group.examId}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                            <div>
-                                <CardTitle>{group.examName}</CardTitle>
+                                <Card key={group.examId}>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                        <div className="flex flex-col space-y-2">
+                                            <CardTitle>{group.examName}</CardTitle>
 
-                                <CardDescription>
-                                    {group.tasks.length}{" "}
-                                    {group.tasks.length === 1 ? "Task" : "Tasks"} Today
-                                </CardDescription>
-                            </div>
-
-                            <Badge variant="secondary">
-                                {group.tasks.length}
-                            </Badge>
-                        </CardHeader>
-
-                        <CardContent className="space-y-3">
-                            {group.tasks.map((task) => (
-                                <div
-                                    key={task.id}
-                                    className="flex items-start justify-between rounded-xl border p-4 transition-colors hover:bg-muted/40"
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <Checkbox
-                                            checked={task.is_completed}
-                                        />
-
-                                        <div>
-                                            <p
-                                                className={`font-medium ${task.is_completed
-                                                    ? "line-through text-muted-foreground"
-                                                    : ""
-                                                    }`}
-                                            >
-                                                {task.title}
-                                            </p>
-
-                                            {task.description && (
-                                                <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                                                    {task.description}
-                                                </p>
-                                            )}
-
-                                            <p className="mt-2 text-xs text-muted-foreground">
-                                                {task.week.focus}
-                                            </p>
+                                            <CardDescription>
+                                                {group.tasks.length}{" "}
+                                                {group.tasks.length === 1 ? "Task" : "Tasks"} Today
+                                            </CardDescription>
                                         </div>
-                                    </div>
 
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                    >
-                                        Open
-                                    </Button>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                ))}
+                                    </CardHeader>
+
+                                    <CardContent className="space-y-3">
+                                        {group.tasks.map((task) => (
+                                            <motion.div
+                                                key={task.id}
+                                                layout
+                                                initial={{ opacity: 0, y: 15 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.96 }}
+                                                whileHover={{ y: -2 }}
+                                                transition={{ duration: 0.25 }}
+                                                className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                            >
+                                                <div className="flex gap-4">
+                                                    <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
+
+                                                    <div className="space-y-2">
+                                                        <h4
+                                                            className={`font-semibold transition-colors`}
+                                                        >
+                                                            {task.title}
+                                                        </h4>
+
+                                                        {task.description && (
+                                                            <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
+                                                                {task.description}
+                                                            </p>
+                                                        )}
+
+
+                                                        <span className="text-xs text-muted-foreground">
+                                                            From{" "}
+                                                            {new Date(task.start_date).toLocaleDateString("en-GB", {
+                                                                day: "2-digit",
+                                                                month: "short",
+                                                            })}{" "}
+                                                            to{" "}
+                                                            {new Date(task.end_date).toLocaleDateString("en-GB", {
+                                                                day: "2-digit",
+                                                                month: "short",
+                                                            })}
+                                                        </span>
+
+
+                                                        <div className="mt-2 flex flex-col gap-2">
+                                                            <span className="text-xs text-muted-foreground">
+                                                                From Week {task.week.week_number}
+                                                            </span>
+                                                            <Badge className="bg-gray-500 text-white">
+                                                                {task.week.focus}
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                    {task.is_completed ? (
+
+                                                        <CheckCircle2 className=" text-green-600" size={20} />
+                                                    ) : (
+                                                        <>
+                                                            <AnimatePresence mode="wait">
+                                                                {checkedTasks[task.id] && (
+                                                                    <motion.div
+                                                                        key="mark-done"
+                                                                        initial={{
+                                                                            opacity: 0,
+                                                                            width: 0,
+                                                                            x: 20,
+                                                                        }}
+                                                                        animate={{
+                                                                            opacity: 1,
+                                                                            width: "auto",
+                                                                            x: 0,
+                                                                        }}
+                                                                        exit={{
+                                                                            opacity: 0,
+                                                                            width: 0,
+                                                                            x: 20,
+                                                                        }}
+                                                                        transition={{
+                                                                            duration: 0.25,
+                                                                            ease: "easeInOut",
+                                                                        }}
+                                                                        className="overflow-hidden"
+                                                                    >
+                                                                        <Button
+                                                                            size="sm"
+                                                                            className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
+
+                                                                            disabled={updatingTasks[task.id]}
+                                                                            onClick={() => updateSingleTask(task.id)}
+                                                                        >
+                                                                            Mark Done
+                                                                        </Button>
+                                                                    </motion.div>
+                                                                )}
+                                                            </AnimatePresence>
+                                                            <Checkbox
+                                                                checked={!!checkedTasks[task.id]}
+                                                                className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
+                                                                onCheckedChange={() =>
+                                                                    handleCheckboxChange(task.id)
+                                                                }
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            <div>
+            <div className="mt-10 space-y-2">
                 <h2 className="text-2xl font-bold text-red-600">
-                    🔥 Due Tasks
+                    Due Tasks
                 </h2>
 
                 <p className="text-muted-foreground">
@@ -352,95 +527,166 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                 </p>
             </div>
 
-            {overdueTasks.length > 0 ? (
-                <div className="mt-10 space-y-6">
+            {
+                overdueTasks.length > 0 ? (
+                    <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
+                        {overdueTasks.map((group) => (
+                            <motion.div
+                                key={group.examId}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: false, amount: 0.5 }}
+                                transition={{ duration: 0.4 }}
+                            >
 
-                    {overdueTasks.map((group) => (
-                        <Card
-                            key={group.examId}
-                            className="border-red-200 bg-red-50/40 dark:border-red-900 dark:bg-red-950/20"
-                        >
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                <div>
-                                    <CardTitle>{group.examName}</CardTitle>
+                                <Card key={group.examId}>
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                        <div className="flex flex-col space-y-2">
+                                            <CardTitle>{group.examName}</CardTitle>
 
-                                    <CardDescription>
-                                        {group.tasks.length} overdue{" "}
-                                        {group.tasks.length === 1 ? "task" : "tasks"}
-                                    </CardDescription>
-                                </div>
-
-                                <Badge variant="destructive">
-                                    {group.tasks.length}
-                                </Badge>
-                            </CardHeader>
-
-                            <CardContent className="space-y-3">
-                                {group.tasks.map((task) => (
-                                    <div
-                                        key={task.id}
-                                        className="flex items-start justify-between rounded-lg border border-red-200 bg-background p-4"
-                                    >
-                                        <div className="flex gap-3">
-                                            <Checkbox checked={false} />
-
-                                            <div>
-                                                <h4 className="font-medium">
-                                                    {task.title}
-                                                </h4>
-
-                                                {task.description && (
-                                                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                                                        {task.description}
-                                                    </p>
-                                                )}
-
-                                                <div className="mt-2 flex items-center gap-2 text-xs text-red-600">
-                                                    <span>
-                                                        Due{" "}
-                                                        {new Date(
-                                                            task.end_date
-                                                        ).toLocaleDateString()}
-                                                    </span>
-
-                                                    <span>•</span>
-
-                                                    <span>{task.week.focus}</span>
-                                                </div>
-                                            </div>
+                                            <CardDescription>
+                                                {group.tasks.length}{" "}
+                                                {group.tasks.length === 1 ? "Task" : "Tasks"} Today
+                                            </CardDescription>
                                         </div>
 
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                        >
-                                            Open
-                                        </Button>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            ) : (
-                <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
-                    <CardContent className="flex h-40 items-center justify-center">
-                        <div className="text-center">
-                            <h3 className="text-lg font-semibold text-green-600">
-                                🎉 No overdue tasks
-                            </h3>
+                                    </CardHeader>
 
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Great job! You're on track with your study plan.
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                                    <CardContent className="space-y-3">
+                                        {group.tasks.map((task) => (
+                                            <motion.div
+                                                key={task.id}
+                                                layout
+                                                initial={{ opacity: 0, y: 15 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.96 }}
+                                                whileHover={{ y: -2 }}
+                                                transition={{ duration: 0.25 }}
+                                                className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                            >
+                                                <div className="flex gap-4">
+                                                    <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
 
-            <div>
-                <h2 className="text-2xl font-bold text-blue-600">
-                    ⏳ Upcoming Tasks
+                                                    <div className="space-y-2">
+                                                        <h4
+                                                            className={`font-semibold transition-colors ${task.is_completed
+                                                                ? "text-muted-foreground line-through"
+                                                                : "group-hover:text-primary"
+                                                                }`}
+                                                        >
+                                                            {task.title}
+                                                        </h4>
+
+                                                        {task.description && (
+                                                            <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
+                                                                {task.description}
+                                                            </p>
+                                                        )}
+
+                                                        <span className="text-xs text-muted-foreground">
+                                                            From{" "}
+                                                            {new Date(task.start_date).toLocaleDateString("en-GB", {
+                                                                day: "2-digit",
+                                                                month: "short",
+                                                            })}{" "}
+                                                            to{" "}
+                                                            {new Date(task.end_date).toLocaleDateString("en-GB", {
+                                                                day: "2-digit",
+                                                                month: "short",
+                                                            })}
+                                                        </span>
+
+                                                        <div className="mt-4 flex flex-col gap-2">
+                                                            <span className="text-xs text-muted-foreground">
+                                                                From Week {task.week.week_number}
+                                                            </span>
+                                                            <Badge className="bg-gray-500 text-white">
+                                                                {task.week.focus}
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                    {task.is_completed ? (
+
+                                                        <CheckCircle2 className=" text-green-600" size={20} />
+                                                    ) : (
+                                                        <>
+                                                            <AnimatePresence mode="wait">
+                                                                {checkedTasks[task.id] && (
+                                                                    <motion.div
+                                                                        key="mark-done"
+                                                                        initial={{
+                                                                            opacity: 0,
+                                                                            width: 0,
+                                                                            x: 20,
+                                                                        }}
+                                                                        animate={{
+                                                                            opacity: 1,
+                                                                            width: "auto",
+                                                                            x: 0,
+                                                                        }}
+                                                                        exit={{
+                                                                            opacity: 0,
+                                                                            width: 0,
+                                                                            x: 20,
+                                                                        }}
+                                                                        transition={{
+                                                                            duration: 0.25,
+                                                                            ease: "easeInOut",
+                                                                        }}
+                                                                        className="overflow-hidden"
+                                                                    >
+                                                                        <Button
+                                                                            size="sm"
+                                                                            className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
+
+                                                                            disabled={updatingTasks[task.id]}
+                                                                            onClick={() => updateSingleTask(task.id)}
+                                                                        >
+                                                                            Mark Done
+                                                                        </Button>
+                                                                    </motion.div>
+                                                                )}
+                                                            </AnimatePresence>
+                                                            <Checkbox
+                                                                checked={!!checkedTasks[task.id]}
+                                                                className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
+                                                                onCheckedChange={() =>
+                                                                    handleCheckboxChange(task.id)
+                                                                }
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))}
+                    </div>
+                ) : (
+                    <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
+                        <CardContent className="flex h-40 items-center justify-center">
+                            <div className="text-center">
+                                <h3 className="text-lg font-semibold text-green-600">
+                                    🎉 No overdue tasks
+                                </h3>
+
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Great job! You're on track with your study plan.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )
+            }
+
+            < div className="mt-10 space-y-2">
+                <h2 className="text-2xl font-bold text-green-700">
+                    Upcoming Tasks
                 </h2>
 
                 <p className="text-muted-foreground">
@@ -452,81 +698,147 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                 <div className="mt-10 space-y-6">
 
                     {upcomingTasks.map((group) => (
-                        <Card key={group.examId}>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                <div>
-                                    <CardTitle>{group.examName}</CardTitle>
+                        <motion.div
+                            key={group.examId}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: false, amount: 0.5 }}
+                            transition={{ duration: 0.4 }}
+                        >
 
-                                    <CardDescription>
-                                        {group.tasks.length}{" "}
-                                        {group.tasks.length === 1 ? "Task" : "Tasks"}
-                                    </CardDescription>
-                                </div>
+                            <Card key={group.examId}>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                    <div className="flex flex-col space-y-2">
+                                        <CardTitle>{group.examName}</CardTitle>
 
-                                <Badge variant="outline">
-                                    {group.tasks.length}
-                                </Badge>
-                            </CardHeader>
+                                        <CardDescription>
+                                            {group.tasks.length}{" "}
+                                            {group.tasks.length === 1 ? "Task" : "Tasks"} Today
+                                        </CardDescription>
+                                    </div>
 
-                            <CardContent className="space-y-3">
-                                {group.tasks.map((task) => (
-                                    <div
-                                        key={task.id}
-                                        className="flex items-start justify-between rounded-xl border p-4 transition-colors hover:bg-muted/40"
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <Checkbox
-                                                checked={task.is_completed}
-                                                disabled
-                                            />
+                                </CardHeader>
 
-                                            <div>
-                                                <h4 className="font-medium">
-                                                    {task.title}
-                                                </h4>
+                                <CardContent className="space-y-3">
+                                    {group.tasks.map((task) => (
+                                        <motion.div
+                                            key={task.id}
+                                            layout
+                                            initial={{ opacity: 0, y: 15 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.96 }}
+                                            whileHover={{ y: -2 }}
+                                            transition={{ duration: 0.25 }}
+                                            className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                        >
+                                            <div className="flex gap-4">
+                                                <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
 
-                                                {task.description && (
-                                                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                                                        {task.description}
-                                                    </p>
-                                                )}
+                                                <div className="space-y-2">
+                                                    <h4
+                                                        className={`font-semibold transition-colors ${task.is_completed
+                                                            ? "text-muted-foreground line-through"
+                                                            : "group-hover:text-primary"
+                                                            }`}
+                                                    >
+                                                        {task.title}
+                                                    </h4>
 
-                                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                                    <Badge variant="secondary">
-                                                        {task.week.focus}
-                                                    </Badge>
+                                                    {task.description && (
+                                                        <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
+                                                            {task.description}
+                                                        </p>
+                                                    )}
 
-                                                    <span>•</span>
-
-                                                    <span>
-                                                        {new Date(
-                                                            task.start_date
-                                                        ).toLocaleDateString("en-US", {
-                                                            day: "numeric",
+                                                    <span className="text-xs text-muted-foreground">
+                                                        From{" "}
+                                                        {new Date(task.start_date).toLocaleDateString("en-GB", {
+                                                            day: "2-digit",
+                                                            month: "short",
+                                                        })}{" "}
+                                                        to{" "}
+                                                        {new Date(task.end_date).toLocaleDateString("en-GB", {
+                                                            day: "2-digit",
                                                             month: "short",
                                                         })}
                                                     </span>
+
+                                                    <div className="mt-4 flex flex-col gap-2">
+                                                        <span className="text-xs text-muted-foreground">
+                                                            From Week {task.week.week_number}
+                                                        </span>
+                                                        <Badge className="bg-gray-600 text-white">
+                                                            {task.week.focus}
+                                                        </Badge>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                        >
-                                            Preview
-                                        </Button>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
+                                            <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                {task.is_completed ? (
+
+                                                    <CheckCircle2 className=" text-green-600" size={20} />
+                                                ) : (
+                                                    <>
+                                                        <AnimatePresence mode="wait">
+                                                            {checkedTasks[task.id] && (
+                                                                <motion.div
+                                                                    key="mark-done"
+                                                                    initial={{
+                                                                        opacity: 0,
+                                                                        width: 0,
+                                                                        x: 20,
+                                                                    }}
+                                                                    animate={{
+                                                                        opacity: 1,
+                                                                        width: "auto",
+                                                                        x: 0,
+                                                                    }}
+                                                                    exit={{
+                                                                        opacity: 0,
+                                                                        width: 0,
+                                                                        x: 20,
+                                                                    }}
+                                                                    transition={{
+                                                                        duration: 0.25,
+                                                                        ease: "easeInOut",
+                                                                    }}
+                                                                    className="overflow-hidden"
+                                                                >
+                                                                    <Button
+                                                                        size="sm"
+                                                                        className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
+
+                                                                        disabled={updatingTasks[task.id]}
+                                                                        onClick={() => updateSingleTask(task.id)}
+                                                                    >
+                                                                        Mark Done
+                                                                    </Button>
+                                                                </motion.div>
+                                                            )}
+                                                        </AnimatePresence>
+                                                        <Checkbox
+                                                            checked={!!checkedTasks[task.id]}
+                                                            className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
+                                                            onCheckedChange={() =>
+                                                                handleCheckboxChange(task.id)
+                                                            }
+                                                        />
+                                                    </>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </motion.div>
                     ))}
                 </div>
             ) : (
-                <Card className="border-blue-200 bg-blue-50/40 dark:border-blue-900 dark:bg-blue-950/20">
+                <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
                     <CardContent className="flex h-40 items-center justify-center">
                         <div className="text-center">
-                            <h3 className="text-lg font-semibold text-blue-600">
+                            <h3 className="text-lg font-semibold text-green-700">
                                 🕒 No upcoming tasks
                             </h3>
 
@@ -554,22 +866,64 @@ function OverviewCard({
     total?: number;
     icon: React.ReactNode;
 }) {
+
+    const itemVariants: Variants = {
+        hidden: {
+            opacity: 0,
+            y: 25,
+        },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.3,
+                ease: easeOut,
+            },
+        },
+    };
+
     return (
-        <Card className="border-border/60 shadow-none">
-            <CardContent className="flex items-center justify-between p-6">
-                <div>
-                    <p className="text-sm text-muted-foreground">{title}</p>
+        <motion.div
+            variants={itemVariants}
+            className=""
+        >
+            <Card className="group relative h-full overflow-hidden rounded-2xl border border-slate-30 hover:border-green-600 bg-white shadow-sm ease-in-out duration-300 hover:shadow-xl ">
 
-                    <h2 className="mt-2 text-3xl font-bold">{value}</h2>
-                    {total !== undefined && (
-                        <p className="text-sm text-muted-foreground">
-                            of {total} tasks
+                <CardContent className="relative flex items-center justify-between p-6">
+                    <div>
+                        <p className="text-sm font-medium text-slate-500">
+                            {title}
                         </p>
-                    )}
-                </div>
 
-                <div className="rounded-xl bg-muted p-3">{icon}</div>
-            </CardContent>
-        </Card>
+                        <motion.h2
+                            key={value}
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.25 }}
+                            className="mt-2 text-4xl font-bold tracking-tight text-slate-900"
+                        >
+                            {value}
+                        </motion.h2>
+
+                        {total !== undefined && (
+                            <p className="mt-1 text-sm text-slate-500">
+                                of{" "}
+                                <span className="font-semibold text-slate-700">
+                                    {total}
+                                </span>{" "}
+                                tasks
+                            </p>
+                        )}
+                    </div>
+
+                    <div
+                    >
+                        {icon}
+                    </div>
+
+                </CardContent>
+            </Card>
+        </motion.div>
+
     );
 }

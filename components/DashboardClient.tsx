@@ -51,6 +51,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         setNewExams(dashboardUser.exams ?? []);
     }, [dashboardUser.exams]);
 
+    console.log("DashboardAnalytics: dashboardUser", dashboardUser);
+
 
     const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
@@ -611,17 +613,27 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     }}
                     className="mt-6 p-4"
                 >
-                    <TabsList className="flex flex-wrap gap-2 mb-4 bg-gray-200">
-                        {newExams.length > 0 ? (
-                            newExams.map((ex) => (
-                                <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
-                                    {ex.exam?.name ?? `Exam ${ex.id}`}
-                                </TabsTrigger>
-                            ))
-                        ) : (
-                            <div className="text-sm text-muted-foreground p-2">No exams added</div>
-                        )}
-                    </TabsList>
+
+                    <div className="flex items-center w-full justify-between">
+
+                        <TabsList className="flex flex-wrap gap-2">
+                            {newExams.length > 0 ? (
+                                newExams.map((ex) => (
+                                    <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
+                                        {ex.exam?.name ?? `Exam ${ex.id}`}
+                                    </TabsTrigger>
+                                ))
+                            ) : (
+                                <div className="text-sm text-muted-foreground p-2">No exams added</div>
+                            )}
+                        </TabsList>
+
+                        <Button className="bg-transparent border font-medium text-green-700 border-green-600 hover:bg-green-800 text-sm hover:text-white hover:border-green-700 transition-colors duration-200">
+                            <Link href="/dashboard/today">
+                                See Today's Tasks
+                            </Link>
+                        </Button>
+                    </div>
 
                     {/* NO EXAMS */}
                     {newExams.length === 0 ? (
