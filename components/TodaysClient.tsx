@@ -292,245 +292,413 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
     };
 
     return (
-        <section className="min-h-screen space-y-6 pb-12 max-w-7xl mx-auto md:pt-36 pt-20">
+        <section>
 
-            {/* Hero */}
-            <div className="space-y-2">
-                <div className="flex gap-2 flex-col">
-                    <span className="text-lg font-medium text-muted-foreground">
-                        {greeting},
-                    </span>
+            <div className="md:block hidden min-h-screen space-y-6 pb-12 max-w-7xl mx-auto md:pt-36 pt-20 px-12">
+                {/* Hero */}
+                <div className="space-y-2">
+                    <div className="flex gap-2 flex-col">
+                        <span className="text-lg font-medium text-muted-foreground">
+                            {greeting},
+                        </span>
 
-                    <h1 className="text-4xl font-bold tracking-tight">
-                        {tasks[0]?.week.phase.roadmap.userExam.user.name || "there"}
-                    </h1>
+                        <h1 className="text-4xl font-bold tracking-tight">
+                            {tasks[0]?.week.phase.roadmap.userExam.user.name || "there"}
+                        </h1>
+                    </div>
+
+                    <p className="text-lg text-muted-foreground">
+                        Here's your study plan for today.
+                    </p>
+
+                    <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
+                        <CalendarDays className="h-4 w-4" />
+                        {formattedDate}
+                    </div>
                 </div>
 
-                <p className="text-lg text-muted-foreground">
-                    Here's your study plan for today.
-                </p>
+                {/* Overview Cards */}
+                <motion.div
+                    className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+                    variants={container}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: false, amount: 0.5 }}
 
-                <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
-                    <CalendarDays className="h-4 w-4" />
-                    {formattedDate}
+                >
+                    <OverviewCard
+                        title="Today's Tasks"
+                        value={stats.todayTasks}
+                        icon={<Clock3 className="size-6" />}
+                    />
+
+                    <OverviewCard
+                        title="Completed"
+                        value={stats.completed}
+                        total={stats.todayTasks}
+                        icon={<CheckCircle2 className="size-6 text-green-500" />}
+                    />
+
+                    <OverviewCard
+                        title="Overdue"
+                        value={stats.overdue}
+                        total={stats.todayTasks}
+                        icon={<Flame className="size-6 text-red-500" />}
+                    />
+
+                    <OverviewCard
+                        title="Upcoming"
+                        value={stats.upcoming}
+                        icon={<CalendarDays className="size-6 text-blue-500" />}
+                    />
+                </motion.div>
+
+                {/* Today's Tasks */}
+                <div className="mt-10 space-y-6">
+                    <div className="flex flex-col gap-2">
+                        <h2 className="text-2xl font-bold text-blue-700">Today's Focus</h2>
+
+                        <p className="text-muted-foreground">
+                            Complete today's planned tasks across all your active exams.
+                        </p>
+                    </div>
+
+                    {groupedTasks.length === 0 ? (
+                        <Card>
+                            <CardContent className="flex h-40 items-center justify-center">
+                                <div className="text-center">
+                                    <h3 className="text-lg font-semibold">
+                                        🎉 Nothing planned today
+                                    </h3>
+
+                                    <p className="mt-2 text-sm text-muted-foreground">
+                                        Enjoy your day or get ahead by starting upcoming tasks.
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
+                            {groupedTasks.map((group) => (
+                                <motion.div
+                                    key={group.examId}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: false, amount: 0.5 }}
+                                    transition={{ duration: 0.4 }}
+                                >
+
+                                    <Card key={group.examId}>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                            <div className="flex flex-col space-y-2">
+                                                <CardTitle>{group.examName}</CardTitle>
+
+                                                <CardDescription>
+                                                    {group.tasks.length}{" "}
+                                                    {group.tasks.length === 1 ? "Task" : "Tasks"} Today
+                                                </CardDescription>
+                                            </div>
+
+                                        </CardHeader>
+
+                                        <CardContent className="space-y-3">
+                                            {group.tasks.map((task) => (
+                                                <motion.div
+                                                    key={task.id}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 15 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.96 }}
+                                                    whileHover={{ y: -2 }}
+                                                    transition={{ duration: 0.25 }}
+                                                    className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                                >
+                                                    <div className="flex gap-4">
+                                                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
+
+                                                        <div className="space-y-2">
+                                                            <h4
+                                                                className={`font-semibold transition-colors`}
+                                                            >
+                                                                {task.title}
+                                                            </h4>
+
+                                                            {task.description && (
+                                                                <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
+                                                                    {task.description}
+                                                                </p>
+                                                            )}
+
+
+                                                            <span className="text-xs text-muted-foreground">
+                                                                From{" "}
+                                                                {new Date(task.start_date).toLocaleDateString("en-GB", {
+                                                                    day: "2-digit",
+                                                                    month: "short",
+                                                                })}{" "}
+                                                                to{" "}
+                                                                {new Date(task.end_date).toLocaleDateString("en-GB", {
+                                                                    day: "2-digit",
+                                                                    month: "short",
+                                                                })}
+                                                            </span>
+
+
+                                                            <div className="mt-2 flex flex-col gap-2">
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    From Week {task.week.week_number}
+                                                                </span>
+                                                                <Badge className="bg-gray-500 text-white">
+                                                                    {task.week.focus}
+                                                                </Badge>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                        {task.is_completed ? (
+
+                                                            <CheckCircle2 className=" text-green-600" size={20} />
+                                                        ) : (
+                                                            <>
+                                                                <AnimatePresence mode="wait">
+                                                                    {checkedTasks[task.id] && (
+                                                                        <motion.div
+                                                                            key="mark-done"
+                                                                            initial={{
+                                                                                opacity: 0,
+                                                                                width: 0,
+                                                                                x: 20,
+                                                                            }}
+                                                                            animate={{
+                                                                                opacity: 1,
+                                                                                width: "auto",
+                                                                                x: 0,
+                                                                            }}
+                                                                            exit={{
+                                                                                opacity: 0,
+                                                                                width: 0,
+                                                                                x: 20,
+                                                                            }}
+                                                                            transition={{
+                                                                                duration: 0.25,
+                                                                                ease: "easeInOut",
+                                                                            }}
+                                                                            className="overflow-hidden"
+                                                                        >
+                                                                            <Button
+                                                                                size="sm"
+                                                                                className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
+
+                                                                                disabled={updatingTasks[task.id]}
+                                                                                onClick={() => updateSingleTask(task.id)}
+                                                                            >
+                                                                                Mark Done
+                                                                            </Button>
+                                                                        </motion.div>
+                                                                    )}
+                                                                </AnimatePresence>
+                                                                <Checkbox
+                                                                    checked={!!checkedTasks[task.id]}
+                                                                    className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
+                                                                    onCheckedChange={() =>
+                                                                        handleCheckboxChange(task.id)
+                                                                    }
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </motion.div>
+                                            ))}
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            </div>
 
-            {/* Overview Cards */}
-            <motion.div
-                className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-                variants={container}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: false, amount: 0.5 }}
-
-            >
-                <OverviewCard
-                    title="Today's Tasks"
-                    value={stats.todayTasks}
-                    icon={<Clock3 className="size-6" />}
-                />
-
-                <OverviewCard
-                    title="Completed"
-                    value={stats.completed}
-                    total={stats.todayTasks}
-                    icon={<CheckCircle2 className="size-6 text-green-500" />}
-                />
-
-                <OverviewCard
-                    title="Overdue"
-                    value={stats.overdue}
-                    total={stats.todayTasks}
-                    icon={<Flame className="size-6 text-red-500" />}
-                />
-
-                <OverviewCard
-                    title="Upcoming"
-                    value={stats.upcoming}
-                    icon={<CalendarDays className="size-6 text-blue-500" />}
-                />
-            </motion.div>
-
-            {/* Today's Tasks */}
-            <div className="mt-10 space-y-6">
-                <div className="flex flex-col gap-2">
-                    <h2 className="text-2xl font-bold text-blue-700">Today's Focus</h2>
+                <div className="mt-10 space-y-2">
+                    <h2 className="text-2xl font-bold text-red-600">
+                        Due Tasks
+                    </h2>
 
                     <p className="text-muted-foreground">
-                        Complete today's planned tasks across all your active exams.
+                        These tasks are overdue and should be completed first.
                     </p>
                 </div>
 
-                {groupedTasks.length === 0 ? (
-                    <Card>
-                        <CardContent className="flex h-40 items-center justify-center">
-                            <div className="text-center">
-                                <h3 className="text-lg font-semibold">
-                                    🎉 Nothing planned today
-                                </h3>
+                {
+                    overdueTasks.length > 0 ? (
+                        <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
+                            {overdueTasks.map((group) => (
+                                <motion.div
+                                    key={group.examId}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: false, amount: 0.5 }}
+                                    transition={{ duration: 0.4 }}
+                                >
 
-                                <p className="mt-2 text-sm text-muted-foreground">
-                                    Enjoy your day or get ahead by starting upcoming tasks.
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
-                        {groupedTasks.map((group) => (
-                            <motion.div
-                                key={group.examId}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: false, amount: 0.5 }}
-                                transition={{ duration: 0.4 }}
-                            >
+                                    <Card key={group.examId}>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                            <div className="flex flex-col space-y-2">
+                                                <CardTitle>{group.examName}</CardTitle>
 
-                                <Card key={group.examId}>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                        <div className="flex flex-col space-y-2">
-                                            <CardTitle>{group.examName}</CardTitle>
+                                                <CardDescription>
+                                                    {group.tasks.length}{" "}
+                                                    {group.tasks.length === 1 ? "Task" : "Tasks"} Today
+                                                </CardDescription>
+                                            </div>
 
-                                            <CardDescription>
-                                                {group.tasks.length}{" "}
-                                                {group.tasks.length === 1 ? "Task" : "Tasks"} Today
-                                            </CardDescription>
-                                        </div>
+                                        </CardHeader>
 
-                                    </CardHeader>
+                                        <CardContent className="space-y-3">
+                                            {group.tasks.map((task) => (
+                                                <motion.div
+                                                    key={task.id}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 15 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.96 }}
+                                                    whileHover={{ y: -2 }}
+                                                    transition={{ duration: 0.25 }}
+                                                    className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                                >
+                                                    <div className="flex gap-4">
+                                                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
 
-                                    <CardContent className="space-y-3">
-                                        {group.tasks.map((task) => (
-                                            <motion.div
-                                                key={task.id}
-                                                layout
-                                                initial={{ opacity: 0, y: 15 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.96 }}
-                                                whileHover={{ y: -2 }}
-                                                transition={{ duration: 0.25 }}
-                                                className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
-                                            >
-                                                <div className="flex gap-4">
-                                                    <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
+                                                        <div className="space-y-2">
+                                                            <h4
+                                                                className={`font-semibold transition-colors ${task.is_completed
+                                                                    ? "text-muted-foreground line-through"
+                                                                    : "group-hover:text-primary"
+                                                                    }`}
+                                                            >
+                                                                {task.title}
+                                                            </h4>
 
-                                                    <div className="space-y-2">
-                                                        <h4
-                                                            className={`font-semibold transition-colors`}
-                                                        >
-                                                            {task.title}
-                                                        </h4>
+                                                            {task.description && (
+                                                                <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
+                                                                    {task.description}
+                                                                </p>
+                                                            )}
 
-                                                        {task.description && (
-                                                            <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
-                                                                {task.description}
-                                                            </p>
-                                                        )}
-
-
-                                                        <span className="text-xs text-muted-foreground">
-                                                            From{" "}
-                                                            {new Date(task.start_date).toLocaleDateString("en-GB", {
-                                                                day: "2-digit",
-                                                                month: "short",
-                                                            })}{" "}
-                                                            to{" "}
-                                                            {new Date(task.end_date).toLocaleDateString("en-GB", {
-                                                                day: "2-digit",
-                                                                month: "short",
-                                                            })}
-                                                        </span>
-
-
-                                                        <div className="mt-2 flex flex-col gap-2">
                                                             <span className="text-xs text-muted-foreground">
-                                                                From Week {task.week.week_number}
+                                                                From{" "}
+                                                                {new Date(task.start_date).toLocaleDateString("en-GB", {
+                                                                    day: "2-digit",
+                                                                    month: "short",
+                                                                })}{" "}
+                                                                to{" "}
+                                                                {new Date(task.end_date).toLocaleDateString("en-GB", {
+                                                                    day: "2-digit",
+                                                                    month: "short",
+                                                                })}
                                                             </span>
-                                                            <Badge className="bg-gray-500 text-white">
-                                                                {task.week.focus}
-                                                            </Badge>
+
+                                                            <div className="mt-4 flex flex-col gap-2">
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    From Week {task.week.week_number}
+                                                                </span>
+                                                                <Badge className="bg-gray-500 text-white">
+                                                                    {task.week.focus}
+                                                                </Badge>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="flex items-center gap-3 flex-wrap justify-end">
-                                                    {task.is_completed ? (
+                                                    <div className="flex items-center gap-3 flex-wrap justify-end">
+                                                        {task.is_completed ? (
 
-                                                        <CheckCircle2 className=" text-green-600" size={20} />
-                                                    ) : (
-                                                        <>
-                                                            <AnimatePresence mode="wait">
-                                                                {checkedTasks[task.id] && (
-                                                                    <motion.div
-                                                                        key="mark-done"
-                                                                        initial={{
-                                                                            opacity: 0,
-                                                                            width: 0,
-                                                                            x: 20,
-                                                                        }}
-                                                                        animate={{
-                                                                            opacity: 1,
-                                                                            width: "auto",
-                                                                            x: 0,
-                                                                        }}
-                                                                        exit={{
-                                                                            opacity: 0,
-                                                                            width: 0,
-                                                                            x: 20,
-                                                                        }}
-                                                                        transition={{
-                                                                            duration: 0.25,
-                                                                            ease: "easeInOut",
-                                                                        }}
-                                                                        className="overflow-hidden"
-                                                                    >
-                                                                        <Button
-                                                                            size="sm"
-                                                                            className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
-
-                                                                            disabled={updatingTasks[task.id]}
-                                                                            onClick={() => updateSingleTask(task.id)}
+                                                            <CheckCircle2 className=" text-green-600" size={20} />
+                                                        ) : (
+                                                            <>
+                                                                <AnimatePresence mode="wait">
+                                                                    {checkedTasks[task.id] && (
+                                                                        <motion.div
+                                                                            key="mark-done"
+                                                                            initial={{
+                                                                                opacity: 0,
+                                                                                width: 0,
+                                                                                x: 20,
+                                                                            }}
+                                                                            animate={{
+                                                                                opacity: 1,
+                                                                                width: "auto",
+                                                                                x: 0,
+                                                                            }}
+                                                                            exit={{
+                                                                                opacity: 0,
+                                                                                width: 0,
+                                                                                x: 20,
+                                                                            }}
+                                                                            transition={{
+                                                                                duration: 0.25,
+                                                                                ease: "easeInOut",
+                                                                            }}
+                                                                            className="overflow-hidden"
                                                                         >
-                                                                            Mark Done
-                                                                        </Button>
-                                                                    </motion.div>
-                                                                )}
-                                                            </AnimatePresence>
-                                                            <Checkbox
-                                                                checked={!!checkedTasks[task.id]}
-                                                                className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
-                                                                onCheckedChange={() =>
-                                                                    handleCheckboxChange(task.id)
-                                                                }
-                                                            />
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                                                                            <Button
+                                                                                size="sm"
+                                                                                className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
 
-            <div className="mt-10 space-y-2">
-                <h2 className="text-2xl font-bold text-red-600">
-                    Due Tasks
-                </h2>
+                                                                                disabled={updatingTasks[task.id]}
+                                                                                onClick={() => updateSingleTask(task.id)}
+                                                                            >
+                                                                                Mark Done
+                                                                            </Button>
+                                                                        </motion.div>
+                                                                    )}
+                                                                </AnimatePresence>
+                                                                <Checkbox
+                                                                    checked={!!checkedTasks[task.id]}
+                                                                    className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
+                                                                    onCheckedChange={() =>
+                                                                        handleCheckboxChange(task.id)
+                                                                    }
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </motion.div>
+                                            ))}
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
+                            <CardContent className="flex h-40 items-center justify-center">
+                                <div className="text-center">
+                                    <h3 className="text-lg font-semibold text-green-600">
+                                        🎉 No overdue tasks
+                                    </h3>
 
-                <p className="text-muted-foreground">
-                    These tasks are overdue and should be completed first.
-                </p>
-            </div>
+                                    <p className="mt-2 text-sm text-muted-foreground">
+                                        Great job! You're on track with your study plan.
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )
+                }
 
-            {
-                overdueTasks.length > 0 ? (
+                < div className="mt-10 space-y-2">
+                    <h2 className="text-2xl font-bold text-green-700">
+                        Upcoming Tasks
+                    </h2>
+
+                    <p className="text-muted-foreground">
+                        These tasks are scheduled for the next 3 days.
+                    </p>
+                </div>
+
+                {upcomingTasks.length > 0 ? (
                     <div className="space-y-6 mt-8 grid gap-6 md:grid-cols-2">
-                        {overdueTasks.map((group) => (
+
+                        {upcomingTasks.map((group) => (
                             <motion.div
                                 key={group.examId}
                                 initial={{ opacity: 0, y: 30 }}
@@ -600,7 +768,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                                                             <span className="text-xs text-muted-foreground">
                                                                 From Week {task.week.week_number}
                                                             </span>
-                                                            <Badge className="bg-gray-500 text-white">
+                                                            <Badge className="bg-gray-600 text-white">
                                                                 {task.week.focus}
                                                             </Badge>
                                                         </div>
@@ -671,185 +839,25 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                     <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
                         <CardContent className="flex h-40 items-center justify-center">
                             <div className="text-center">
-                                <h3 className="text-lg font-semibold text-green-600">
-                                    🎉 No overdue tasks
+                                <h3 className="text-lg font-semibold text-green-700">
+                                    🕒 No upcoming tasks
                                 </h3>
 
                                 <p className="mt-2 text-sm text-muted-foreground">
-                                    Great job! You're on track with your study plan.
+                                    You don't have any tasks scheduled for the next 3 days.
                                 </p>
                             </div>
                         </CardContent>
+
                     </Card>
-                )
-            }
-
-            < div className="mt-10 space-y-2">
-                <h2 className="text-2xl font-bold text-green-700">
-                    Upcoming Tasks
-                </h2>
-
-                <p className="text-muted-foreground">
-                    These tasks are scheduled for the next 3 days.
-                </p>
+                )}
             </div>
 
-            {upcomingTasks.length > 0 ? (
-                <div className="mt-10 space-y-6">
-
-                    {upcomingTasks.map((group) => (
-                        <motion.div
-                            key={group.examId}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: false, amount: 0.5 }}
-                            transition={{ duration: 0.4 }}
-                        >
-
-                            <Card key={group.examId}>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                    <div className="flex flex-col space-y-2">
-                                        <CardTitle>{group.examName}</CardTitle>
-
-                                        <CardDescription>
-                                            {group.tasks.length}{" "}
-                                            {group.tasks.length === 1 ? "Task" : "Tasks"} Today
-                                        </CardDescription>
-                                    </div>
-
-                                </CardHeader>
-
-                                <CardContent className="space-y-3">
-                                    {group.tasks.map((task) => (
-                                        <motion.div
-                                            key={task.id}
-                                            layout
-                                            initial={{ opacity: 0, y: 15 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.96 }}
-                                            whileHover={{ y: -2 }}
-                                            transition={{ duration: 0.25 }}
-                                            className="group flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md md:flex-row md:items-start md:justify-between"
-                                        >
-                                            <div className="flex gap-4">
-                                                <div className="mt-1 h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
-
-                                                <div className="space-y-2">
-                                                    <h4
-                                                        className={`font-semibold transition-colors ${task.is_completed
-                                                            ? "text-muted-foreground line-through"
-                                                            : "group-hover:text-primary"
-                                                            }`}
-                                                    >
-                                                        {task.title}
-                                                    </h4>
-
-                                                    {task.description && (
-                                                        <p className="text-sm leading-6 text-muted-foreground line-clamp-2">
-                                                            {task.description}
-                                                        </p>
-                                                    )}
-
-                                                    <span className="text-xs text-muted-foreground">
-                                                        From{" "}
-                                                        {new Date(task.start_date).toLocaleDateString("en-GB", {
-                                                            day: "2-digit",
-                                                            month: "short",
-                                                        })}{" "}
-                                                        to{" "}
-                                                        {new Date(task.end_date).toLocaleDateString("en-GB", {
-                                                            day: "2-digit",
-                                                            month: "short",
-                                                        })}
-                                                    </span>
-
-                                                    <div className="mt-4 flex flex-col gap-2">
-                                                        <span className="text-xs text-muted-foreground">
-                                                            From Week {task.week.week_number}
-                                                        </span>
-                                                        <Badge className="bg-gray-600 text-white">
-                                                            {task.week.focus}
-                                                        </Badge>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 flex-wrap justify-end">
-                                                {task.is_completed ? (
-
-                                                    <CheckCircle2 className=" text-green-600" size={20} />
-                                                ) : (
-                                                    <>
-                                                        <AnimatePresence mode="wait">
-                                                            {checkedTasks[task.id] && (
-                                                                <motion.div
-                                                                    key="mark-done"
-                                                                    initial={{
-                                                                        opacity: 0,
-                                                                        width: 0,
-                                                                        x: 20,
-                                                                    }}
-                                                                    animate={{
-                                                                        opacity: 1,
-                                                                        width: "auto",
-                                                                        x: 0,
-                                                                    }}
-                                                                    exit={{
-                                                                        opacity: 0,
-                                                                        width: 0,
-                                                                        x: 20,
-                                                                    }}
-                                                                    transition={{
-                                                                        duration: 0.25,
-                                                                        ease: "easeInOut",
-                                                                    }}
-                                                                    className="overflow-hidden"
-                                                                >
-                                                                    <Button
-                                                                        size="sm"
-                                                                        className="order-2 cursor-pointer md:order-1 mt-3 md:mt-0 hover:bg-green-700 hover:border-green-700 hover:text-white transition-colors"
-
-                                                                        disabled={updatingTasks[task.id]}
-                                                                        onClick={() => updateSingleTask(task.id)}
-                                                                    >
-                                                                        Mark Done
-                                                                    </Button>
-                                                                </motion.div>
-                                                            )}
-                                                        </AnimatePresence>
-                                                        <Checkbox
-                                                            checked={!!checkedTasks[task.id]}
-                                                            className="cursor-pointer rounded-full border-2 border-green-700 transition-all hover:ring-4 hover:ring-green-500/20"
-                                                            onCheckedChange={() =>
-                                                                handleCheckboxChange(task.id)
-                                                            }
-                                                        />
-                                                    </>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
-            ) : (
-                <Card className="border-green-200 bg-green-50/40 dark:border-green-900 dark:bg-green-950/20">
-                    <CardContent className="flex h-40 items-center justify-center">
-                        <div className="text-center">
-                            <h3 className="text-lg font-semibold text-green-700">
-                                🕒 No upcoming tasks
-                            </h3>
-
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                You don't have any tasks scheduled for the next 3 days.
-                            </p>
-                        </div>
-                    </CardContent>
-
-                </Card>
-            )}
+            <div className="md:hidden h-screen px-10 flex justify-center items-center mt-10 space-y-2">
+                <span className="text-xl font-bold text-green-700">
+                    Sorry, this section is only available on larger screens. Please use a desktop or tablet device to view the full dashboard.
+                </span>
+            </div>
 
         </section>
     );
