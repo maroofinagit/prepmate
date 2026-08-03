@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -29,7 +29,55 @@ interface TestProps {
 
 export default function TestClient({ test, userExamId }: TestProps) {
 
-    console.log("Rendering TestClient with test:", test)
+    // =========================
+    // FULLSCREEN DETECTION
+    // =========================
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            if (!ref.current?.contains(document.fullscreenElement)) {
+                toast.error("You exited fullscreen mode. Please return to fullscreen to continue the test.");
+
+                // TODO:
+                // setViolations((prev) => prev + 1);
+                // if (violations >= 3) handleSubmit();
+            }
+        };
+
+        document.addEventListener(
+            "fullscreenchange",
+            handleFullscreenChange
+        );
+
+        return () => {
+            document.removeEventListener(
+                "fullscreenchange",
+                handleFullscreenChange
+            );
+        };
+    }, []);
+
+    //Tab visibility detection
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                toast.error("You switched tabs or minimized the window. Please return to the test tab to continue.");
+            }
+        };
+
+        document.addEventListener(
+            "visibilitychange",
+            handleVisibilityChange
+        );
+
+        return () => {
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            );
+        };
+    }, []);
+
+    const ref = useRef<HTMLDivElement>(null);
 
     const [currentQ, setCurrentQ] = useState(0);
 
@@ -197,7 +245,7 @@ export default function TestClient({ test, userExamId }: TestProps) {
     const answeredCount = Object.keys(responses).length;
 
     return (
-        <div className="min-h-screen bg-zinc-100 lg:px-10 px-6 pt-32 pb-10">
+        <div ref={ref} className="min-h-screen bg-zinc-100 lg:px-10 px-6 pt-32 pb-10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
 
                 {/* ========================= */}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "@/app/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { generateTestAttempt } from "@/app/actions/test";
@@ -30,6 +30,7 @@ interface TestsClientProps {
 }
 
 export default function TestsClient({ data, baseId }: TestsClientProps) {
+
 
     const [generatingTestId, setGeneratingTestId] = useState<number | null>(null);
     const [newData, setNewData] = useState(data);
@@ -183,7 +184,6 @@ function TestCard({
     markTestAsGive: (testId: number) => void;
 }) {
 
-    const router = useRouter();
 
     const handleGenerate = async (testId: string) => {
         setGeneratingTestId(test.testId);
@@ -206,6 +206,33 @@ function TestCard({
         }
     }
 
+    const router = useRouter();
+
+    const handleStartTest = async (testId: number) => {
+        try {
+            toast("Ready to Start Test ?", {
+                description: "Click on Start to begin the test, screen will be switched to fullscreen mode and you will not be able to switch tabs or exit the test until you submit it. Make sure you are ready before starting, the test will immediately begin once you click on Start.",
+                action: {
+                    label: "Start",
+                    onClick: () => {
+                        document.documentElement.requestFullscreen().catch((err) => {
+                            throw new Error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                        });
+                        router.push(`/user-exam/${baseId}/tests/${testId}`);
+                    }
+                },
+                cancel: {
+                    label: "Cancel",
+                    onClick: () => toast.error("Test start cancelled"),           
+                },
+                duration: Infinity, // Keep the toast open until user interacts
+            });
+        } catch (err) {
+            console.error(err);
+            toast.error("An error occurred while trying to start the test.");
+        }
+    };
+
     return (
         <Card className="p-4 border shadow-sm hover:shadow-md transition-shadow h-full flex flex-col justify-between">
             <CardHeader>
@@ -221,12 +248,10 @@ function TestCard({
             <CardFooter>
                 {test.status === 'GIVE' ? (
                     <Button
-                        asChild
                         className="bg-blue-700 hover:bg-black text-white cursor-pointer"
+                        onClick={() => handleStartTest(test.testId)}
                     >
-                        <Link href={`/user-exam/${baseId}/tests/${test.testId}`}>
-                            GIVE 🚀
-                        </Link>
+                        Give Test
                     </Button>
                 ) : test.status === 'GENERATE' ? (
                     <Button
