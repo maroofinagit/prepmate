@@ -21,8 +21,7 @@ import {
     LineChart,
     Line,
 } from "recharts";
-import { DashboardUser } from "@/app/types/dashboardUser";
-import { RoadmapStatus } from "@/generated/prisma/enums";
+import { Difficulty, RoadmapStatus } from "@/generated/prisma/enums";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -41,15 +40,24 @@ import { generateRoadmap } from "@/app/actions/roadmap";
 import { Separator } from "./ui/separator";
 import { motion } from "framer-motion";
 import { format } from "date-fns"
+import { DashboardUser } from "@/app/actions/action";
+import { Badge } from "./ui/badge";
 
+type WeakTopic = {
+    id: number;
+    name: string;
+    description: string | null;
+    difficulty: Difficulty;
 
+    wrongCount: number;
+    totalQuestions: number;
+    accuracy: number;
+
+    tasks: { id: number; title: string; week_id: number }[]
+};
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
-
-    useEffect(() => {
-        setNewExams(dashboardUser.exams ?? []);
-    }, [dashboardUser.exams]);
 
     console.log("DashboardAnalytics: dashboardUser", dashboardUser);
 
@@ -61,6 +69,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const [loadingMessage, setLoadingMessage] = useState("");
     const [deleting, setDeleting] = useState(false);
     const [dltDialogOpen, setDltDialogOpen] = useState(false);
+
+    useEffect(() => {
+        setNewExams(dashboardUser?.exams ?? []);
+    }, [dashboardUser?.exams]);
 
     useEffect(() => {
         if (!newExams.length) {
@@ -90,6 +102,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     // update selectedExam if exams change and selectedExam becomes stale
     // (keeps UI consistent if props update)
+
     const currentSelectedExam = useMemo(() => {
         if (!selectedExam) return null;
         // try to find the same id in latest exams array
@@ -125,7 +138,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const selectedProgress = exam?.progress_percent ?? 0;
     const selectedId = exam?.id ?? null;
     const roadmapStatus = exam?.roadmap_status;
-    // const roadmapStatus = RoadmapStatus.failed
 
     // safe values for top performance cards
     const performanceScore = exam?.performanceScore ?? 0;
@@ -402,6 +414,41 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setSelectedExam(newExams[0] ?? null);
         }
     }, [newExams]);
+
+
+    const getWeakTopics = (exam: NonNullable<DashboardUser>['exams'][number]): WeakTopic[] => {
+        const weakTopics = new Map<number, WeakTopic>();
+
+        for (const test of exam.tests ?? []) {
+            if (!test.attempt) continue;
+
+            const responses = test.attempt.responses as Record<string, string>;
+
+            for (const question of test.questions) {
+                const userAnswer = responses[String(question.id)];
+
+                // Skip correct answers
+                if (userAnswer === question.correctAns) continue;
+
+                const existing = weakTopics.get(question.topic.id);
+
+                if (existing) {
+                    existing.wrongCount++;
+                } else {
+                    weakTopics.set(question.topic.id, {
+                        ...question?.topic as WeakTopic,
+                        wrongCount: 1,
+                    });
+                }
+            }
+        }
+
+        return [...weakTopics.values()].sort(
+            (a, b) => b.wrongCount - a.wrongCount
+        );
+    };
+
+    const weakTopics = selectedExam ? getWeakTopics(selectedExam) : [];
 
     return (
         <>
@@ -1348,6 +1395,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                     <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
 
+                                    {/* Performance cards 1 */}
                                     <div className="grid gap-6 md:grid-cols-4">
 
                                         <motion.div
@@ -1488,7 +1536,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                     </div>
 
-
+                                    {/* Performance cards 2 */}
                                     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mt-6">
 
                                         <motion.div
@@ -1637,6 +1685,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </motion.div>
                                     </div>
 
+                                    {/* Performance Charts */}
                                     <div className="grid gap-6 md:grid-cols-2 mt-6">
 
                                         <motion.div
@@ -1784,6 +1833,79 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </motion.div>
                                     </div>
 
+                                    {/* Weak Topics */}
+                                    <Card className="mt-6">
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2">
+                                                🎯 Weak Topics
+                                            </CardTitle>
+
+                                            <CardDescription>
+                                                Focus on these topics to improve your performance.
+                                            </CardDescription>
+                                        </CardHeader>
+
+                                        <CardContent>
+                                            {weakTopics.length === 0 ? (
+                                                <div className="flex flex-col items-center justify-center py-8 text-center">
+                                                    {testsAttempted === 0 ? (
+                                                        <>
+                                                            <p className="text-sm font-medium">
+                                                                No Tests have been attempted yet.
+                                                            </p>
+                                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                                Start attempting tests to identify areas for improvement.
+                                                            </p>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <p className="text-sm font-medium">
+                                                                Great job! You haven't answered any questions incorrectly yet.
+                                                            </p>
+                                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                                Great job! You haven't answered any questions incorrectly yet.
+                                                            </p>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-3">
+                                                    {weakTopics.slice(0, 5).map((topic) => (
+                                                        <div
+                                                            key={topic.id}
+                                                            className="flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                                                        >
+                                                            <div className="space-y-4">
+                                                                <div className="flex items-center gap-4">
+                                                                    <h4 className="font-medium">
+                                                                        {topic.name}
+                                                                    </h4>
+
+                                                                    <Badge variant="destructive"
+                                                                        className=" text-[10px] font-normal px-2 py-1">
+                                                                        {topic.wrongCount}{" "}
+                                                                        {topic.wrongCount === 1
+                                                                            ? "Wrong Answer"
+                                                                            : "Wrong Answers"}
+                                                                    </Badge>
+                                                                </div>
+
+                                                                <span className="text-sm font-medium text-muted-foreground">
+                                                                    From Task :
+                                                                    {topic.tasks.map((task, index) => (
+                                                                        <span className=" font-normal" key={task.id}>
+                                                                            {" " + task.title}
+                                                                        </span>
+                                                                    ))}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+
                                     {/* Performance Summary */}
 
                                     <h1 className="text-2xl font-bold mt-12 mb-6">Your {selectedExam?.exam.name} Summary</h1>
@@ -1892,7 +2014,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true, amount: 0.2 }}
                                         transition={{ duration: 0.5 }}
-                                        className="mt-16"
+                                        className="mt-16 mx-auto border rounded-2xl border-red-200 p-6 shadow-sm transition-all duration-300 hover:shadow-xl"
                                     >
                                         <div className="flex flex-col gap-3 mb-6">
 
@@ -1905,7 +2027,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             </p>
                                         </div>
 
-                                        <div className="rounded-2xl border border-red-200 bg-linear-to-r from-white via-red-50 to-red-100 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
+                                        <div className="rounded-2xl border border-red-200 bg-linear-to-r from-white to-red-50 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
 
                                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 
@@ -1920,7 +2042,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             Delete {exam?.exam?.name ?? ""} Exam
                                                         </h3>
 
-                                                        <p className="mt-2 max-w-xl text-sm text-red-600">
+                                                        <p className="mt-2 max-w-xl text-sm text-gray-500">
                                                             Permanently remove this exam, its roadmap, progress,
                                                             milestones, and associated learning data. This action
                                                             cannot be reversed.

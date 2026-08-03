@@ -356,6 +356,27 @@ export async function getDashboardUser(userId: string) {
                                 questions: {
                                     select: {
                                         id: true,
+                                        question: true,
+                                        correctAns: true,
+                                        marks: true,
+                                        difficulty: true,
+
+                                        topic: {
+                                            select: {
+                                                id: true,
+                                                name: true,
+                                                description: true,
+                                                difficulty: true,
+
+                                                tasks: {
+                                                    select: {
+                                                        id: true,
+                                                        title: true,
+                                                        week_id: true,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
 
@@ -385,6 +406,10 @@ export async function getDashboardUser(userId: string) {
         return null;
     }
 };
+
+export type DashboardUser = Awaited<
+    ReturnType<typeof getDashboardUser>
+>;
 
 
 export async function deleteUserExam(user_exam_id: number, userId: string) {

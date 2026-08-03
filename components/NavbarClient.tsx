@@ -47,6 +47,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<{ name?: string; email?: string; image?: string } | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     // Fetch session using Better Auth
     useEffect(() => {
@@ -266,7 +267,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                 {/* Auth Buttons / User Menu */}
                 <div className="hidden md:flex items-center space-x-4">
                     {isLoggedIn ? (
-                        <DropdownMenu>
+                        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
                             <DropdownMenuTrigger asChild>
                                 <div className="flex items-center gap-3 cursor-pointer">
                                     <div className=" flex flex-col justify-between">
@@ -298,18 +299,21 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setMenuOpen(false)}>
                                         <LayoutDashboard className="mr-2 h-4 w-4" />
                                         <Link href="/dashboard">Dashboard</Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem >
+                                    <DropdownMenuItem onClick={() => setMenuOpen(false)}>
                                         <User className="mr-2 h-4 w-4" />
                                         <Link href="/profile">Profile</Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
-                                    onClick={handleLogout}
+                                    onClick={() => {
+                                        handleLogout();
+                                        setMenuOpen(false);
+                                    }}
                                     className="text-red-600 focus:text-red-600 cursor-pointer"
                                 >
                                     <LogOut className="mr-2 h-4 w-4 cursor-pointer" />

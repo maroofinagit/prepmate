@@ -329,27 +329,27 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                     <OverviewCard
                         title="Today's Tasks"
                         value={stats.todayTasks}
-                        icon={<Clock3 className="size-6" />}
+                        icon={<Clock3 className="size-8" />}
                     />
 
                     <OverviewCard
                         title="Completed"
                         value={stats.completed}
                         total={stats.todayTasks}
-                        icon={<CheckCircle2 className="size-6 text-green-500" />}
+                        icon={<CheckCircle2 className="size-8 text-green-500" />}
                     />
 
                     <OverviewCard
                         title="Overdue"
                         value={stats.overdue}
                         total={stats.todayTasks}
-                        icon={<Flame className="size-6 text-red-500" />}
+                        icon={<Flame className="size-8 text-red-500" />}
                     />
 
                     <OverviewCard
                         title="Upcoming"
                         value={stats.upcoming}
-                        icon={<CalendarDays className="size-6 text-blue-500" />}
+                        icon={<CalendarDays className="size-8 text-blue-500" />}
                     />
                 </motion.div>
 
@@ -924,8 +924,8 @@ function OverviewCard({
                         )}
                     </div>
 
-                    <div
-                    >
+                    <div className="absolute right-4 top-4 text-slate-300 transition-colors group-hover:text-green-600 p-4 rounded-full shadow-xl group-hover:bg-green-100/50">
+                    
                         {icon}
                     </div>
 

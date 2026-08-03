@@ -52,9 +52,9 @@ export default function LandingPage({
                 description:
                     "Choose an exam, generate a personalized roadmap, and let PrepMate guide you step by step toward exam day.",
                 primaryText: "Create Roadmap",
-                primaryHref: "/dashboard",
+                primaryHref: "/onboarding",
                 secondaryText: "Browse Exams",
-                secondaryHref: "/exams",
+                secondaryHref: "/dashboard",
             }
             : {
                 badge: "Keep Going",
@@ -63,8 +63,8 @@ export default function LandingPage({
                     "You're already making progress. Continue your roadmap, practice with AI-generated exams, and stay on track until exam day.",
                 primaryText: "Continue Learning",
                 primaryHref: "/dashboard",
-                secondaryText: "View Roadmaps",
-                secondaryHref: "/dashboard",
+                secondaryText: "See today's tasks",
+                secondaryHref: "/dashboard/today",
             };
 
     return (
