@@ -9,11 +9,35 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ===============================
+// Cache Tags
+// ===============================
+
+// exams
+// Global cache for all exams (full list / short list)
+
+// exam-${examId}
+// Cache for a single exam
+
+// userExams-${userId}
+// Cache for all exams enrolled by a user
+
+// roadmap-${userExamId}
+// Cache for a roadmap of a specific user exam
+
+// tests-${userExamId}
+// Cache for tests belonging to a specific user exam
+
+// userDashboard-${userId}
+// Cache for a user's dashboard
+
+// todaysTasks-${userId}
+// Cache for today's tasks of a user
 
 export async function getFullExams() {
     'use cache';
     cacheTag('exams');
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         const exams = await db.exam.findMany({
             select: {
@@ -52,7 +76,7 @@ export async function getFullExams() {
 export async function getExamById(id: number) {
     'use cache';
     cacheTag(`exam-${id}`);
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         const exam = await db.exam.findUnique({
             where: { id },
@@ -88,7 +112,7 @@ export async function getExamById(id: number) {
 export async function getShortExams() {
     'use cache';
     cacheTag('exams');
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         const exams = await db.exam.findMany({
             select: {
@@ -109,7 +133,7 @@ export async function getShortExams() {
 export async function getUserExams(userId: string) {
     'use cache';
     cacheTag(`userExams-${userId}`);
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); 
     try {
         const userExams = await db.userExam.findMany({
             where: { user_id: userId },
@@ -182,6 +206,14 @@ export async function createUserExam({
             },
         });
 
+        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
+        updateTag(`exam-${examId}`); // Invalidate the cache for the specific exam
+        updateTag(`roadmap-${userExam.id}`); // Invalidate the cache for the specific roadmap
+        updateTag(`tests-${userExam.id}`); // Invalidate the cache for the specific exam
+        updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+        updateTag(`exams`); // Invalidate the cache for all exams
+
         return {
             success: true,
             user_exam_id: userExam.id,
@@ -199,7 +231,7 @@ export async function createUserExam({
 export async function getRoadmapByUserExamId(user_exam_id: number) {
     'use cache';
     cacheTag(`roadmap-${user_exam_id}`);
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         const roadmap = await db.roadmap.findUnique({
             where: { user_exam_id },
@@ -244,7 +276,7 @@ export async function getDashboardUser(userId: string) {
 
     'use cache';
     cacheTag(`userDashboard-${userId}`);
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
 
     try {
         const dashboardUser = await db.user.findUnique({
@@ -418,6 +450,9 @@ export async function deleteUserExam(user_exam_id: number, userId: string) {
     updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
     updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
     updateTag(`exam-${user_exam_id}`); // Invalidate the cache for the specific exam
+    updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+    updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+    updateTag(`exams`); // Invalidate the cache for all exams
 
     try {
 
@@ -578,6 +613,7 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
         updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+        updateTag(`exams`); // Invalidate the cache for all exams
 
         return {
             success: true,
@@ -624,7 +660,6 @@ export async function completeMilestone(
             },
         });
 
-        'use cache';
         updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific milestone
         updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
@@ -880,7 +915,7 @@ export async function getTodaysTasks(userId: string) {
 
     'use cache';
     cacheTag(`todaysTasks-${userId}`);
-    cacheLife('minutes'); // Cache for 30 seconds
+    cacheLife('hours'); // Cache for 30 seconds
 
     try {
 

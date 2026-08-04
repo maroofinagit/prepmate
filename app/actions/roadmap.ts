@@ -618,6 +618,8 @@ Do NOT
         updateTag(`exams`);
         updateTag(`userDashboard-${userExam.user_id}`);
         updateTag(`userExams-${userExam.user_id}`);
+        updateTag(`tests-${user_exam_id}`);
+        updateTag(`todaysTasks-${userExam.user_id}`);
 
         return {
             success: true,

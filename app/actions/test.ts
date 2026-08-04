@@ -10,7 +10,7 @@ import { TestAttemptSchema } from "../lib/zodSchema";
 export async function getTestsForUserExam(userExamId: number) {
     'use cache';
     cacheTag(`tests-${userExamId}`);
-    cacheLife('minutes'); // Cache for 5 minutes
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         // 🔥 1. Fetch roadmap
         const roadmap = await db.roadmap.findUnique({
@@ -205,7 +205,7 @@ export async function getTestsForUserExam(userExamId: number) {
 export async function getTestById(testId: number) {
     'use cache';
     cacheTag(`test-${testId}`);
-    cacheLife('minutes'); // Cache for 5 minutes
+    cacheLife('hours'); // Cache for 30 seconds
     try {
         const test = await db.test.findUnique({
             where: {
@@ -274,7 +274,7 @@ export async function getTestById(testId: number) {
 export async function getTestResult(testId: number) {
     'use cache';
     cacheTag(`test-${testId}`);
-    cacheLife('minutes'); // Cache for 5 minutes
+    cacheLife('hours'); // Cache for 30 seconds
     try {
 
         const test = await db.test.findUnique({
@@ -881,6 +881,8 @@ Return ONLY this JSON array:
         updateTag(`exams`);
         updateTag(`userDashboard-${test.userExam.user_id}`);
         updateTag(`userExams-${test.userExam.user_id}`);
+        updateTag(`tests-${test.userExam.id}`);
+        updateTag(`todaysTasks-${test.userExam.user_id}`);
 
         // =========================
         // SUCCESS
@@ -1099,6 +1101,8 @@ export async function submitTest(
         updateTag(`exams`);
         updateTag(`userDashboard-${test.userExam.user.id}`);
         updateTag(`userExams-${test.userExam.user.id}`);
+        updateTag(`tests-${test.userExam.id}`);
+        updateTag(`todaysTasks-${test.userExam.user.id}`);
 
         return {
             success: true,
