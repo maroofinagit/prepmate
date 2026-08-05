@@ -328,7 +328,7 @@ Do NOT
         }
 
         const roadmapData = parsed.data;
-
+        
         // 6️⃣ Save everything in TRANSACTION
         const roadmap = await db.$transaction(async (tx) => {
             // Create roadmap
@@ -592,7 +592,7 @@ Do NOT
 
             return createdRoadmap;
         }, {
-            timeout: 60000 // 60 seconds
+            timeout: 120000 // 2 minutes
         });
 
         // 7️⃣ Mark completed
@@ -620,6 +620,7 @@ Do NOT
         updateTag(`userExams-${userExam.user_id}`);
         updateTag(`tests-${user_exam_id}`);
         updateTag(`todaysTasks-${userExam.user_id}`);
+        updateTag(`userExam-${user_exam_id}`);
 
         return {
             success: true,

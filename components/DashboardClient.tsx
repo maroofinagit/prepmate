@@ -40,7 +40,7 @@ import { generateRoadmap } from "@/app/actions/roadmap";
 import { Separator } from "./ui/separator";
 import { motion } from "framer-motion";
 import { format } from "date-fns"
-import { DashboardUser } from "@/app/actions/action";
+import { DashboardUser, deleteUserExam } from "@/app/actions/action";
 import { Badge } from "./ui/badge";
 
 type WeakTopic = {
@@ -376,8 +376,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         try {
             setDeleting(true);
-            // const res = await deleteUserExam(selectedId, dashboardUser.id);
-            if (1) {
+            const res = await deleteUserExam(selectedId, dashboardUser?.id?.toString() ?? "");
+            if (res.success) {
                 toast.success("Exam deleted successfully.", {
                     duration: 2000,
                 });
@@ -389,7 +389,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setDltDialogOpen(false);
             setDeleting(false);
             setNewExams((prev) => prev.filter((ex) => ex.id !== selectedId));
-            router.refresh();
 
         } catch (err) {
             console.error(err);

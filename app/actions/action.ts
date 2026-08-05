@@ -73,6 +73,29 @@ export async function getFullExams() {
     }
 }
 
+export async function getUserExam(id: number) {
+
+    'use cache';
+    cacheTag(`userExam-${id}`);
+    cacheLife('hours'); // Cache for 30 seconds
+
+    try {
+        const userExam = await db.userExam.findFirst({
+            where: {
+                exam_id: id,
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        return userExam;
+    } catch (error) {
+        console.error("Error fetching user exam:", error);
+        return null;
+    }
+}
+
 export async function getExamById(id: number) {
     'use cache';
     cacheTag(`exam-${id}`);
@@ -133,7 +156,7 @@ export async function getShortExams() {
 export async function getUserExams(userId: string) {
     'use cache';
     cacheTag(`userExams-${userId}`);
-    cacheLife('hours'); 
+    cacheLife('hours');
     try {
         const userExams = await db.userExam.findMany({
             where: { user_id: userId },
@@ -213,6 +236,7 @@ export async function createUserExam({
         updateTag(`tests-${userExam.id}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
+        updateTag(`userExam-${examId}`); // Invalidate the cache for the specific user exam
 
         return {
             success: true,
@@ -453,6 +477,7 @@ export async function deleteUserExam(user_exam_id: number, userId: string) {
     updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
     updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
     updateTag(`exams`); // Invalidate the cache for all exams
+    updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
 
     try {
 
@@ -614,6 +639,7 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
         updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
+        updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
 
         return {
             success: true,
@@ -665,6 +691,8 @@ export async function completeMilestone(
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
         updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+        updateTag(`exams`); // Invalidate the cache for all exams
+        updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
 
         return { success: true };
     } catch (error) {

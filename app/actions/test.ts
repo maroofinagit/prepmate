@@ -883,6 +883,7 @@ Return ONLY this JSON array:
         updateTag(`userExams-${test.userExam.user_id}`);
         updateTag(`tests-${test.userExam.id}`);
         updateTag(`todaysTasks-${test.userExam.user_id}`);
+        updateTag(`userExam-${test.userExam.id}`);
 
         // =========================
         // SUCCESS
@@ -1103,6 +1104,7 @@ export async function submitTest(
         updateTag(`userExams-${test.userExam.user.id}`);
         updateTag(`tests-${test.userExam.id}`);
         updateTag(`todaysTasks-${test.userExam.user.id}`);
+        updateTag(`userExam-${test.userExam.id}`);
 
         return {
             success: true,
