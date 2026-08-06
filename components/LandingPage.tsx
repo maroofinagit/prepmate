@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
+import { once } from "events";
 
 interface LandingPageProps {
     user: any | null;
@@ -258,8 +259,8 @@ export default function LandingPage({
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9, y: 15 }}
                                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                                transition={{ delay: 0.8, duration: 0.5 }}
-                                viewport={{ once: false, amount: 0.3 }}
+                                transition={{ delay: 0.4, duration: 0.5 }}
+                                viewport={{ once: false, amount: 0.5 }}
                                 className="absolute -bottom-4 -left-4 flex items-center gap-2 rounded-full bg-yellow-200 backdrop-blur px-4 py-2 shadow-lg border border-black"
                             >
                                 <div className="h-2.5 w-2.5 rounded-full bg-green-700" />
@@ -409,7 +410,8 @@ export default function LandingPage({
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
+                            transition={{ delay: 0.7, duration: 0.5 }}
+                            viewport={{ once: false, amount: 1 }}
                             className="mt-5 text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
                         >
                             Studying shouldn't
@@ -490,8 +492,17 @@ export default function LandingPage({
                                 rotate: 0,
                                 scale: 1.03,
                             }}
+                            initial={{
+                                opacity: 0,
+                                x: 80,
+                            }}
+                            whileInView={{
+                                opacity: 1,
+                                x: 0,
+                            }}
                             transition={{
-                                duration: .35,
+                                duration: 0.8,
+                                delay: 0.4,
                             }}
                             className="relative hidden md:block rounded-4xl overflow-hidden border bg-white p-3 shadow-[0_40px_90px_rgba(0,0,0,.15)] rotate-2"
                         >
@@ -518,7 +529,8 @@ export default function LandingPage({
                                 y: 0,
                             }}
                             transition={{
-                                delay: .8,
+                                delay: 0.8,
+                                duration: 0.8,
                             }}
                             className="hidden md:block absolute -bottom-8 -left-6 bg-white rounded-xl shadow-lg shadow-gray-500 px-6 py-5"
                         >

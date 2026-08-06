@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
     ],
   },
   cacheComponents: true,
-  allowedDevOrigins: ['192.168.29.239', 'localhost:3000'],  
+  allowedDevOrigins: ['192.168.29.239', 'localhost:3000','172.30.235.144'],  
   /* config options here */
 };
 
