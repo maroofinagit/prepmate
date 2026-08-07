@@ -293,6 +293,16 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
     return (
         <div className=" px-6 mt-28 md:mt-36 pb-12 space-y-10 max-w-6xl mx-auto relative">
+
+            <div className="fixed bottom-0 right-6 z-50">
+                <a
+                    href="#"
+                    className="flex items-center gap-2 rounded-full bg-black shadow-gray-400 px-4 py-2 text-sm font-medium text-white shadow-md transition hover:bg-blue-700"
+                >
+                    <ChevronUp className="h-4 w-4" />
+                </a>
+            </div>
+
             <div className="absolute top-0 right-0 w-80 md:block hidden">
                 <Search
                     size={18}

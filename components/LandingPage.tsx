@@ -15,6 +15,7 @@ import {
     Route,
     Brain,
     BarChart3,
+    ChevronUp,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
@@ -69,7 +70,17 @@ export default function LandingPage({
             };
 
     return (
-        <>
+        <main className="relative bg-white">
+
+            <div className="fixed bottom-6 right-6 z-50">
+                <a
+                    href="#"
+                    className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-sm font-medium text-white shadow-md transition hover:bg-blue-700"
+                >
+                    <ChevronUp className="h-4 w-4" />
+                </a>
+            </div>
+
             {/* HERO */}
             <section className="relative overflow-hidden bg-linear-to-br from-[#00353b] via-[#001d3f] to-[#001c32]">
 
@@ -1089,6 +1100,6 @@ export default function LandingPage({
                 </div>
             </motion.section>
 
-        </>
+        </main>
     );
 }

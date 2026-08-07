@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaXTwitter, FaInstagram, FaLinkedin, FaFacebook } from "react-icons/fa6";
+import { FaXTwitter, FaInstagram, FaLinkedin, FaFacebook, FaGithub } from "react-icons/fa6";
 
 export default function Footer() {
 
@@ -11,6 +11,7 @@ export default function Footer() {
         { href: "https://instagram.com/maroofalysyed", icon: FaInstagram },
         { href: "https://linkedin.com/in/maroofalysyed", icon: FaLinkedin },
         { href: "https://facebook.com/maroofalysyed", icon: FaFacebook },
+        { href: "https://github.com/maroofalysyed", icon: FaGithub },
     ];
 
     return (
@@ -126,7 +127,7 @@ export default function Footer() {
                                 <ul className="space-y-3">
 
                                     {[
-                                        ["About", "/about"],
+                                        ["Home", "/"],
                                         ["Contact", "/contact"],
                                         ["Exams", "/onboarding"],
                                         ["Roadmap", "/dashboard"],
