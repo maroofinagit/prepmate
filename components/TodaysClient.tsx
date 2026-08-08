@@ -9,21 +9,20 @@ import {
 } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "./ui/progress";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { AnimatePresence, easeOut, motion, Variants } from "framer-motion";
 import { completeRoadmapTask } from "@/app/actions/action";
 import { toast } from "sonner";
-
+import { playNotification, playError } from "@/app/lib/sound";
+import { useUser } from "@/app/context/userContext";
 
 
 export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
 
-    const userId = todaysTasks[0]?.week.phase.roadmap.userExam.user.id;
+    const { soundEnabled, id, name } = useUser();
     const userExamId = todaysTasks[0]?.week.phase.roadmap.userExam.id;
-
     const [tasks, setTasks] = useState(todaysTasks);
 
     useEffect(() => {
@@ -42,6 +41,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
 
     const today = useMemo(() => {
         const d = new Date();
+        d.setDate(d.getDate()); //change this to 0 for actual today
         d.setHours(0, 0, 0, 0);
         return d;
     }, []);
@@ -53,9 +53,9 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
     }, [today]);
 
     const stats = useMemo(() => {
-        today.setHours(0, 0, 0, 0);
-
-        const upcomingEnd = new Date(today);
+        const currentDate = new Date(today);
+        currentDate.setHours(0, 0, 0, 0);
+        const upcomingEnd = new Date(currentDate);
         upcomingEnd.setDate(upcomingEnd.getDate() + 3);
         upcomingEnd.setHours(23, 59, 59, 999);
 
@@ -121,8 +121,8 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             day: "numeric",
             month: "long",
             year: "numeric",
-        }).format(new Date());
-    }, []);
+        }).format(today);
+    }, [today]);
 
     const groupedTasks = useMemo(() => {
         const groups = new Map<
@@ -268,15 +268,20 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                 )
             );
 
-            const res = await completeRoadmapTask(taskId, userExamId, userId);
+            const res = await completeRoadmapTask(taskId, userExamId, id);
 
             if (!res.success) throw new Error("Failed to update task");
-
+            if (soundEnabled) {
+                playNotification();
+            }
             toast.success("Task completed!");
 
         } catch (err) {
 
             console.log(err);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Something went wrong.");
             setTasks(prevTasks);
             setCheckedTasks((prev) => ({
@@ -303,7 +308,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                         </span>
 
                         <h1 className="text-4xl font-bold tracking-tight">
-                            {tasks[0]?.week.phase.roadmap.userExam.user.name || "there"}
+                            {name || "there"}
                         </h1>
                     </div>
 
@@ -925,7 +930,7 @@ function OverviewCard({
                     </div>
 
                     <div className="absolute right-4 top-4 text-slate-300 transition-colors group-hover:text-green-600 p-4 rounded-full shadow-xl group-hover:bg-green-100/50">
-                    
+
                         {icon}
                     </div>
 

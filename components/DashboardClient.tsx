@@ -59,9 +59,6 @@ type WeakTopic = {
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
 
-    console.log("DashboardAnalytics: dashboardUser", dashboardUser);
-
-
     const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
     const [selectedExam, setSelectedExam] = useState(newExams.length ? newExams[0] : null);

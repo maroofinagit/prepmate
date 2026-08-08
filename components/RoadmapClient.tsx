@@ -12,9 +12,13 @@ import { Roadmap } from "@/app/types/roadmap";
 import { completeMilestone, completeRoadmapTask } from "@/app/actions/action";
 import { Search } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { playNotification, playError } from "@/app/lib/sound";
+import { useUser } from "@/app/context/userContext";
+
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
+    const { soundEnabled } = useUser(); // currently not used, but can be used for soundEnabled if needed
     const [localRoadmap, setLocalRoadmap] = useState(roadmap);
     const [expandedPhases, setExpandedPhases] = useState<(number | undefined)[]>([]);
     const [expandedWeeks, setExpandedWeeks] = useState<Record<number, (number | undefined)[]>>({});
@@ -98,7 +102,10 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             const res = await completeRoadmapTask(taskId, localRoadmap.userExam.id, localRoadmap.userExam.user_id);
 
             if (!res.success) throw new Error("Failed to update task");
-
+            if (soundEnabled) {
+                playNotification();
+            }
+            console.log("Sound enabled:", soundEnabled);
             toast.success("Task completed!");
 
             // instant UI update: mark task completed and clear checkbox for that task
@@ -125,6 +132,9 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             setCheckedTasks((prev) => ({ ...prev, [taskId]: false }));
         } catch (err) {
             console.error(err);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Something went wrong.");
         } finally {
             setUpdatingTasks((prev) => ({ ...prev, [taskId]: false }));
@@ -140,6 +150,9 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
 
             if (!res.success) throw new Error("Failed updating milestone");
 
+            if (soundEnabled) {
+                playNotification();
+            }
             toast.success("Milestone updated!", { duration: 1500 });
 
             // Instant UI update
@@ -153,6 +166,9 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             setCheckedMilestones((prev) => ({ ...prev, [milestoneId]: false }));
         } catch (err) {
             console.error(err);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Something went wrong.");
         } finally {
             setLoadingMilestone((prev) => ({ ...prev, [milestoneId]: false }));

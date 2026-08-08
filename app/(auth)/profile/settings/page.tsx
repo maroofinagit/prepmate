@@ -1,10 +1,10 @@
-import { redirect } from "next/navigation";
+import { getProfileSetting } from "@/app/actions/action";
 import { auth } from "@/app/lib/auth";
+import ProfileSettingsClient from "@/components/ProfileSettingClient";
 import { headers } from "next/headers";
-import ProfileSecurityClient from "@/components/ProfileSecurityClient";
-import { checkEmailExistsLogin, profileSecurityCheck } from "@/app/actions/action";
+import { redirect } from "next/navigation";
 
-export default async function ProfileSecurityPage() {
+export default async function ProfileSettings() {
 
     const data = await auth.api.getSession({
         headers: await headers(),
@@ -21,14 +21,14 @@ export default async function ProfileSecurityPage() {
         return <div className="text-center mt-20 text-gray-500 h-screen">User not found.</div>;
     }
 
-    const userSecurity = await profileSecurityCheck(session.userId);
+    const userSettings = await getProfileSetting(session.userId);
 
-    if (userSecurity == null) {
+    if (userSettings == null) {
         return <div className="text-center mt-20 text-gray-500 h-screen">User not found.</div>;
     }
 
     return (
-        <ProfileSecurityClient security={userSecurity} />
+        <ProfileSettingsClient userSettings={userSettings} userId={session.userId} />
     );
 
 }

@@ -1,8 +1,8 @@
 import OnboardingClient from "@/components/OnboardClient";
-import { auth } from "../lib/auth";
+import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getFullExams, getUserExams } from "../actions/action";
+import { getFullExams, getUserExams } from "@/app//actions/action";
 
 export default async function OnboardingPage() {
 

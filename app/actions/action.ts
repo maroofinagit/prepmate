@@ -253,9 +253,11 @@ export async function createUserExam({
 }
 
 export async function getRoadmapByUserExamId(user_exam_id: number) {
+
     'use cache';
     cacheTag(`roadmap-${user_exam_id}`);
     cacheLife('hours'); // Cache for 30 seconds
+
     try {
         const roadmap = await db.roadmap.findUnique({
             where: { user_exam_id },
@@ -282,8 +284,8 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
                             include: {
                                 resources: true,
                             }
-                        }
-                    }
+                        },
+                    },
                 }
             },
         });
@@ -467,6 +469,28 @@ export type DashboardUser = Awaited<
     ReturnType<typeof getDashboardUser>
 >;
 
+export async function getProfileSetting(userId: string) {
+
+    'use cache';
+    cacheTag(`profileSetting-${userId}`);
+    cacheLife('hours'); // Cache for 30 seconds
+
+    try {
+        const userSettings = await db.user.findUnique({
+            where: { id: userId },
+            select: {
+                soundEnabled: true,
+                name: true,
+            },
+        });
+
+        return userSettings;
+    } catch (err) {
+        console.error("❌ Error fetching Profile Settings:", err);
+        return null;
+    }
+}
+
 
 export async function deleteUserExam(user_exam_id: number, userId: string) {
 
@@ -515,8 +539,7 @@ export async function markNotificationAsRead(notificationId: number) {
         });
 
         return {
-            success: true,
-            notification: updatedNotification,
+            success: true
         };
     } catch (error) {
         console.error("❌ Error marking notification as read:", error);
@@ -978,13 +1001,7 @@ export async function getTodaysTasks(userId: string) {
                                                         id: true,
                                                         name: true,
                                                     },
-                                                },
-                                                user: {
-                                                    select: {
-                                                        id: true,
-                                                        name: true,
-                                                    },
-                                                },
+                                                }
                                             },
                                         },
                                     },
@@ -1010,6 +1027,56 @@ export async function getTodaysTasks(userId: string) {
             success: false,
             message: "Failed to fetch today's tasks.",
         }
+    }
+}
+
+export async function updateSoundPreference(
+    userId: string,
+    soundEnabled: boolean
+) {
+    try {
+        await db.user.update({
+            where: { id: userId },
+            data: { soundEnabled },
+        });
+
+        updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
+        updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
+        updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
+        return {
+            success: true,
+        };
+    } catch (error) {
+        console.error("❌ Error updating sound preference:", error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to update sound preference.",
+        };
+    }
+}
+
+export async function getCurrentUser(userId: string) {
+    try {
+
+        if (!userId) {
+            console.error("❌ User ID is required to fetch current user.");
+            return null;
+        }
+
+        const user = await db.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                soundEnabled: true,
+            },
+        });
+
+        return user;
+    } catch (error) {
+        console.error("❌ Error fetching current user:", error);
+        return null;
     }
 }
 

@@ -130,7 +130,7 @@ export async function generateRoadmap(user_exam_id: number) {
                             },
                         },
                     },
-                },
+                }
             }
         });
 
@@ -328,7 +328,7 @@ Do NOT
         }
 
         const roadmapData = parsed.data;
-        
+
         // 6️⃣ Save everything in TRANSACTION
         const roadmap = await db.$transaction(async (tx) => {
             // Create roadmap

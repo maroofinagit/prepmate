@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { generateTestAttempt } from "@/app/actions/test";
 import { motion } from "framer-motion";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 type Test = {
     testId: number;
@@ -30,7 +32,6 @@ interface TestsClientProps {
 }
 
 export default function TestsClient({ data, baseId }: TestsClientProps) {
-
 
     const [generatingTestId, setGeneratingTestId] = useState<number | null>(null);
     const [newData, setNewData] = useState(data);
@@ -184,22 +185,28 @@ function TestCard({
     markTestAsGive: (testId: number) => void;
 }) {
 
-
+    const { soundEnabled } = useUser();
     const handleGenerate = async (testId: string) => {
         setGeneratingTestId(test.testId);
         toast.info("Starting test generation. This may take a few moments... Dont refresh the page !");
         try {
             const response = await generateTestAttempt(test.testId);
-            if (response.success) {
-                toast.success("Test generation started successfully! Click on GIVE once the test is ready.");
-                await new Promise(resolve => setTimeout(resolve, 500)); // Simulate a delay of 0.5 seconds
-                setGeneratingTestId(null);
-                markTestAsGive(test.testId);
-                router.refresh();
-            } else {
-                toast.error(response.message || "Failed to start test generation.");
+            if (!response.success) {
+                throw new Error(response.message || "Failed to generate test");
             }
+            if (soundEnabled) {
+                playNotification();
+            }
+            toast.success("Test generation started successfully! Click on GIVE once the test is ready.");
+            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate a delay of 0.5 seconds
+            setGeneratingTestId(null);
+            markTestAsGive(test.testId);
+            router.refresh();
         } catch (error) {
+            if (soundEnabled) {
+                playError();
+            }
+            console.error("Error generating test:", error);
             toast.error("An unexpected error occurred.");
         } finally {
             setGeneratingTestId(null);
@@ -223,7 +230,7 @@ function TestCard({
                 },
                 cancel: {
                     label: "Cancel",
-                    onClick: () => toast.error("Test start cancelled"),           
+                    onClick: () => toast.error("Test start cancelled"),
                 },
                 duration: Infinity, // Keep the toast open until user interacts
             });

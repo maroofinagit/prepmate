@@ -1,8 +1,8 @@
 import DashboardClient from "@/components/DashboardClient";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "../lib/auth";
-import { getDashboardUser } from "../actions/action";
+import { auth } from "@/app/lib/auth";
+import { getDashboardUser } from "@/app/actions/action";
 
 export default async function DashboardPage() {
     const data = await auth.api.getSession({

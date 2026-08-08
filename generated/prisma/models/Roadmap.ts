@@ -561,10 +561,6 @@ export type RoadmapUncheckedUpdateOneWithoutUserExamNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoadmapUpdateToOneWithWhereWithoutUserExamInput, Prisma.RoadmapUpdateWithoutUserExamInput>, Prisma.RoadmapUncheckedUpdateWithoutUserExamInput>
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number

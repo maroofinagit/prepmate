@@ -7,8 +7,12 @@ import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 import { createUserExam } from '@/app/actions/action';
 import { generateRoadmap } from '@/app/actions/roadmap';
+import { playError, playNotification} from '@/app/lib/sound';
+import { useUser } from '@/app/context/userContext';
 
 export default function ClientExamStart({ exam }: { exam: any }) {
+
+    const {soundEnabled} = useUser();
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [error, setError] = useState('');
@@ -84,6 +88,9 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             clearInterval(loopId);
 
             if (!roadmapRes.success) {
+                if(soundEnabled) {
+                    playError();
+                }
                 toast.error('Failed to generate roadmap. You can create one later from your dashboard.', {
                     duration: 2000,
                 });
@@ -93,15 +100,22 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                 return;
             }
 
+            if (soundEnabled) {
+                playNotification();
+            }
+            toast.success('🎉 Roadmap generated successfully! Redirecting to your dashboard...');
             setLoadingMessage('🎯 Roadmap ready! Redirecting to your dashboard...');
             await new Promise((r) => setTimeout(r, 1000));
-            setLoading(false);
 
             // Redirect to roadmap page
             router.push(`/dashboard/roadmap/${user_exam_id}`);
+            setLoading(false);
 
         } catch (err: any) {
             console.error(err);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error('Sorry, something went wrong. Please try again later.', {
                 duration: 2000,
             });

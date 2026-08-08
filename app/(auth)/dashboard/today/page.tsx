@@ -5,7 +5,7 @@ import { auth } from "@/app/lib/auth";
 import { getTodaysTasks } from "@/app/actions/action";
 import TodaysClient from "@/components/TodaysClient";
 
-export default async function DashboardPage() {
+export default async function TodayPage() {
     const data = await auth.api.getSession({
         headers: await headers(),
     });

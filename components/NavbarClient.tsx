@@ -300,12 +300,16 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem onClick={() => setMenuOpen(false)}>
-                                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                                        <Link href="/dashboard">Dashboard</Link>
+                                        <Link href="/dashboard" className="w-full flex items-center gap-4">
+                                            <LayoutDashboard className=" h-4 w-4" />
+                                            Dashboard
+                                        </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => setMenuOpen(false)}>
-                                        <User className="mr-2 h-4 w-4" />
-                                        <Link href="/profile">Profile</Link>
+                                        <Link className="w-full flex items-center gap-4" href="/profile">
+                                            <User className=" h-4 w-4" />
+                                            Profile
+                                        </Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />

@@ -1,7 +1,7 @@
 
 import { redirect } from "next/navigation";
-import { db } from "../lib/db";
-import { auth } from "../lib/auth";
+import { db } from "@/app/lib/db";
+import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import ProfileClient from "@/components/ProfileClient";
 
@@ -33,7 +33,7 @@ export default async function ProfilePage() {
     });
 
     if (!user) {
-        return <div className="text-center mt-20 text-gray-500">User not found.</div>;
+        return <div className="text-center mt-20 text-gray-500 h-screen">User not found.</div>;
     }
 
     return (

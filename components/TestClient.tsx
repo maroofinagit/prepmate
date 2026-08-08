@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { submitTest } from "@/app/actions/test";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 interface Question {
     id: number;
@@ -29,12 +31,17 @@ interface TestProps {
 
 export default function TestClient({ test, userExamId }: TestProps) {
 
+    const {soundEnabled} = useUser();
+
     // =========================
     // FULLSCREEN DETECTION
     // =========================
     useEffect(() => {
         const handleFullscreenChange = () => {
             if (!ref.current?.contains(document.fullscreenElement)) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error("You exited fullscreen mode. Please return to fullscreen to continue the test.");
 
                 // TODO:
@@ -60,6 +67,9 @@ export default function TestClient({ test, userExamId }: TestProps) {
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error("You switched tabs or minimized the window. Please return to the test tab to continue.");
             }
         };
@@ -212,10 +222,16 @@ export default function TestClient({ test, userExamId }: TestProps) {
             const res = await submitTest(test.id, responses, timeTaken);
 
             if (!res.success) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error(res.error || "Failed to submit test", {
                     id: toastId,
                 });
                 return;
+            }
+            if (soundEnabled) {
+                playNotification();
             }
             toast.success("Test submitted successfully!", {
                 id: toastId,
@@ -232,6 +248,9 @@ export default function TestClient({ test, userExamId }: TestProps) {
 
             console.error(err);
 
+            if (soundEnabled) {
+                playError();
+            }
             toast.error(err.message || "Something went wrong");
 
         } finally {

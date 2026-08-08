@@ -16,6 +16,7 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @default(now()) @updatedAt
   emailVerified Boolean?       @default(false)
+  soundEnabled  Boolean        @default(true)
   notifications Notification[]
   exams         UserExam[]
   accounts      Account[]

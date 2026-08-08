@@ -1,39 +1,40 @@
 "use client";
 
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import ProfileImageUploader from "@/components/ProfilePicUpdater";
-import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
-import { DeleteAccountDialog } from "./DeleteAccountDialoge";
-import { BellRing, CheckCircle, CheckCircle2, GraduationCap, ShieldCheck } from "lucide-react";
-import { Checkbox } from "./ui/checkbox";
+import { BellRing, CheckCircle2, GraduationCap, ShieldCheck } from "lucide-react";
 import { Button } from "./ui/button";
 import { markNotificationAsRead } from "@/app/actions/action";
 import { toast } from "sonner";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PiExam } from "react-icons/pi";
+import { useUser } from "@/app/context/userContext";
+import { playNotification, playError } from "@/app/lib/sound";
 
 export default function ProfilePage({ user }: { user: any }) {
 
-    const router = useRouter();
-
-    if (!user) {
-        return <div className="text-center mt-20 text-gray-500">User not found.</div>;
-    }
-
+    const { soundEnabled } = useUser();
     const [notifications, setNotifications] = useState(user.notifications);
 
     const handleNotification = async (id: number) => {
         try {
-            await markNotificationAsRead(id);
+            const result = await markNotificationAsRead(id);
+            if (!result.success) {
+                throw new Error("Failed to mark notification as read");
+            }
             setNotifications((prev: any) =>
                 prev.map((n: any) => (n.id === id ? { ...n, is_read: true } : n))
             );
+            if (soundEnabled) {
+                playNotification();
+            }
             toast.success("Notification marked as read");
         } catch (error) {
             console.error("Error marking notification as read:", error);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Failed to mark notification as read");
         }
     }
@@ -274,6 +275,61 @@ export default function ProfilePage({ user }: { user: any }) {
                     </div>
                 )}
             </motion.section>
+
+            <motion.div
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="mt-16"
+            >
+                <div className="flex flex-col gap-3 mb-6">
+
+                    <h2 className="text-xl md:text-2xl font-bold">Account Settings</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Manage your account settings and preferences.
+                    </p>
+                </div>
+
+                <div className="rounded-2xl border bg-linear-to-r from-white via-slate-50 to-green-50 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
+
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+
+                        <div className="flex items-start gap-5">
+
+                            <div className="flex md:p-4 p-2 items-center justify-center rounded-md md:rounded-xl bg-green-100">
+                                <CheckCircle2 className="size-5 md:size-7 text-green-600" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-base md:text-lg font-semibold">
+                                    Manage your account settings
+                                </h3>
+
+                                <p className="hidden md:block mt-2 max-w-xl text-sm text-slate-600">
+                                    Update your profile information, change your email, and manage your account preferences.
+                                </p>
+
+                                <p className="md:hidden mt-2 max-w-xl text-xs text-slate-600">
+                                    Only on desktop version you can manage your account settings. Please visit the website on a desktop device to access these features.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <Button
+                            asChild
+                            className="cursor-pointer text-base rounded-lg font-semibold border bg-transparent border-green-600 hover:bg-green-700 px-6 py-2 text-green-600 hover:text-white transition-all duration-300 hidden md:flex"
+                        >
+                            <Link href="/profile/settings">
+                                Open Settings
+                            </Link>
+                        </Button>
+
+                    </div>
+
+                </div>
+            </motion.div>
 
             {/* Security */}
             <motion.section
