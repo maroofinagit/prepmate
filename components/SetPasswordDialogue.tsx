@@ -18,8 +18,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 export function SetPasswordDialog() {
+
+    const { soundEnabled } = useUser();
     const [loading, setLoading] = useState(false);
     const [password, setPasswordValue] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,16 +33,25 @@ export function SetPasswordDialog() {
 
     const handleSetPassword = async () => {
         if (!password || !confirmPassword) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Please fill in all fields.");
             return;
         }
 
         if (password.length < 8) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Password must be at least 8 characters long.");
             return;
         }
 
         if (password !== confirmPassword) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Passwords do not match.");
             return;
         }
@@ -49,10 +62,16 @@ export function SetPasswordDialog() {
             const res = await setPassword(password);
 
             if (!res.success) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error(res.message || "Failed to set password.");
                 return;
             }
 
+            if (soundEnabled) {
+                playNotification();
+            }
             toast.success(res.message || "Password added successfully.");
 
             setPasswordValue("");
@@ -61,6 +80,9 @@ export function SetPasswordDialog() {
             router.refresh(); // Refresh the page to reflect the updated state
         } catch (error) {
             console.error(error);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Something went wrong.");
         } finally {
             setLoading(false);

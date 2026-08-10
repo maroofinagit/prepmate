@@ -19,7 +19,7 @@ export default async function RoadmapPage({ params }: RoadmapPageProps) {
     // Convert param to number safely
     const roadmap = await getRoadmapByUserExamId(Number(userExamId));
 
-    if (!roadmap ) {
+    if (roadmap === null || roadmap === undefined) {
         return (
             <div className="text-center h-screen flex justify-center items-center text-gray-600">
                 No roadmap generated for this user exam.

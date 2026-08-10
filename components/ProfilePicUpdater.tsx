@@ -6,15 +6,17 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 export default function ProfileImageUploader({ initialImage }: { initialImage: string }) {
+
+    const { soundEnabled } = useUser();
     const [image, setImage] = useState(initialImage);
-    const router = useRouter();
 
     const handleUpload = async (result: any) => {
         console.log(" handle upload");
         console.log(result);
-
 
         const url = result.info.secure_url;
         setImage(url);
@@ -26,13 +28,22 @@ export default function ProfileImageUploader({ initialImage }: { initialImage: s
                 body: JSON.stringify({ image: url }),
             });
             if (!res.ok) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error("Failed to update profile picture.");
             }
             if (res.ok) {
+                if (soundEnabled) {
+                    playNotification();
+                }
                 toast.success("Profile picture updated successfully!");
             }
         } catch (error) {
             console.error("Error updating profile picture:", error);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Error updating profile picture.");
         }
 

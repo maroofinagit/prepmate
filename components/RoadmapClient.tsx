@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Roadmap } from "@/app/types/roadmap";
+import { Roadmap } from "@/app/actions/action";
 import { completeMilestone, completeRoadmapTask } from "@/app/actions/action";
 import { Search } from "lucide-react";
 import { Badge } from "./ui/badge";

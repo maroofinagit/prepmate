@@ -260,33 +260,92 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 
     try {
         const roadmap = await db.roadmap.findUnique({
-            where: { user_exam_id },
-            include: {
+            where: {
+                user_exam_id,
+            },
+
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                start_date: true,
+                end_date: true,
+
                 phases: {
-                    orderBy: { order_index: "asc" },
-                    include: {
+                    orderBy: {
+                        order_index: "asc",
+                    },
+
+                    select: {
+                        id: true,
+                        phase_name: true,
+                        description: true,
+                        start_date: true,
+                        end_date: true,
+
                         weeks: {
-                            orderBy: { order_index: "asc" },
-                            include: {
+                            orderBy: {
+                                order_index: "asc",
+                            },
+
+                            select: {
+                                id: true,
+                                week_number: true,
+                                focus: true,
+                                start_date: true,
+                                end_date: true,
+                                progress: true,
+
                                 tasks: {
-                                    orderBy: { order_index: "asc" },
+                                    orderBy: {
+                                        order_index: "asc",
+                                    },
+
+                                    select: {
+                                        id: true,
+                                        title: true,
+                                        description: true,
+                                        is_completed: true,
+                                    },
                                 },
                             },
                         },
                     },
                 },
+
                 milestones: {
-                    orderBy: { target_date: "asc" },
+                    orderBy: {
+                        target_date: "asc",
+                    },
+
+                    select: {
+                        id: true,
+                        name: true,
+                        goal: true,
+                        achieved: true,
+                        target_date: true,
+                    },
                 },
+
                 userExam: {
-                    include: {
+                    select: {
+                        id: true,
+                        user_id: true,
+
                         exam: {
-                            include: {
-                                resources: true,
-                            }
+                            select: {
+                                resources: {
+                                    select: {
+                                        id: true,
+                                        title: true,
+                                        type: true,
+                                        url: true,
+                                    },
+                                },
+                            },
                         },
                     },
-                }
+                },
             },
         });
 
@@ -296,6 +355,10 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
         return null;
     }
 }
+
+export type Roadmap = NonNullable<
+    Awaited<ReturnType<typeof getRoadmapByUserExamId>>
+>;
 
 
 export async function getDashboardUser(userId: string) {
@@ -310,40 +373,27 @@ export async function getDashboardUser(userId: string) {
             select: {
                 id: true,
                 name: true,
-                email: true,
                 image: true,
-                createdAt: true,
-
                 exams: {
                     select: {
                         id: true,
-                        exam_id: true,
-                        start_date: true,
-                        end_date: true,
                         progress_percent: true,
                         performanceScore: true,
                         roadmap_status: true,
                         highestScore: true,
                         lowestScore: true,
                         lastTestScore: true,
-                        user_id: true,
 
                         // UserExam → Exam Details
                         exam: {
                             select: {
-                                id: true,
                                 name: true,
-                                description: true,
                             },
 
                         },
 
                         roadmap: {
                             select: {
-                                id: true,
-                                title: true,
-                                progress: true,
-
                                 // ⭐ Milestones added
                                 milestones: {
                                     select: {
@@ -352,42 +402,23 @@ export async function getDashboardUser(userId: string) {
                                         goal: true,
                                         achieved: true,
                                         target_date: true,
-                                        created_at: true,
                                     },
                                     orderBy: { target_date: "asc" }
                                 },
 
                                 // Phases, Weeks, Tasks
                                 phases: {
-                                    orderBy: { order_index: "asc" },
+
                                     select: {
-                                        id: true,
                                         phase_name: true,
-                                        duration: true,
-                                        order_index: true,
                                         progress: true,
 
                                         weeks: {
-                                            orderBy: { order_index: "asc" },
+
                                             select: {
-                                                id: true,
                                                 week_number: true,
-                                                order_index: true,
                                                 progress: true,
 
-                                                tasks: {
-                                                    orderBy: { order_index: "asc" },
-                                                    select: {
-                                                        id: true,
-                                                        title: true,
-                                                        is_completed: true,
-                                                        start_date: true,
-                                                        end_date: true,
-                                                        order_index: true,
-                                                        created_at: true,
-                                                        updated_at: true,
-                                                    }
-                                                }
                                             }
                                         }
                                     }
@@ -401,36 +432,24 @@ export async function getDashboardUser(userId: string) {
                                 createdAt: "asc",
                             },
                             select: {
-                                id: true,
-                                title: true,
                                 type: true,
-                                totalMarks: true,
-                                duration: true,
                                 createdAt: true,
                                 isGenerated: true,
-                                weekId: true,
-                                phaseId: true,
 
                                 questions: {
                                     select: {
                                         id: true,
-                                        question: true,
                                         correctAns: true,
-                                        marks: true,
-                                        difficulty: true,
 
                                         topic: {
                                             select: {
                                                 id: true,
                                                 name: true,
-                                                description: true,
-                                                difficulty: true,
 
                                                 tasks: {
                                                     select: {
                                                         id: true,
                                                         title: true,
-                                                        week_id: true,
                                                     },
                                                 },
                                             },
@@ -440,13 +459,8 @@ export async function getDashboardUser(userId: string) {
 
                                 attempt: {
                                     select: {
-                                        id: true,
-                                        score: true,
-                                        totalMarks: true,
                                         percentage: true,
                                         isPassed: true,
-                                        timeTaken: true,
-                                        completedAt: true,
                                         responses: true,
                                     },
                                 },

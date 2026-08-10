@@ -16,7 +16,6 @@ type Test = {
     testId: number;
     title: string | null;
     description: string | null;
-    type: "WEEKLY" | "PHASE" | "FINAL";
     status: 'LOCKED' | 'GENERATE' | 'GIVE' | 'ATTEMPTED';
     createdAt: Date;
 };

@@ -15,29 +15,47 @@ export async function getTestsForUserExam(userExamId: number) {
         // 🔥 1. Fetch roadmap
         const roadmap = await db.roadmap.findUnique({
             where: { user_exam_id: userExamId },
-            include: {
+
+            select: {
                 phases: {
-                    orderBy: { order_index: "asc" },
-                    include: {
+                    orderBy: {
+                        order_index: "asc",
+                    },
+
+                    select: {
+                        id: true,
+                        phase_name: true,
+                        order_index: true,
+
                         weeks: {
-                            orderBy: { order_index: "asc" },
-                            include: {
-                                tasks: true,
+                            orderBy: {
+                                order_index: "asc",
+                            },
+
+                            select: {
+                                id: true,
+                                week_number: true,
+                                focus: true,
+
+                                tasks: {
+                                    select: {
+                                        is_completed: true,
+                                    },
+                                },
                             },
                         },
                     },
                 },
+
                 userExam: {
                     select: {
-                        id: true,
                         exam: {
                             select: {
-                                id: true,
                                 name: true,
                             },
                         },
-                    }
-                }
+                    },
+                },
             },
         });
 
@@ -46,13 +64,27 @@ export async function getTestsForUserExam(userExamId: number) {
         // 🔥 2. Fetch tests
         const tests = await db.test.findMany({
             where: { userExamId },
-            include: {
-                attempt: true,
+
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                weekId: true,
+                phaseId: true,
+                type: true,
+                nOfFinalTests: true,
+                isGenerated: true,
+
+                attempt: {
+                    select: {
+                        id: true,
+                    },
+                },
             },
         });
 
         // console.log("Fetched tests:", { tests });
-
+        
         if (tests.length === 0) {
             return {
                 success: true,
@@ -65,13 +97,17 @@ export async function getTestsForUserExam(userExamId: number) {
             };
         }
 
-        // helper
-        // helper
-        const isWeekCompleted = (week: any) =>
-            week.tasks.length > 0 &&
-            week.tasks.every((t: any) => t.is_completed);
+        // =========================
+        // HELPERS
+        // =========================
 
-        // helper
+        const isWeekCompleted = (week: {
+            tasks: { is_completed: boolean }[];
+        }) =>
+            week.tasks.length > 0 &&
+            week.tasks.every((task) => task.is_completed);
+
+
         const getStatus = ({
             isCompleted,
             isGenerated,
@@ -81,39 +117,82 @@ export async function getTestsForUserExam(userExamId: number) {
             isGenerated?: boolean;
             isAttempted?: boolean;
         }) => {
-            // highest priority
+
+            // Highest priority
             if (isAttempted) {
                 return "ATTEMPTED";
             }
 
-            // tasks not completed yet
+            // Required roadmap work isn't finished
             if (!isCompleted) {
                 return "LOCKED";
             }
 
-            // completed but test not generated
+            // Roadmap work finished but test hasn't been generated
             if (!isGenerated) {
                 return "GENERATE";
             }
 
-            // completed + generated
+            // Roadmap work finished and test generated
             return "GIVE";
         };
 
-        const result: any = {
+
+        // =========================
+        // TEST LOOKUP MAPS
+        // =========================
+
+        // Weekly tests → weekId
+        const weeklyTests = new Map(
+            tests
+                .filter((test) => test.weekId !== null)
+                .map((test) => [test.weekId, test])
+        );
+
+        // Phase tests → phaseId
+        const phaseTests = new Map(
+            tests
+                .filter((test) => test.phaseId !== null)
+                .map((test) => [test.phaseId, test])
+        );
+
+        // Final tests → final test number
+        const finalTests = new Map(
+            tests
+                .filter(
+                    (test) =>
+                        test.type === "FINAL" &&
+                        test.nOfFinalTests !== null
+                )
+                .map((test) => [test.nOfFinalTests!, test])
+        );
+
+
+        // =========================
+        // RESULT
+        // =========================
+
+        const result: {
+            weekly: any[];
+            phase: any[];
+            final: any[];
+            examName?: string;
+        } = {
             weekly: [],
             phase: [],
             final: [],
         };
 
+
         // =========================
-        // ✅ WEEKLY TESTS
+        // WEEKLY TESTS
         // =========================
+
         for (const phase of roadmap.phases) {
+
             for (const week of phase.weeks) {
-                const test = tests.find(
-                    (t) => t.weekId === week.id
-                );
+
+                const test = weeklyTests.get(week.id);
 
                 const isCompleted = isWeekCompleted(week);
 
@@ -125,23 +204,36 @@ export async function getTestsForUserExam(userExamId: number) {
 
                 result.weekly.push({
                     weekId: week.id,
-                    title: test?.title || `Week ${week.week_number} Test`,
-                    description: test?.description || week.focus,
+
+                    title:
+                        test?.title ??
+                        `Week ${week.week_number} Test`,
+
+                    description:
+                        test?.description ??
+                        week.focus,
+
                     testId: test?.id,
+
                     status,
                 });
             }
         }
 
-        // =========================
-        // ✅ PHASE TESTS
-        // =========================
-        for (const phase of roadmap.phases) {
-            const test = tests.find((t) => t.phaseId === phase.id);
 
-            const isCompleted = phase.weeks.every((w) =>
-                isWeekCompleted(w)
-            );
+        // =========================
+        // PHASE TESTS
+        // =========================
+
+        for (const phase of roadmap.phases) {
+
+            const test = phaseTests.get(phase.id);
+
+            const isCompleted =
+                phase.weeks.length > 0 &&
+                phase.weeks.every((week) =>
+                    isWeekCompleted(week)
+                );
 
             const status = getStatus({
                 isCompleted,
@@ -151,24 +243,40 @@ export async function getTestsForUserExam(userExamId: number) {
 
             result.phase.push({
                 phaseId: phase.id,
-                title: test?.title || `Phase ${phase.order_index + 1} Test`,
-                description: test?.description || phase.phase_name,
+
+                title:
+                    test?.title ??
+                    `Phase ${phase.order_index + 1} Test`,
+
+                description:
+                    test?.description ??
+                    phase.phase_name,
+
                 testId: test?.id,
+
                 status,
             });
         }
 
+
         // =========================
-        // ✅ FINAL TESTS
+        // FINAL TESTS
         // =========================
-        const allPhasesCompleted = roadmap.phases.every((phase) =>
-            phase.weeks.every((w) => isWeekCompleted(w))
-        );
+
+        const allPhasesCompleted =
+            roadmap.phases.length > 0 &&
+            roadmap.phases.every(
+                (phase) =>
+                    phase.weeks.length > 0 &&
+                    phase.weeks.every((week) =>
+                        isWeekCompleted(week)
+                    )
+            );
+
 
         for (let i = 1; i <= 3; i++) {
-            const test = tests.find(
-                (t) => t.type === "FINAL" && t.nOfFinalTests === i
-            );
+
+            const test = finalTests.get(i);
 
             const status = getStatus({
                 isCompleted: allPhasesCompleted,
@@ -178,21 +286,38 @@ export async function getTestsForUserExam(userExamId: number) {
 
             result.final.push({
                 finalNumber: i,
-                title: test?.title || `Final Test ${i}`,
+
+                title:
+                    test?.title ??
+                    `Final Test ${i}`,
+
                 description:
-                    test?.description ||
+                    test?.description ??
                     `Final test of completing all roadmap content. Attempt ${i}`,
+
                 testId: test?.id,
+
                 status,
             });
         }
 
+
+        // =========================
+        // EXAM NAME
+        // =========================
+
         result.examName = roadmap.userExam.exam.name;
+
+
+        // =========================
+        // RETURN
+        // =========================
 
         return {
             success: true,
             data: result,
         };
+
     } catch (error) {
         console.error(error);
         return {

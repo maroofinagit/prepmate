@@ -18,8 +18,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 export function ChangePasswordDialog() {
+
+    const { soundEnabled } = useUser();
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -30,21 +34,33 @@ export function ChangePasswordDialog() {
 
     const handleChangePassword = async () => {
         if (!currentPassword || !newPassword || !confirmPassword) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Please fill in all fields.");
             return;
         }
 
         if (newPassword.length < 8) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Password must be at least 8 characters.");
             return;
         }
 
         if (newPassword !== confirmPassword) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Passwords do not match.");
             return;
         }
 
         if (currentPassword === newPassword) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("New password must be different from your current password.");
             return;
         }
@@ -58,18 +74,27 @@ export function ChangePasswordDialog() {
             );
 
             if (!res.success) {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error(res.message);
                 return;
             }
 
+            if (soundEnabled) {
+                playNotification();
+            }
             toast.success(res.message);
-            
+
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
             setOpen(false);
             router.refresh(); // Refresh the page to reflect the updated state
         } catch (error) {
+            if (soundEnabled) {
+                playError();
+            }
             console.error(error);
             toast.error("Something went wrong.");
         } finally {

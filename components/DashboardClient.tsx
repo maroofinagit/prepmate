@@ -21,7 +21,7 @@ import {
     LineChart,
     Line,
 } from "recharts";
-import { Difficulty, RoadmapStatus } from "@/generated/prisma/enums";
+import { RoadmapStatus } from "@/generated/prisma/enums";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -42,23 +42,28 @@ import { motion } from "framer-motion";
 import { format } from "date-fns"
 import { DashboardUser, deleteUserExam } from "@/app/actions/action";
 import { Badge } from "./ui/badge";
+import { useUser } from "@/app/context/userContext";
+import { playError, playNotification } from "@/app/lib/sound";
 
 type WeakTopic = {
     id: number;
     name: string;
-    description: string | null;
-    difficulty: Difficulty;
 
+    correctCount: number;
     wrongCount: number;
     totalQuestions: number;
     accuracy: number;
 
-    tasks: { id: number; title: string; week_id: number }[]
+    tasks: {
+        id: number;
+        title: string;
+    }[];
 };
 
 
 export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
 
+    const { soundEnabled } = useUser();
     const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
     const [selectedExam, setSelectedExam] = useState(newExams.length ? newExams[0] : null);
@@ -340,7 +345,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         setRegenerating(true);
         setLoadingMessage("Initializing roadmap regeneration...");
-        toast.success('Roadmap regeneration started. It may take a few moments to complete.');
+        toast.info('Roadmap regeneration started. It may take a few moments to complete.');
         await new Promise((r) => setTimeout(r, 1000));
 
         // Step 2: Generate Roadmap
@@ -356,6 +361,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
         const roadmapRes = await generateRoadmap(selectedId);
         if (!roadmapRes.success) {
+            if (soundEnabled) {
+                playError();
+            }
             toast.error('Failed to regenerate roadmap. Please try again later.', {
                 duration: 2000,
             });
@@ -364,6 +372,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             return;
         }
         clearInterval(loopId);
+        if (soundEnabled) {
+            playNotification();
+        }
         toast.success('Roadmap regenerated successfully. Refreshing dashboard...');
         setRegenerating(false);
         router.refresh(); // refresh to update roadmap status and charts
@@ -375,10 +386,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setDeleting(true);
             const res = await deleteUserExam(selectedId, dashboardUser?.id?.toString() ?? "");
             if (res.success) {
+                if (soundEnabled) {
+                    playNotification();
+                }
                 toast.success("Exam deleted successfully.", {
                     duration: 2000,
                 });
             } else {
+                if (soundEnabled) {
+                    playError();
+                }
                 toast.error("Failed to delete exam.", {
                     duration: 2000,
                 });
@@ -389,6 +406,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
         } catch (err) {
             console.error(err);
+            if (soundEnabled) {
+                playError();
+            }
             toast.error("Failed to delete exam. Please try again later.", {
                 duration: 2000,
             });
@@ -412,36 +432,101 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     }, [newExams]);
 
 
-    const getWeakTopics = (exam: NonNullable<DashboardUser>['exams'][number]): WeakTopic[] => {
-        const weakTopics = new Map<number, WeakTopic>();
+    const getWeakTopics = (
+        exam: NonNullable<DashboardUser>["exams"][number]
+    ): WeakTopic[] => {
 
-        for (const test of exam.tests ?? []) {
+        const TOPIC_ACCURACY_THRESHOLD = 70;
+        const RECENT_TEST_COUNT = 5;
+
+        // Only consider the most recent attempted tests
+        const recentTests = (exam.tests ?? [])
+            .filter((test) => test.attempt)
+            .sort(
+                (a, b) =>
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime()
+            )
+            .slice(0, RECENT_TEST_COUNT);
+
+        const topicStats = new Map<
+            number,
+            {
+                id: number;
+                name: string;
+                correctCount: number;
+                wrongCount: number;
+                tasks: {
+                    id: number;
+                    title: string;
+                }[];
+            }
+        >();
+
+        for (const test of recentTests) {
+
             if (!test.attempt) continue;
 
-            const responses = test.attempt.responses as Record<string, string>;
+            const responses =
+                test.attempt.responses as Record<string, string>;
 
             for (const question of test.questions) {
+
+                const topic = question.topic;
+
                 const userAnswer = responses[String(question.id)];
 
-                // Skip correct answers
-                if (userAnswer === question.correctAns) continue;
+                let stats = topicStats.get(topic.id);
 
-                const existing = weakTopics.get(question.topic.id);
+                if (!stats) {
+                    stats = {
+                        id: topic.id,
+                        name: topic.name,
+                        correctCount: 0,
+                        wrongCount: 0,
+                        tasks: topic.tasks,
+                    };
 
-                if (existing) {
-                    existing.wrongCount++;
+                    topicStats.set(topic.id, stats);
+                }
+
+                if (userAnswer === question.correctAns) {
+                    stats.correctCount++;
                 } else {
-                    weakTopics.set(question.topic.id, {
-                        ...question?.topic as WeakTopic,
-                        wrongCount: 1,
-                    });
+                    stats.wrongCount++;
                 }
             }
         }
 
-        return [...weakTopics.values()].sort(
-            (a, b) => b.wrongCount - a.wrongCount
-        );
+        return [...topicStats.values()]
+            .map((topic) => {
+                const totalQuestions =
+                    topic.correctCount + topic.wrongCount;
+
+                const accuracy =
+                    totalQuestions > 0
+                        ? Math.round(
+                            (topic.correctCount / totalQuestions) * 100
+                        )
+                        : 0;
+
+                return {
+                    ...topic,
+                    totalQuestions,
+                    accuracy,
+                };
+            })
+            // Only show topics that are currently weak
+            .filter(
+                (topic) =>
+                    topic.accuracy < TOPIC_ACCURACY_THRESHOLD
+            )
+            // Worst topics first
+            .sort(
+                (a, b) =>
+                    a.accuracy - b.accuracy ||
+                    b.wrongCount - a.wrongCount
+            );
     };
 
     const weakTopics = selectedExam ? getWeakTopics(selectedExam) : [];
@@ -1833,11 +1918,11 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                     <Card className="mt-6">
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
-                                                🎯 Weak Topics
+                                                🎯 Topics to Improve
                                             </CardTitle>
 
                                             <CardDescription>
-                                                Focus on these topics to improve your performance.
+                                                Based on your performance in your most recent tests.
                                             </CardDescription>
                                         </CardHeader>
 
@@ -1872,18 +1957,21 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             className="flex items-start justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
                                                         >
                                                             <div className="space-y-4">
-                                                                <div className="flex items-center gap-4">
+                                                                <div className="flex items-center gap-6">
                                                                     <h4 className="font-medium">
                                                                         {topic.name}
                                                                     </h4>
 
-                                                                    <Badge variant="destructive"
-                                                                        className=" text-[10px] font-normal px-2 py-1">
-                                                                        {topic.wrongCount}{" "}
-                                                                        {topic.wrongCount === 1
-                                                                            ? "Wrong Answer"
-                                                                            : "Wrong Answers"}
-                                                                    </Badge>
+                                                                    <div className="flex items-center gap-2">
+
+                                                                        <Badge variant="destructive" className="text-[10px] font-medium px-2 py-1">
+                                                                            {topic.accuracy}% Accuracy
+                                                                        </Badge>
+
+                                                                        <Badge variant="outline" className="text-[10px] font-normal px-2 py-1">
+                                                                            {topic.wrongCount} wrong
+                                                                        </Badge>
+                                                                    </div>
                                                                 </div>
 
                                                                 <span className="text-sm font-medium text-muted-foreground">
@@ -1900,6 +1988,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </div>
                                             )}
                                         </CardContent>
+                                        <CardFooter className="flex items-center font-medium text-sm text-muted-foreground">
+                                           💡 These aren't permanent. Keep practicing, take more tests, and watch your weak topics improve or disappear.
+                                        </CardFooter>
                                     </Card>
 
                                     {/* Performance Summary */}

@@ -456,7 +456,7 @@ Do NOT
                                     title: `Week ${createdWeek.week_number} Test`,
                                     type: "WEEKLY",
 
-                                    description: `Assessment for Week ${createdWeek.week_number}`,
+                                    description: `Assessment for Week ${createdWeek.week_number} : ${createdWeek.focus}`,
 
                                     userExamId: user_exam_id,
 
