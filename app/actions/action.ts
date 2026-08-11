@@ -22,7 +22,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // userExams-${userId}
 // Cache for all exams enrolled by a user
 
-// roadmap-${userExamId}
+// roadmap-${userExamId}-user-${userId}
 // Cache for a roadmap of a specific user exam
 
 // tests-${userExamId}
@@ -232,8 +232,8 @@ export async function createUserExam({
         updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
         updateTag(`exam-${examId}`); // Invalidate the cache for the specific exam
-        updateTag(`roadmap-${userExam.id}`); // Invalidate the cache for the specific roadmap
-        updateTag(`tests-${userExam.id}`); // Invalidate the cache for the specific exam
+        updateTag(`roadmap-${userExam.id}-user-${userId}`); // Invalidate the cache for the specific roadmap
+        updateTag(`tests-${userExam.id}-user-${userId}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${examId}`); // Invalidate the cache for the specific user exam
@@ -252,16 +252,49 @@ export async function createUserExam({
     }
 }
 
-export async function getRoadmapByUserExamId(user_exam_id: number) {
+export async function getCachedRoadmap(user_exam_id: number, userId: string) {
+
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session) {
+            throw new Error("User not authenticated");
+        }
+
+
+        if (session.user.id !== userId) {
+            console.error("❌ User ID mismatch. Access denied.");
+            throw new Error("Access denied");
+        }
+
+        const roadmap = await getRoadmap(user_exam_id, userId);
+        if (!roadmap) {
+            console.error("❌ Roadmap not found for user_exam_id:", user_exam_id);
+            throw new Error("Roadmap not found");
+        }
+        return roadmap;
+    }
+    catch (error) {
+        console.error("❌ Error validating session:", error);
+        return null;
+    }
+}
+
+export async function getRoadmap(user_exam_id: number, userId: string) {
 
     'use cache';
-    cacheTag(`roadmap-${user_exam_id}`);
+    cacheTag(`roadmap-${user_exam_id}-user-${userId}`);
     cacheLife('hours'); // Cache for 30 seconds
 
     try {
         const roadmap = await db.roadmap.findUnique({
             where: {
                 user_exam_id,
+                userExam: {
+                    user_id: userId,
+                }
             },
 
             select: {
@@ -357,7 +390,7 @@ export async function getRoadmapByUserExamId(user_exam_id: number) {
 }
 
 export type Roadmap = NonNullable<
-    Awaited<ReturnType<typeof getRoadmapByUserExamId>>
+    Awaited<ReturnType<typeof getRoadmap>>
 >;
 
 
@@ -509,10 +542,10 @@ export async function getProfileSetting(userId: string) {
 export async function deleteUserExam(user_exam_id: number, userId: string) {
 
     updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
-    updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
+    updateTag(`roadmap-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific roadmap
     updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
     updateTag(`exam-${user_exam_id}`); // Invalidate the cache for the specific exam
-    updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+    updateTag(`tests-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific exam
     updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
     updateTag(`exams`); // Invalidate the cache for all exams
     updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
@@ -670,10 +703,10 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
             });
         });
 
-        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific roadmap
+        updateTag(`roadmap-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific roadmap
         updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
-        updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+        updateTag(`tests-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
@@ -723,10 +756,10 @@ export async function completeMilestone(
             },
         });
 
-        updateTag(`roadmap-${user_exam_id}`); // Invalidate the cache for the specific milestone
+        updateTag(`roadmap-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific milestone
         updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
         updateTag(`userDashboard-${userId}`); // Invalidate the cache for the user's dashboard
-        updateTag(`tests-${user_exam_id}`); // Invalidate the cache for the specific exam
+        updateTag(`tests-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific exam
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam

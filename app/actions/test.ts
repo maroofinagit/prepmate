@@ -7,14 +7,55 @@ import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import { TestAttemptSchema } from "../lib/zodSchema";
 
-export async function getTestsForUserExam(userExamId: number) {
+export async function getCachedTests(userExamId: number, userId: string) {
+    try {
+        if (!userExamId) {
+            throw new Error("User Exam ID is required");
+        }
+        if (!userId) {
+            throw new Error("User ID is required");
+        }
+
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session?.session) {
+            throw new Error("User not authenticated");
+        }
+
+        if (session.session.userId !== userId) {
+            throw new Error("User ID does not match the authenticated user");
+        }
+
+        const { data } = await getTestsForUserExam(userExamId, userId);
+        return {
+            success: true,
+            data: data
+        };
+
+    } catch (error) {
+        console.error("Error fetching cached tests:", error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
+        };
+    }
+}
+
+export async function getTestsForUserExam(userExamId: number, userId: string) {
     'use cache';
-    cacheTag(`tests-${userExamId}`);
+    cacheTag(`tests-${userExamId}-user-${userId}`);
     cacheLife('hours'); // Cache for 30 seconds
     try {
         // 🔥 1. Fetch roadmap
         const roadmap = await db.roadmap.findUnique({
-            where: { user_exam_id: userExamId },
+            where: {
+                user_exam_id: userExamId,
+                userExam: {
+                    user_id: userId,
+                }
+            },
 
             select: {
                 phases: {
@@ -63,7 +104,12 @@ export async function getTestsForUserExam(userExamId: number) {
 
         // 🔥 2. Fetch tests
         const tests = await db.test.findMany({
-            where: { userExamId },
+            where: {
+                userExamId,
+                userExam: {
+                    user_id: userId,
+                }
+            },
 
             select: {
                 id: true,
@@ -83,8 +129,6 @@ export async function getTestsForUserExam(userExamId: number) {
             },
         });
 
-        // console.log("Fetched tests:", { tests });
-        
         if (tests.length === 0) {
             return {
                 success: true,
@@ -998,6 +1042,7 @@ Return ONLY this JSON array:
             },
             data: {
                 isGenerated: true,
+                failureReason: null,
             },
         });
 
@@ -1006,9 +1051,10 @@ Return ONLY this JSON array:
         updateTag(`exams`);
         updateTag(`userDashboard-${test.userExam.user_id}`);
         updateTag(`userExams-${test.userExam.user_id}`);
-        updateTag(`tests-${test.userExam.id}`);
+        updateTag(`tests-${test.userExam.id}-user-${test.userExam.user_id}`);
         updateTag(`todaysTasks-${test.userExam.user_id}`);
         updateTag(`userExam-${test.userExam.id}`);
+        updateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user_id}`);
 
         // =========================
         // SUCCESS
@@ -1227,9 +1273,10 @@ export async function submitTest(
         updateTag(`exams`);
         updateTag(`userDashboard-${test.userExam.user.id}`);
         updateTag(`userExams-${test.userExam.user.id}`);
-        updateTag(`tests-${test.userExam.id}`);
+        updateTag(`tests-${test.userExam.id}-user-${test.userExam.user.id}`);
         updateTag(`todaysTasks-${test.userExam.user.id}`);
         updateTag(`userExam-${test.userExam.id}`);
+        updateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user.id}`);
 
         return {
             success: true,

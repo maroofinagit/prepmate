@@ -600,6 +600,7 @@ Do NOT
             where: { id: user_exam_id },
             data: {
                 roadmap_status: "completed",
+                failure_reason: null,
             },
         });
 
@@ -613,12 +614,12 @@ Do NOT
             },
         });
 
-        updateTag(`roadmap-${user_exam_id}`);
+        updateTag(`roadmap-${user_exam_id}-user-${userExam.user_id}`);
         updateTag(`exam-${exam.id}`);
         updateTag(`exams`);
         updateTag(`userDashboard-${userExam.user_id}`);
         updateTag(`userExams-${userExam.user_id}`);
-        updateTag(`tests-${user_exam_id}`);
+        updateTag(`tests-${user_exam_id}-user-${userExam.user_id}`);
         updateTag(`todaysTasks-${userExam.user_id}`);
         updateTag(`userExam-${user_exam_id}`);
 
@@ -664,11 +665,6 @@ Do NOT
             message: err?.message,
             model: err?.model,
         });
-
-        updateTag(`roadmap-${user_exam_id}`);
-        updateTag(`exams`);
-        updateTag(`userDashboard-${err?.user_id}`);
-        updateTag(`userExams-${err?.user_id}`);
 
         return {
             success: false,

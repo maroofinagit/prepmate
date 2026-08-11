@@ -1,5 +1,8 @@
-import { getRoadmapByUserExamId } from "@/app/actions/action";
+import { getCachedRoadmap } from "@/app/actions/action";
+import { auth } from "@/app/lib/auth";
 import RoadmapClient from "@/components/RoadmapClient";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface RoadmapPageProps {
     params: Promise<{ userExamId: string | undefined }>;
@@ -7,6 +10,14 @@ interface RoadmapPageProps {
 
 export default async function RoadmapPage({ params }: RoadmapPageProps) {
     const { userExamId } = await params;
+
+    const data = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!data?.session) {
+        redirect("/signin");
+    }
 
     if (!userExamId) {
         return (
@@ -17,7 +28,7 @@ export default async function RoadmapPage({ params }: RoadmapPageProps) {
     }
 
     // Convert param to number safely
-    const roadmap = await getRoadmapByUserExamId(Number(userExamId));
+    const roadmap = await getCachedRoadmap(Number(userExamId), data.session.userId);
 
     if (roadmap === null || roadmap === undefined) {
         return (
