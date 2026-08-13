@@ -29,8 +29,8 @@ export default function Footer() {
                             className="inline-flex items-center gap-3"
                         >
                             <Image
-                                src="/logo.jpg"
-                                alt="PrepMate"
+                                src="/logo.png"
+                                alt="Schemae logo"
                                 width={46}
                                 height={46}
                                 className="rounded-full shadow-md"
@@ -39,7 +39,7 @@ export default function Footer() {
                             <div className="flex flex-col gap-1">
 
                                 <h2 className="text-2xl md:text-3xl font-bold text-white">
-                                    PrepMate
+                                    Schemae
                                 </h2>
 
                                 <p className="md:text-sm text-xs text-slate-400">
@@ -51,7 +51,7 @@ export default function Footer() {
                         </Link>
 
                         <p className="mt-6 max-w-md leading-relaxed md:leading-loose text-sm md:text-base text-slate-100">
-                            PrepMate helps students prepare smarter with structured
+                            Schemae helps students prepare smarter with structured
                             roadmaps, AI-generated practice exams, progress tracking,
                             analytics, and everything needed to stay consistent.
                         </p>
@@ -196,7 +196,7 @@ export default function Footer() {
                     <div className="flex flex-col items-center justify-between gap-4 text-sm text-slate-400">
 
                         <p className="text-center w-full">
-                            © {currentYear} PrepMate. All rights reserved.
+                            © {currentYear} Schemae. All rights reserved.
                         </p>
 
                         <div className="flex items-center gap-2 text-center">

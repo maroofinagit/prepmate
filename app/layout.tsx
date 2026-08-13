@@ -22,41 +22,111 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export const metadata: Metadata = {
-  title: "PrepMate - Your Ultimate Exam Preparation Companion",
-  description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
-  keywords: ["prepmate", "prepmatex", "prepmate vercel", "prepmate maroof", "AI", "exam preparation", "study roadmap", "progress tracking", "personalized learning", "academic planner"],
-  authors: [{ name: "Maroof Ali Syed", url: "https://prepmatex.vercel.app" }],
-  applicationName: "PrepMate",
-  openGraph: {
-    title: "PrepMate - Your Ultimate Exam Preparation Companion",
-    description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
-    url: "https://prepmatex.vercel.app",
-    siteName: "PrepMate",
-    images: [
-      {
-        url: "https://prepmatex.vercel.app/logo.jpg",
-        width: 1200,
-        height: 630,
-        alt: "PrepMate Open Graph Image",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
+  metadataBase: new URL("https://schemae.vercel.app"),
+
+  title: {
+    default: "Schemae : AI-Powered Exam Preparation & Study Roadmaps",
+    template: "%s | Schemae",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "PrepMate - Your Ultimate Exam Preparation Companion",
-    description: "PrepMate helps you plan, track, and ace your exam preparation with personalized roadmaps and progress tracking.",
-    creator: "@prepmatex",
+
+  description:
+    "Schemae is an AI-powered exam preparation platform that creates personalized study roadmaps, helps you track your progress, and keeps your preparation focused and organized.",
+
+  keywords: [
+    "schemae",
+    "AI exam preparation",
+    "exam preparation platform",
+    "personalized study roadmap",
+    "AI study planner",
+    "exam study planner",
+    "study roadmap",
+    "exam preparation",
+    "study planner",
+    "progress tracking",
+    "personalized learning",
+    "student productivity",
+    "competitive exam preparation",
+  ],
+
+  applicationName: "Schemae",
+
+  authors: [
+    {
+      name: "Maroof Ali Syed",
+      url: "https://schemae.vercel.app",
+    },
+  ],
+
+  creator: "Maroof Ali Syed",
+  publisher: "Schemae",
+
+  category: "Education",
+
+  alternates: {
+    canonical: "https://schemae.vercel.app",
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://schemae.vercel.app",
+    siteName: "Schemae : AI-Powered Exam Preparation",
+
+    title: "Schemae : AI-Powered Exam Preparation & Study Roadmaps",
+
+    description:
+      "Build a smarter study plan with Schemae. Get personalized exam roadmaps, track your preparation, and stay focused from day one to exam day.",
+
     images: [
       {
-        url: "https://prepmatex.vercel.app/logo.jpg",
-        alt: "PrepMate Twitter Card Image",
+        url: "/logo.png",
+        width: 1200, 
+        height: 630,
+        alt: "Schemae : AI-Powered Exam Preparation",
+        type: "image/png",
       },
     ],
   },
 
+  twitter: {
+    card: "summary_large_image",
+
+    title: "Schemae : AI-Powered Exam Preparation",
+
+    description:
+      "Personalized exam roadmaps, progress tracking, and smarter study planning — all in one place with Schemae.",
+
+    creator: "@schemae",
+
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Schemae : AI-Powered Exam Preparation",
+      },
+    ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 
@@ -66,7 +136,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
   return (
     <html lang="en">
 

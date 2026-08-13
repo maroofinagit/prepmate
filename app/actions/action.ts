@@ -82,7 +82,7 @@ export async function getUserExam(id: number) {
     try {
         const userExam = await db.userExam.findFirst({
             where: {
-                exam_id: id,
+                id: id,
             },
             select: {
                 id: true,

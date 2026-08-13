@@ -22,11 +22,11 @@ export default function LegalPage() {
                 </span>
 
                 <h1 className="mt-6 text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
-                    PrepMate Legal Documentation :
+                    Schemae Legal Documentation :
                 </h1>
 
                 <p className="mt-4 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
-                    Welcome to <span className="font-semibold">PrepMate</span>. Your privacy,
+                    Welcome to <span className="font-semibold">Schemae</span>. Your privacy,
                     security, and trust are important to us. This page outlines how we collect
                     and use your information, the terms governing the use of our platform, and
                     how cookies help provide a secure and personalized experience.
@@ -82,7 +82,7 @@ export default function LegalPage() {
 
                             <p className="mt-2 md:text-base text-sm text-slate-600">
                                 Review the rules, responsibilities, and conditions for using
-                                PrepMate.
+                                Schemae.
                             </p>
                         </a>
 
@@ -122,7 +122,7 @@ export default function LegalPage() {
                     </div>
 
                     <p className="mt-6 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
-                        At <span className="font-semibold">PrepMate</span>, we respect your
+                        At <span className="font-semibold">Schemae</span>, we respect your
                         privacy and are committed to protecting your personal information.
                         This Privacy Policy explains what information we collect, how we use
                         it, and the choices you have regarding your data when using our
@@ -160,7 +160,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base text-slate-600 leading-relaxed md:leading-loose">
-                                We use your information to operate and improve PrepMate,
+                                We use your information to operate and improve Schemae,
                                 including to:
                             </p>
 
@@ -182,7 +182,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base text-slate-600 leading-relaxed md:leading-loose">
-                                PrepMate relies on trusted third-party providers for certain
+                                Schemae relies on trusted third-party providers for certain
                                 services, such as authentication, database hosting, AI
                                 features, and email delivery. These providers may process
                                 information as necessary to provide their services and are
@@ -226,7 +226,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base text-slate-600 leading-relaxed md:leading-loose">
-                                PrepMate is not intended for children under the age of 13. We
+                                Schemae is not intended for children under the age of 13. We
                                 do not knowingly collect personal information from children.
                                 If such information is identified, we will take reasonable
                                 steps to remove it.
@@ -242,7 +242,7 @@ export default function LegalPage() {
                             <p className="mt-3 text-xs md:text-base text-slate-600 leading-relaxed md:leading-loose">
                                 We may update this Privacy Policy from time to time. Any
                                 changes will be posted on this page with an updated revision
-                                date. Continued use of PrepMate after changes become effective
+                                date. Continued use of Schemae after changes become effective
                                 constitutes acceptance of the updated policy.
                             </p>
                         </div>
@@ -271,7 +271,7 @@ export default function LegalPage() {
 
                     <p className="mt-6 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
                         These Terms of Service govern your access to and use of
-                        <span className="font-semibold"> PrepMate</span>. By creating an
+                        <span className="font-semibold"> Schemae</span>. By creating an
                         account or using our platform, you agree to comply with these terms.
                         If you do not agree with any part of these Terms, please discontinue
                         use of the platform.
@@ -286,7 +286,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                By accessing or using PrepMate, you acknowledge that you have
+                                By accessing or using Schemae, you acknowledge that you have
                                 read, understood, and agreed to these Terms of Service and our
                                 Privacy Policy.
                             </p>
@@ -301,7 +301,7 @@ export default function LegalPage() {
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
                                 You must be legally permitted to use our services under the
                                 laws applicable in your country. If you are under the required
-                                age, you should use PrepMate only with parental or guardian
+                                age, you should use Schemae only with parental or guardian
                                 consent.
                             </p>
                         </div>
@@ -333,7 +333,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                While using PrepMate, you agree not to:
+                                While using Schemae, you agree not to:
                             </p>
 
                             <ul className="mt-5 text-xs md:text-base list-disc space-y-2 pl-6 text-slate-600">
@@ -353,7 +353,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                PrepMate provides AI-powered recommendations, learning
+                                Schemae provides AI-powered recommendations, learning
                                 roadmaps, quizzes, and educational assistance. While we strive
                                 for accuracy, AI-generated responses may occasionally contain
                                 inaccuracies or outdated information. Users should verify
@@ -371,7 +371,7 @@ export default function LegalPage() {
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
                                 All software, branding, logos, designs, text, graphics,
                                 educational materials, and platform content are the property
-                                of PrepMate or their respective owners and are protected by
+                                of Schemae or their respective owners and are protected by
                                 applicable intellectual property laws.
                             </p>
                         </div>
@@ -386,7 +386,7 @@ export default function LegalPage() {
                                 We reserve the right to suspend or terminate accounts that
                                 violate these Terms, misuse the platform, or engage in
                                 activities that compromise the security, integrity, or
-                                availability of PrepMate.
+                                availability of Schemae.
                             </p>
                         </div>
 
@@ -397,7 +397,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                PrepMate is provided on an "as is" and "as available" basis.
+                                Schemae is provided on an "as is" and "as available" basis.
                                 To the fullest extent permitted by law, we disclaim all
                                 warranties and shall not be liable for any indirect,
                                 incidental, special, consequential, or punitive damages
@@ -414,7 +414,7 @@ export default function LegalPage() {
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
                                 We may revise these Terms from time to time. Updated versions
                                 will be published on this page with a revised "Last Updated"
-                                date. Continued use of PrepMate after changes become effective
+                                date. Continued use of Schemae after changes become effective
                                 constitutes acceptance of the revised Terms.
                             </p>
                         </div>
@@ -455,7 +455,7 @@ export default function LegalPage() {
                     </div>
 
                     <p className="mt-6 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
-                        This Cookie Policy explains how <span className="font-semibold">PrepMate</span>
+                        This Cookie Policy explains how <span className="font-semibold">Schemae</span>
                         uses cookies and similar technologies to provide a secure, reliable,
                         and personalized experience while you use our platform.
                     </p>
@@ -481,7 +481,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                PrepMate uses cookies and similar technologies for purposes
+                                Schemae uses cookies and similar technologies for purposes
                                 including:
                             </p>
 
@@ -501,7 +501,7 @@ export default function LegalPage() {
                             </h3>
 
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
-                                Some third-party services integrated with PrepMate, such as
+                                Some third-party services integrated with Schemae, such as
                                 authentication providers or analytics services, may place their
                                 own cookies. These cookies are governed by the respective
                                 providers' privacy policies.
@@ -516,7 +516,7 @@ export default function LegalPage() {
                             <p className="mt-3 text-xs md:text-base leading-relaxed md:leading-loose text-slate-600">
                                 Most web browsers allow you to control or disable cookies
                                 through their settings. Please note that disabling cookies may
-                                affect the functionality of certain features within PrepMate,
+                                affect the functionality of certain features within Schemae,
                                 including authentication and personalized experiences.
                             </p>
                         </div>

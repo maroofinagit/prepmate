@@ -23,7 +23,7 @@ export default function VisitMobile() {
     return (
         <div className="w-full bg-yellow-400 text-black px-4 py-3 flex items-center justify-between text-sm md:hidden">
             <span>
-                For complete experience, please visit the desktop version of PrepMate.
+                For complete experience, please visit the desktop version of Schemae.
                 Some features may not work fully on mobile.
             </span>
 

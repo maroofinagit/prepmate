@@ -47,8 +47,6 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             const startDate = formData.get('start_date') as string;
             const endDate = formData.get('end_date') as string;
 
-            console.log("Form Data:", { startDate, endDate });
-
             // Step 1: Create User Exam
             setLoadingMessage('Creating your user exam...');
             const userExamRes = await createUserExam({
@@ -96,7 +94,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
                 });
                 setLoadingMessage('Failed to generate roadmap. Redirecting to dashboard...');
                 await new Promise((r) => setTimeout(r, 2000));
-                router.push('/dashboard');
+                router.replace('/dashboard');
                 return;
             }
 
@@ -108,7 +106,7 @@ export default function ClientExamStart({ exam }: { exam: any }) {
             await new Promise((r) => setTimeout(r, 1000));
 
             // Redirect to roadmap page
-            router.push(`/dashboard/roadmap/${user_exam_id}`);
+            router.replace(`/dashboard/roadmap/${user_exam_id}`);
             setLoading(false);
 
         } catch (err: any) {

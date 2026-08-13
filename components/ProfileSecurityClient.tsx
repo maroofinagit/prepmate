@@ -157,7 +157,7 @@ export default function ProfileSecurityClient({
                                 </h3>
 
                                 <p className="max-w-md text-sm text-muted-foreground">
-                                    Permanently delete your PrepMate account, including your
+                                    Permanently delete your Schemae account, including your
                                     enrolled exams, learning progress, notifications, and
                                     all associated data. This action cannot be undone.
                                 </p>

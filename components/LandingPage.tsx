@@ -52,7 +52,7 @@ export default function LandingPage({
                 badge: "Welcome",
                 title: "Let's build your first roadmap.",
                 description:
-                    "Choose an exam, generate a personalized roadmap, and let PrepMate guide you step by step toward exam day.",
+                    "Choose an exam, generate a personalized roadmap, and let Schemae guide you step by step toward exam day.",
                 primaryText: "Create Roadmap",
                 primaryHref: "/onboarding",
                 secondaryText: "Browse Exams",
@@ -123,7 +123,7 @@ export default function LandingPage({
                                 viewport={{ once: false, amount: 0.3 }}
                                 className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-4 py-2 text-xs md:text-sm text-blue-100 border border-white/10 mb-6">
                                 <Sparkles className="h-4 w-4" />
-                                Prepmate - Your AI Powered Learning Platform
+                                Schemae - Your AI Powered Learning Platform
                             </motion.div>
 
                             <motion.h1
@@ -144,7 +144,7 @@ export default function LandingPage({
                                 transition={{ delay: 0.45, duration: 0.6 }}
                                 viewport={{ once: false, amount: 0.3 }}
                                 className="mt-8 text-sm lg:text-lg leading-relaxed tracking-wide text-slate-300 max-w-xl">
-                                PrepMate transforms overwhelming exam preparation into a
+                                Schemae transforms overwhelming exam preparation into a
                                 structured, intelligent, and personalized journey with AI,
                                 adaptive roadmaps, and powerful analytics.
                             </motion.p>
@@ -216,8 +216,8 @@ export default function LandingPage({
                             <div className="rounded-3xl bg-white/95 h-full aspect-auto w-full md:h-100 backdrop-blur-sm shadow-2xl p-6 md:p-8">
                                 <div className="flex items-center gap-2 mb-6">
                                     <Image
-                                        src="/logo.jpg"
-                                        alt="PrepMate"
+                                        src="/logo.png"
+                                        alt="schemae"
                                         width={28}
                                         height={28}
                                         className="rounded-full"
@@ -388,7 +388,7 @@ export default function LandingPage({
 
             <ToastLogin />
 
-            {/* ================= WHY PREPMATE ================= */}
+            {/* ================= WHY schemae ================= */}
 
             <section className="relative pt-16 md:py-16 overflow-hidden">
 
@@ -415,7 +415,7 @@ export default function LandingPage({
                             transition={{ delay: 0.2, duration: 0.4 }}
                             className="text-blue-600 bg-blue-100 w-fit text-xs md:text-sm font-semibold uppercase tracking-[0.2em] border border-blue-200 py-2 px-4 rounded-xl"
                         >
-                            Why PrepMate ?
+                            Why Schemae ?
                         </motion.span>
 
                         <motion.h2
@@ -437,7 +437,7 @@ export default function LandingPage({
                             className="mt-6 md:text-lg leading-relaxed md:leading-loose text-sm text-slate-600 max-w-xl"
                         >
                             Most students spend more time figuring out what to study than
-                            actually learning. PrepMate removes that uncertainty with
+                            actually learning. Schemae removes that uncertainty with
                             intelligent roadmaps, AI-powered practice, and progress
                             tracking designed to keep you moving forward.
                         </motion.p>
@@ -520,7 +520,7 @@ export default function LandingPage({
 
                             <Image
                                 src="/dashboard.png"
-                                alt="PrepMate Dashboard"
+                                alt="schemae Dashboard"
                                 width={1400}
                                 height={900}
                                 className="rounded-2xl"
@@ -649,7 +649,7 @@ export default function LandingPage({
 
                             <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-300">
                                 Whether you're preparing for placements, semester exams, or
-                                competitive tests, PrepMate creates structured roadmaps that
+                                competitive tests, Schemae creates structured roadmaps that
                                 guide you through each topic step-by-step.
                             </p>
 
@@ -878,7 +878,7 @@ export default function LandingPage({
                             <p className="mt-8 text-sm md:text-lg leading-relaxed md:leading-loose text-slate-600">
                                 Great preparation isn't just about solving questions it's about
                                 understanding your strengths, fixing weak areas, and measuring
-                                improvement. PrepMate turns your study sessions into actionable
+                                improvement. Schemae turns your study sessions into actionable
                                 insights.
                             </p>
 
@@ -959,7 +959,7 @@ export default function LandingPage({
                         </h2>
 
                         <p className="mt-6 text-slate-300 max-w-2xl mx-auto text-sm md:text-lg leading-relaxed md:leading-loose">
-                            Every feature in PrepMate is focused on making learning simpler,
+                            Every feature in Schemae is focused on making learning simpler,
                             faster, and more effective.
                         </p>
                     </motion.div>

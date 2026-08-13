@@ -62,7 +62,7 @@ export default function SendBulkEmailPage() {
         <div className="min-h-screen overflow-y-visible pt-32 flex flex-col w-full items-center justify-center bg-[#f6f1eb] px-4">            <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
 
             <h1 className="text-xl font-semibold mb-4">
-                Send PrepMate Email 🚀
+                Send Schemae Email 🚀
             </h1>
 
             <input

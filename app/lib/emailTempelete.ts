@@ -17,7 +17,7 @@ export async function getEmailTemplate({
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PrepMate</title>
+<title>schemae</title>
 </head>
 
 <body style="
@@ -87,8 +87,8 @@ export async function getEmailTemplate({
 >
 
 <img
-    src="https://prepmatex.vercel.app/logo.jpg"
-    alt="PrepMate"
+    src="https://schemae.vercel.app/logo.png"
+    alt="schemae"
     width="50"
     height="50"
     style="
@@ -121,7 +121,7 @@ export async function getEmailTemplate({
         line-height:1.2;
     "
 >
-PrepMate
+Schemae
 </div>
 
 <div
@@ -183,7 +183,7 @@ color:#374151;
 ">
 ${htmlBody}
 
-- The PrepMate Team
+- The Schemae Team
 </td>
 </tr>
 
@@ -216,7 +216,7 @@ font-size:14px;
 line-height:1.6;
 "
 >
-Be consistent, stay focused, and achieve your goals with PrepMate.
+Be consistent, stay focused, and achieve your goals with Schemae.
 </p>
 
 <p
@@ -226,7 +226,7 @@ font-size:13px;
 color:#9ca3af;
 "
 >
-© 2026 PrepMate. All rights reserved.
+© 2026 Schemae. All rights reserved.
 </p>
 
 </td>

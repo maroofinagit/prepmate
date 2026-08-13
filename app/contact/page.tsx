@@ -111,7 +111,7 @@ export default function ContactPage() {
 
                     <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-5 py-2 text-xs md:text-sm font-semibold text-blue-700 shadow-sm backdrop-blur">
                         <span className="h-2 w-2 rounded-full bg-blue-600" />
-                        Contact PrepMate
+                        Contact Schemae
                     </span>
 
                     <h1 className="mt-8 md:text-5xl text-3xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
@@ -123,7 +123,7 @@ export default function ContactPage() {
 
                     <p className="mx-auto mt-8 max-w-3xl text-sm md:text-base tracking-wide leading-relaxed md:leading-loose text-slate-600">
                         Have a question, found a bug, or have an idea that could make
-                        PrepMate even better? We'd love to hear your feedback and are here
+                        Schemae even better? We'd love to hear your feedback and are here
                         to help whenever you need us.
                     </p>
 
@@ -211,7 +211,7 @@ export default function ContactPage() {
                                         <p className="mt-2 leading-relaxed md:leading-loose text-sm md:text-base text-slate-600">
                                             We carefully read every message and do our best to
                                             respond as quickly as possible. Your feedback helps
-                                            us make PrepMate better for everyone.
+                                            us make Schemae better for everyone.
                                         </p>
                                     </div>
 
@@ -428,7 +428,7 @@ export default function ContactPage() {
                                 <p className="mt-5 leading-8 text-slate-300">
                                     We genuinely appreciate every question, bug report, and
                                     suggestion. Your feedback helps us build a better learning
-                                    experience for the entire PrepMate community.
+                                    experience for the entire Schemae community.
                                 </p>
 
                                 <div className="mt-10 space-y-6">
@@ -561,7 +561,7 @@ export default function ContactPage() {
                                     <p className="mt-3 leading-relaxed md:leading-loose text-xs md:text-base text-slate-600">
                                         Absolutely. We love hearing ideas from our users.
                                         Feature suggestions play an important role in shaping
-                                        PrepMate, and every submission is carefully reviewed.
+                                        Schemae, and every submission is carefully reviewed.
                                     </p>
                                 </div>
 
@@ -603,7 +603,7 @@ export default function ContactPage() {
                 <section className="mt-12 rounded-3xl bg-slate-900 px-10 py-16 text-center text-white">
 
                     <h2 className=" text-2xl md:text-4xl font-bold">
-                        We're Always Improving PrepMate
+                        We're Always Improving Schemae
                     </h2>
 
                     <p className="mx-auto mt-6 text-sm md:text-base max-w-2xl text-slate-300">

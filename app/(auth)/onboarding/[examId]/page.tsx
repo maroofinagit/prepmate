@@ -15,7 +15,6 @@ export default async function Page({ params }: { params: Promise<{ examId: strin
     }
 
     const userExam = await getUserExam(exam.id);
-    console.log("User Exam:", userExam);
 
     if (userExam) {
         return (
@@ -26,7 +25,6 @@ export default async function Page({ params }: { params: Promise<{ examId: strin
     }
 
     return (
-
         <ClientExamStart exam={exam} />
     );
 }
