@@ -720,6 +720,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                                             <CardDescription>
                                                 {group.tasks.length}{" "}
                                                 {group.tasks.length === 1 ? "Task" : "Tasks"} Upcoming
+                                                
                                             </CardDescription>
                                         </div>
 
