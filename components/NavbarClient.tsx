@@ -373,7 +373,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     )}
 
                     {/* Right Side */}
-                    <div className="hidden md:flex items-center gap-2">
+                    <div className="hidden md:flex items-center gap-2 ">
 
                         {isLoggedIn ? (
                             <DropdownMenu
@@ -414,11 +414,11 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                 <DropdownMenuContent
                                     className="
                                 w-52
-                                border-white/10
-                                bg-[#071525]
-                                text-white
+                               
+                                border border-gray-200
                                 shadow-xl
                                 tracking-wide
+                                text-gray-800
                             "
                                     align="end"
                                 >
@@ -442,12 +442,12 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                         </span>
                                     </DropdownMenuLabel>
 
-                                    <DropdownMenuSeparator className="bg-white/10" />
+                                    <DropdownMenuSeparator className="border border-gray-200" />
 
                                     <DropdownMenuGroup>
                                         <DropdownMenuItem
                                             onClick={() => setMenuOpen(false)}
-                                            className="cursor-pointer focus:bg-white/10 focus:text-white"
+                                            className="cursor-pointer focus:bg-gray-200 focus:text-black"
                                         >
                                             <Link
                                                 href="/dashboard"
@@ -460,7 +460,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
 
                                         <DropdownMenuItem
                                             onClick={() => setMenuOpen(false)}
-                                            className="cursor-pointer focus:bg-white/10 focus:text-white"
+                                            className="cursor-pointer focus:bg-gray-200 focus:text-black"
                                         >
                                             <Link
                                                 href="/profile"
@@ -472,7 +472,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
 
-                                    <DropdownMenuSeparator className="bg-white/10" />
+                                    <DropdownMenuSeparator className="border border-gray-200" />
 
                                     <DropdownMenuItem
                                         onClick={() => {
