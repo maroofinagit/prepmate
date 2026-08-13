@@ -81,7 +81,7 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "/logo.png",
+        url: "/logoOg.jpg",
         width: 1200,
         height: 630,
         alt: "Schemae : AI-Powered Exam Preparation",
@@ -102,7 +102,7 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "/logo.png",
+        url: "/logoOg.jpg",
         width: 1200,
         height: 630,
         alt: "Schemae : AI-Powered Exam Preparation",
