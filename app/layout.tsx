@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/logo.png",
-        width: 1200, 
+        width: 1200,
         height: 630,
         alt: "Schemae : AI-Powered Exam Preparation",
         type: "image/png",
@@ -129,6 +129,36 @@ export const metadata: Metadata = {
   },
 };
 
+const BASE_URL = "https://schemae.vercel.app";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": `${BASE_URL}`,
+      name: "Schemae",
+      url: BASE_URL,
+      description:
+        "Schemae helps students prepare for competitive exams with structured study plans, personalized roadmaps, and curated learning resources.",
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      publisher: {
+        "@id": `${BASE_URL}`,
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${BASE_URL}`,
+      name: "Schemae",
+      url: BASE_URL,
+      publisher: {
+        "@id": `${BASE_URL}`,
+      },
+    },
+  ],
+};
+
 
 
 export default async function RootLayout({
@@ -139,7 +169,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={` ${montserrat.variable} antialiased`}
       >
