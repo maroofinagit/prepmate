@@ -28,6 +28,7 @@ import { User, LogOut, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
+import { motion } from "framer-motion";
 
 const montserrat = Montserrat({
     subsets: ["latin"],
@@ -35,6 +36,33 @@ const montserrat = Montserrat({
 });
 
 export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
+
+    const dropdownContainer = {
+        hidden: {},
+        visible: {
+            transition: {
+                staggerChildren: 0.045,
+                delayChildren: 0.04,
+            },
+        },
+    };
+
+    const dropdownItem = {
+        hidden: {
+            opacity: 0,
+            x: 8,
+        },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                type: "spring" as const,
+                stiffness: 500,
+                damping: 30,
+            },
+        },
+    };
+
     const navLinksLP = [
         { name: "Home", href: "/" },
         { name: "Onboarding", href: "/onboarding" },
@@ -83,6 +111,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
         toast.success("Logged out successfully.", { duration: 1500 });
     };
 
+
     return (
         <nav className="fixed top-4 left-1/2 z-50 w-[calc(100%-24px)] max-w-7xl -translate-x-1/2"
             style={montserrat.style}
@@ -92,7 +121,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                 <div className="mx-auto flex items-center justify-between gap-3 px-3 py-2.5 md:px-4">
 
                     {/* Mobile Menu */}
-                    <div className="md:hidden">
+                    <div className="md:hidden flex items-center gap-2">
                         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                             <SheetTrigger asChild>
                                 <Button
@@ -282,6 +311,21 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                 </div>
                             </SheetContent>
                         </Sheet>
+
+                        <Link href="/"
+                            className="
+                    flex shrink-0 items-center
+                    text-lg
+                    font-semibold
+                    tracking-widest
+                    text-white
+                "
+                        >
+                            <span className="">
+                                Schemae
+                            </span>
+                        </Link>
+
                     </div>
 
                     {/* Logo */}
@@ -305,7 +349,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                             className="rounded-full bg-red-100 object-contain object-center mr-6"
                         />
 
-                        <span className="hidden sm:block">
+                        <span className="hidden md:block">
                             Schemae
                         </span>
                     </Link>
@@ -314,61 +358,139 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     {isLoggedIn ? (
                         <div className="hidden md:flex items-center gap-3 tracking-wide">
 
-                            {isAdmin && (
-                                <Link
-                                    href="/admin"
-                                    className={`
-                                rounded-full px-4 py-2
-                                text-sm font-medium
-                                transition-all duration-200
-                                ${pathname === "/admin"
-                                            ? "bg-white/60 text-white font-semibold"
-                                            : "text-white/70 hover:bg-white/6 hover:text-white"
-                                        }
-                            `}
-                                >
-                                    Admin
-                                </Link>
-                            )}
+                            <Link
+                                href="/admin"
+                                className={`
+        relative
+        rounded-full
+        px-4 py-2
+        text-sm font-medium
+        transition-colors duration-200
+        ${pathname === "/admin"
+                                        ? "text-white"
+                                        : "text-white/70 hover:bg-white/6 hover:text-white"
+                                    }
+    `}
+                            >
+                                {pathname === "/admin" && (
+                                    <motion.span
+                                        layoutId="navbar-active"
+                                        className="
+                absolute
+                inset-0
+                rounded-full
+                border
+                border-white/30
+                bg-white/20
+            "
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 420,
+                                            damping: 32,
+                                            mass: 0.8,
+                                        }}
+                                    />
+                                )}
 
-                            {navLinksAuth.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`
-                                rounded-full px-4 py-2
-                                text-sm font-medium
-                                transition-all duration-200
-                                ${pathname === link.href
-                                            ? "border border-white/30 bg-white/20 text-white"
-                                            : "text-white/70 hover:bg-white/6 hover:text-white"
-                                        }
-                            `}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
+                                <span className="relative z-10">
+                                    Admin
+                                </span>
+                            </Link>
+
+                            {navLinksAuth.map((link) => {
+                                const isActive = pathname === link.href;
+
+                                return (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={`
+                relative
+                rounded-full
+                px-4 py-2
+                text-sm font-medium
+                transition-colors duration-200
+                ${isActive
+                                                ? "text-white"
+                                                : "text-white/70 hover:bg-white/6 hover:text-white"
+                                            }
+            `}
+                                    >
+                                        {isActive && (
+                                            <motion.span
+                                                layoutId="navbar-active"
+                                                className="
+                        absolute
+                        inset-0
+                        rounded-full
+                        border
+                        border-white/30
+                        bg-white/20
+                    "
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 420,
+                                                    damping: 32,
+                                                    mass: 0.8,
+                                                }}
+                                            />
+                                        )}
+
+                                        <span className="relative z-10">
+                                            {link.name}
+                                        </span>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="hidden md:flex items-center gap-3">
 
-                            {navLinksLP.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`
-                                rounded-full px-4 py-2
-                                text-sm font-medium
-                                transition-all duration-200 text-white
-                                ${pathname === link.href
-                                            ? "border border-white/30 bg-white/20 text-white"
-                                            : "text-white/70 hover:bg-white/6 hover:text-white"
-                                        }
-                            `}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
+                            {navLinksLP.map((link) => {
+                                const isActive = pathname === link.href;
+
+                                return (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={`
+                relative
+                rounded-full
+                px-4 py-2
+                text-sm font-medium
+                transition-colors duration-200
+                ${isActive
+                                                ? "text-white"
+                                                : "text-white/70 hover:bg-white/6 hover:text-white"
+                                            }
+            `}
+                                    >
+                                        {isActive && (
+                                            <motion.span
+                                                layoutId="navbar-active"
+                                                className="
+                        absolute
+                        inset-0
+                        rounded-full
+                        border
+                        border-white/30
+                        bg-white/20
+                    "
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 420,
+                                                    damping: 32,
+                                                    mass: 0.8,
+                                                }}
+                                            />
+                                        )}
+
+                                        <span className="relative z-10">
+                                            {link.name}
+                                        </span>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
 
@@ -391,149 +513,256 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                     outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0
                                 "
                                     >
-                                        <span className="text-sm font-medium tracking-wide text-white">
-                                            {user?.name || "My Account"}
+
+                                        <span className="text-sm font-medium tracking-wide text-white mr-4">
+                                            {user?.name?.split(' ')[0] || "My Account"}
                                         </span>
+                                        <motion.div
+                                            animate={{
+                                                scale: menuOpen ? 1.06 : 1,
+                                                rotate: menuOpen ? 2 : 0,
+                                            }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 500,
+                                                damping: 30,
+                                            }}
+                                        >
+                                            <Avatar className="h-9 w-9 border border-white/10">
+                                                <AvatarImage
+                                                    className="object-cover object-center"
+                                                    src={user?.image || "/avatar.png"}
+                                                    alt="@user"
+                                                />
 
-                                        <Avatar className="h-9 w-9 border border-white/10">
-                                            <AvatarImage
-                                                className="object-cover object-center"
-                                                src={user?.image || "/avatar.png"}
-                                                alt="@user"
-                                            />
-
-                                            <AvatarFallback className="bg-white/10 text-white">
-                                                {user?.name
-                                                    ? user.name.charAt(0).toUpperCase()
-                                                    : "U"}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                                <AvatarFallback className="bg-white/10 text-white">
+                                                    {user?.name
+                                                        ? user.name.charAt(0).toUpperCase()
+                                                        : "U"}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </motion.div>
                                     </button>
                                 </DropdownMenuTrigger>
 
                                 <DropdownMenuContent
-                                    className="
-                                w-52
-                               
-                                border border-gray-200
-                                shadow-xl
-                                tracking-wide
-                                text-gray-800
-                            "
+                                    forceMount
+                                    asChild
                                     align="end"
                                 >
-                                    <DropdownMenuLabel className="flex items-center gap-2">
-                                        <Avatar className="h-6 w-6">
-                                            <AvatarImage
-                                                src={user?.image || "/avatars/user.png"}
-                                                className="object-cover object-center"
-                                                alt="@user"
-                                            />
-
-                                            <AvatarFallback className="bg-white/10 text-white">
-                                                {user?.name
-                                                    ? user.name.charAt(0).toUpperCase()
-                                                    : "U"}
-                                            </AvatarFallback>
-                                        </Avatar>
-
-                                        <span className="font-medium">
-                                            {user?.name || "My Account"}
-                                        </span>
-                                    </DropdownMenuLabel>
-
-                                    <DropdownMenuSeparator className="border border-gray-200" />
-
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem
-                                            onClick={() => setMenuOpen(false)}
-                                            className="cursor-pointer focus:bg-gray-200 focus:text-black"
-                                        >
-                                            <Link
-                                                href="/dashboard"
-                                                className="flex w-full items-center gap-4"
-                                            >
-                                                <LayoutDashboard className="h-4 w-4" />
-                                                Dashboard
-                                            </Link>
-                                        </DropdownMenuItem>
-
-                                        <DropdownMenuItem
-                                            onClick={() => setMenuOpen(false)}
-                                            className="cursor-pointer focus:bg-gray-200 focus:text-black"
-                                        >
-                                            <Link
-                                                href="/profile"
-                                                className="flex w-full items-center gap-4"
-                                            >
-                                                <User className="h-4 w-4" />
-                                                Profile
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-
-                                    <DropdownMenuSeparator className="border border-gray-200" />
-
-                                    <DropdownMenuItem
-                                        onClick={() => {
-                                            handleLogout();
-                                            setMenuOpen(false);
+                                    <motion.div
+                                        initial={{
+                                            opacity: 0,
+                                            scale: 0.94,
+                                            y: -6,
+                                            transformOrigin: "top right",
+                                        }}
+                                        animate={{
+                                            opacity: menuOpen ? 1 : 0,
+                                            scale: menuOpen ? 1 : 0.94,
+                                            y: menuOpen ? 0 : -6,
+                                        }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 450,
+                                            damping: 32,
+                                            mass: 0.7,
                                         }}
                                         className="
+            w-52
+            rounded-xl
+            border
+            border-gray-200
+            bg-white
+            shadow-xl
+            tracking-wide
+            text-gray-800
+        "
+                                    >
+                                        <DropdownMenuLabel className="flex items-center ">
+                                            <Avatar className="h-7 w-7 mr-4 border border-black/40">
+                                                <AvatarImage
+                                                    src={user?.image || "/avatars/user.png"}
+                                                    className="object-cover object-center"
+                                                    alt="@user"
+                                                />
+
+                                                <AvatarFallback className="bg-white/10 text-white">
+                                                    {user?.name
+                                                        ? user.name.charAt(0).toUpperCase()
+                                                        : "U"}
+                                                </AvatarFallback>
+                                            </Avatar>
+
+
+                                            <span className="font-medium flex gap-0 flex-col">
+                                                <span className="text-xs text-gray-500">
+                                                    Welcome,
+                                                </span>
+                                                {user?.name || "My Account"}
+                                            </span>
+                                        </DropdownMenuLabel>
+
+                                        <DropdownMenuSeparator className="border border-gray-200" />
+
+                                        <motion.div
+                                            variants={dropdownContainer}
+                                            initial="hidden"
+                                            animate={menuOpen ? "visible" : "hidden"}
+                                        >
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuItem
+                                                    asChild
+                                                    onClick={() => setMenuOpen(false)}
+                                                >
+                                                    <motion.div
+                                                        variants={dropdownItem}
+                                                        className="
+            cursor-pointer
+            rounded-lg
+            focus:bg-gray-200
+            focus:text-black
+        "
+                                                    >
+                                                        <Link
+                                                            href="/dashboard"
+                                                            className="flex w-full items-center gap-4"
+                                                        >
+                                                            <LayoutDashboard className="h-4 w-4" />
+                                                            Dashboard
+                                                        </Link>
+                                                    </motion.div>
+                                                </DropdownMenuItem>
+
+                                                <DropdownMenuItem
+                                                    asChild
+                                                    onClick={() => setMenuOpen(false)}
+                                                >
+                                                    <motion.div
+                                                        variants={dropdownItem}
+                                                        className="
+            cursor-pointer
+            rounded-lg
+            focus:bg-gray-200
+            focus:text-black
+        "
+                                                    >
+                                                        <Link
+                                                            href="/profile"
+                                                            className="flex w-full items-center gap-4"
+                                                        >
+                                                            <User className="h-4 w-4" />
+                                                            Profile
+                                                        </Link>
+                                                    </motion.div>
+                                                </DropdownMenuItem>
+
+                                            </DropdownMenuGroup>
+                                        </motion.div>
+
+                                        <DropdownMenuSeparator className="border border-gray-200" />
+
+                                        <DropdownMenuItem
+                                            onClick={() => {
+                                                handleLogout();
+                                                setMenuOpen(false);
+                                            }}
+                                            className="
                                     cursor-pointer
-                                    text-red-400
+                                    font-medium
+                                    text-red-500
                                     focus:bg-red-500/10
                                     focus:text-red-400
                                 "
-                                    >
-                                        <LogOut className="mr-2 h-4 w-4" />
-                                        Logout
-                                    </DropdownMenuItem>
+                                        >
+                                            <LogOut className="mr-2 h-4 w-4 text-red-500/60" />
+                                            Logout
+                                        </DropdownMenuItem>
+                                    </motion.div>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
                             <>
-                                <Button
-                                    asChild
-                                    variant="ghost"
-                                    className={`
-                                rounded-full
-                                text-white
-                                hover:bg-white/[0.07]
-                                hover:text-white
-                                bg-white/20
-                                border border-white/30
-                            ${pathname === "/signup"
-                                            ? "bg-transparent text-white/70 border-0 font-semibold"
-                                            : ""
-                                        }
-                                `
-                                    }
-                                >
-                                    <Link href="/signin">
-                                        Sign In
-                                    </Link>
-                                </Button>
+                                <div className="relative flex items-center rounded-full">
+                                    {/* Moving active background */}
+                                    {pathname === "/signin" && (
+                                        <motion.div
+                                            layoutId="auth-active"
+                                            className="
+                    absolute
+                    inset-y-0
+                    left-0
+                    w-1/2
+                    rounded-full
+                    border border-white/30
+                    bg-white/20
+                "
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 500,
+                                                damping: 38,
+                                                mass: 0.7,
+                                            }}
+                                        />
+                                    )}
 
-                                <Button
-                                    asChild
-                                    className={`${pathname === "/signup"
-                                        ? "border border-white/30 bg-white/20 text-white font-semibold"
-                                        : ""
-                                        }
-                                rounded-full
-                                px-5
-                                font-semibold
-                                bg-transparent
-                                text-white/80
-                                hover:bg-white/10
-                                hover:text-white
-                            `}
-                                >
-                                    <Link href="/signup">
-                                        Sign Up
-                                    </Link>
-                                </Button>
+                                    {pathname === "/signup" && (
+                                        <motion.div
+                                            layoutId="auth-active"
+                                            className="
+                    absolute
+                    inset-y-0
+                    right-0
+                    w-1/2
+                    rounded-full
+                    border border-white/30
+                    bg-white/20
+                "
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 500,
+                                                damping: 38,
+                                                mass: 0.7,
+                                            }}
+                                        />
+                                    )}
+
+                                    <Button
+                                        asChild
+                                        variant="ghost"
+                                        className="
+                relative
+                z-10
+                rounded-full
+                px-5
+                text-white/80
+                hover:bg-transparent
+                hover:text-white
+            "
+                                    >
+                                        <Link href="/signin">
+                                            Sign In
+                                        </Link>
+                                    </Button>
+
+                                    <Button
+                                        asChild
+                                        variant="ghost"
+                                        className="
+                relative
+                z-10
+                rounded-full
+                px-5
+                text-white/80
+                hover:bg-transparent
+                hover:text-white
+            "
+                                    >
+                                        <Link href="/signup">
+                                            Sign Up
+                                        </Link>
+                                    </Button>
+                                </div>
                             </>
                         )}
                     </div>

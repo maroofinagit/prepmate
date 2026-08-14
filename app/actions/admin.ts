@@ -61,9 +61,9 @@ export async function sendSignUpAdminNot(to: string, name: string) {
 
     try {
         await resend.emails.send({
-            from: "PrepMate <onboarding@resend.dev>",
+            from: "Schemae <onboarding@resend.dev>",
             to: process.env.NEXT_PUBLIC_GMAIL_USER!, // Admin email address from environment variable
-            subject: "New User Signup Notification - PrepMate 🚀",
+            subject: "New User Signup Notification - Schemae 🚀",
             html: `
 <div style="font-family:Arial,sans-serif;background-color:#f4f6f8;padding:30px;">
 
@@ -74,7 +74,7 @@ export async function sendSignUpAdminNot(to: string, name: string) {
     </h2>
 
     <p style="color:#555;margin-bottom:20px;">
-      A new user has just registered on <b>PrepMate</b>.
+      A new user has just registered on <b>Schemae</b>.
     </p>
 
     <div style="background:#f9fafb;padding:15px;border-radius:8px;border:1px solid #eee;">
@@ -92,7 +92,7 @@ export async function sendSignUpAdminNot(to: string, name: string) {
     <hr style="border:none;border-top:1px solid #eee;margin:25px 0;" />
 
     <p style="font-size:13px;color:#888;">
-      This is an automated notification from PrepMate.
+      This is an automated notification from Schemae.
     </p>
 
   </div>
@@ -180,7 +180,7 @@ export async function sendEmail({
         });
 
         await mailTransporter.sendMail({
-            from: `"PrepMate" <${process.env.GMAIL_USER}>`,
+            from: `"Schemae" <${process.env.GMAIL_USER}>`,
             to,
             subject,
             html,
