@@ -26,7 +26,7 @@ export default function Footer() {
 
                         <Link
                             href="/"
-                            className="inline-flex items-center gap-3"
+                            className="inline-flex items-center gap-x-6 "
                         >
                             <Image
                                 src="/logo.png"
@@ -58,7 +58,7 @@ export default function Footer() {
 
                         <div className="h-px bg-slate-500 my-8 w-full max-w-sm" />
 
-                        <div className="flex flex-wrap gap-8 items-center justify-center md:justify-start">
+                        <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
 
                             {socialLinks.map((link) => (
                                 <Link

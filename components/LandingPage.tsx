@@ -301,14 +301,14 @@ export default function LandingPage({
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
                             viewport={{ once: false, amount: 0.3 }}
-                            className="text-center mb-14"
+                            className="text-center mb-10 md:mb-14"
                         >
                             <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
                                 Welcome back,<br />
                                 <span className="text-indigo-700"> {user.name}</span>
                             </h2>
 
-                            <p className="mt-3 text-gray-600">
+                            <p className="mt-3 text-gray-600 text-sm md:text-base">
                                 Continue your preparation where you left off.
                             </p>
                         </motion.div>
@@ -324,7 +324,7 @@ export default function LandingPage({
                                         delay: index * 0.15,
                                     }}
                                     whileTap={{ scale: 0.98 }}
-                                    className="rounded-3xl bg-linear-to-br from-white to-blue-50 hover:to-blue-100 hover:from-40% border border-blue-200 shadow-md hover:shadow-xl p-7 group transition flex flex-col justify-between"
+                                    className="rounded-3xl bg-linear-to-br from-white to-blue-50 hover:to-blue-100 hover:from-40% border border-blue-200 shadow-md hover:shadow-xl p-5 md:p-6 group transition flex flex-col justify-between"
                                 >
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className="h-8 mr-2 aspect-square rounded-md bg-indigo-100 flex items-center justify-center">
@@ -372,11 +372,11 @@ export default function LandingPage({
                             ))}
                         </div>
 
-                        <h2 className="mt-16 text-center text-muted-foreground">
+                        <h2 className="md:mt-16 mt-10 text-center text-sm md:text-base text-muted-foreground">
                             Your learning journey continues today. Complete today's tasks and stay on track.
                         </h2>
 
-                        <Button className=" mt-4 w-fit mx-auto flex items-center gap-2 px-4 py-6 rounded-xl text-lg border bg-transparent border-blue-700 text-blue-700 hover:bg-blue-700 duration-300 transition hover:text-white" asChild>
+                        <Button className=" mt-4 w-fit mx-auto flex items-center gap-2 px-4 py-6 rounded-xl font-medium md:text-lg border bg-transparent border-blue-800 text-blue-800 hover:bg-blue-700 duration-300 transition hover:text-white" asChild>
                             <Link href="/dashboard/today">
                                 Look at Today's Tasks
                             </Link>

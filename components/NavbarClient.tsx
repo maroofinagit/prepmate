@@ -113,7 +113,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
 
 
     return (
-        <nav className="fixed top-4 left-1/2 z-50 w-[calc(100%-24px)] max-w-7xl -translate-x-1/2"
+        <nav className="fixed top-4 left-1/2 z-50 w-[calc(100%-24px)] px-4 md:px-0 max-w-7xl -translate-x-1/2"
             style={montserrat.style}
         >
             <div className="rounded-3xl shadow-lg shadow-black/50 bg-linear-to-r from-[#0a5e6b]/70 backdrop-blur-sm via-[#073338]/90 to-[#000000]/90">
@@ -156,7 +156,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                             alt="Schemae Logo"
                                             width={40}
                                             height={40}
-                                            className="rounded-full"
+                                            className="rounded-full object-center object-contain"
                                         />
                                         Schemae
                                     </SheetTitle>
@@ -165,8 +165,9 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                 {/* User */}
                                 {isLoggedIn && (
                                     <div className="flex items-center gap-4 border-b border-white/10 px-6 py-5">
-                                        <Avatar className="h-12 w-12">
+                                        <Avatar className="h-12 w-12 border border-white/10 ">
                                             <AvatarImage
+                                            className=" object-top object-cover"
                                                 src={user?.image || "/avatar.png"}
                                             />
                                             <AvatarFallback className="bg-white/10 text-white">
@@ -216,6 +217,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                     className={`
                                                 mx-3 rounded-xl px-4 py-3
                                                 transition
+                                                text-sm
                                                 ${pathname === link.href
                                                             ? "bg-white/30 text-white font-semibold"
                                                             : "text-white/75 hover:bg-white/6 hover:text-white"
@@ -235,6 +237,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                             transition
                                             hover:bg-white/6
                                             hover:text-white
+                                            text-sm
                                         "
                                             >
                                                 Profile
@@ -247,6 +250,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                             text-left text-red-400
                                             transition
                                             hover:bg-red-500/10
+                                            text-sm
                                         "
                                             >
                                                 Logout
@@ -262,6 +266,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                     className={`
                                                 mx-3 rounded-xl px-4 py-3
                                                 transition
+                                                text-sm
                                                 ${pathname === link.href
                                                             ? "bg-white/15 border border-white/30 text-white font-semibold"
                                                             : "text-white/75 hover:bg-white/6 hover:text-white"
@@ -283,6 +288,8 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                 border border-white/30
                                                 hover:bg-white/20
                                                 hover:text-white
+                                                transition
+                                                text-sm
                                             "
                                                 >
                                                     <Link href="/signin">
@@ -299,6 +306,8 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                 border border-white/30
                                                 hover:bg-white/30
                                                 hover:text-white
+                                                transition
+                                                text-sm
                                             "
                                                 >
                                                     <Link href="/signup">
@@ -315,13 +324,13 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                         <Link href="/"
                             className="
                     flex shrink-0 items-center
-                    text-lg
+                    
                     font-semibold
                     tracking-widest
                     text-white
                 "
                         >
-                            <span className="">
+                            <span>
                                 Schemae
                             </span>
                         </Link>

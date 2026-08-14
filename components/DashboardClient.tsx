@@ -44,6 +44,7 @@ import { DashboardUser, deleteUserExam } from "@/app/actions/action";
 import { Badge } from "./ui/badge";
 import { useUser } from "@/app/context/userContext";
 import { playError, playNotification } from "@/app/lib/sound";
+import VisitMobile from "./VisitMobile";
 
 type WeakTopic = {
     id: number;
@@ -535,6 +536,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         <>
             {regenerating && (
                 <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-6 cursor-not-allowed">
+
                     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border text-center space-y-5">
 
                         <div className="flex justify-center">
@@ -559,7 +561,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     </div>
                 </div>
             )}
-            <div className="space-y-8 md:pt-36 py-12 pt-30 px-12 md:max-w-8xl mx-auto">
+            <div className="space-y-8 md:pt-36 py-12 pt-30 px-6 md:px-12">
+
+                <VisitMobile />
+
                 {/* Header */}
                 <div className="flex items-center gap-x-6">
                     <Image
@@ -744,15 +749,51 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                     <div className="flex items-center w-full justify-between">
 
-                        <TabsList className="flex flex-col md:flex-row gap-2">
+                        <TabsList
+                            className="
+        
+        justify-start
+        gap-2
+        overflow-x-auto
+        rounded-xl
+        p-1
+        scrollbar-none
+        md:flex-wrap
+        md:overflow-visible
+    "
+                        >
                             {newExams.length > 0 ? (
                                 newExams.map((ex) => (
-                                    <TabsTrigger key={ex.id} value={String(ex.id)} className="capitalize font-semibold cursor-pointer data-[state=active]:bg-green-700 data-[state=active]:text-white data-[state=active]:cursor-default">
+                                    <TabsTrigger
+                                        key={ex.id}
+                                        value={String(ex.id)}
+                                        className="
+                    shrink-0
+                    whitespace-nowrap
+                    rounded-lg
+                    px-4
+                    py-2
+                    md:text-base
+                    
+                    font-semibold
+                    capitalize
+                    cursor-pointer
+                    transition-all
+
+                    data-[state=active]:bg-green-700
+                    data-[state=active]:text-white
+                    data-[state=active]:cursor-default
+
+                    hover:bg-muted
+                "
+                                    >
                                         {ex.exam?.name ?? `Exam ${ex.id}`}
                                     </TabsTrigger>
                                 ))
                             ) : (
-                                <div className="text-sm text-muted-foreground p-2">No exams added</div>
+                                <div className="p-2 text-sm text-muted-foreground">
+                                    No exams added
+                                </div>
                             )}
                         </TabsList>
 
@@ -1041,7 +1082,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                             <TabsContent key={ex.id} value={String(ex.id)}>
 
                                 {/* 📱 MOBILE */}
-                                <div className="block md:hidden mt-6">
+                                <div className="block md:hidden mt-6 ">
                                     <Card>
                                         <CardHeader>
                                             <CardTitle>Exam Progress</CardTitle>
@@ -1063,18 +1104,18 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </PieChart>
                                             </ChartContainer>
 
-                                            <p className="text-center font-semibold text-lg">
+                                            <p className="text-center font-semibold ">
                                                 {ex.progress_percent ?? 0}% Completed
                                             </p>
 
                                         </CardContent>
-                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                        <CardFooter className="flex-col items-start gap-4 text-xs">
                                             <div className="flex gap-2 leading-none font-medium">
                                                 {(ex.progress_percent ?? 0) >= 70
-                                                    ? "Strong progress — you're close to the finish line"
+                                                    ? "Strong progress - you're close to the finish line"
                                                     : (ex.progress_percent ?? 0) >= 40
-                                                        ? "Good pace — stay consistent"
-                                                        : "Just getting started — build the habit"}
+                                                        ? "Good pace - stay consistent"
+                                                        : "Just getting started - build the habit"}
                                                 <TrendingUp className="h-4 w-4" />
                                             </div>
                                             <div className="leading-none text-muted-foreground">
@@ -1127,7 +1168,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         cursor={{ fill: "rgba(34,197,94,0.1)" }} // soft green glow
                                                         content={
                                                             <ChartTooltipContent
-                                                                className="w-37.5"
+                                                                className="w-40 text-[10px] p-4"
                                                                 nameKey="progress"
                                                                 labelFormatter={(value) => `Phase: ${value}`}
                                                                 formatter={(value) => `${value}% completed`}
@@ -1151,7 +1192,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </BarChart>
                                             </ChartContainer>
                                         </CardContent>
-                                        <CardFooter className="flex-col items-start gap-2 text-sm">
+                                        <CardFooter className="flex-col items-start gap-4 text-xs">
                                             <div className="flex gap-2 leading-none font-medium">
                                                 Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
                                             </div>
@@ -1989,7 +2030,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             )}
                                         </CardContent>
                                         <CardFooter className="flex items-center font-medium text-sm text-muted-foreground">
-                                           💡 These aren't permanent. Keep practicing, take more tests, and watch your weak topics improve or disappear.
+                                            💡 These aren't permanent. Keep practicing, take more tests, and watch your weak topics improve or disappear.
                                         </CardFooter>
                                     </Card>
 
