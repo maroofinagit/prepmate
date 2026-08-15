@@ -164,7 +164,7 @@ export default function LoadingClient({
 }: LoadingScreenProps) {
     
     return (
-        <main className="relative min-h-screen overflow-hidden bg-[#f7f9fc]">
+        <main className="relative px-6 overflow-hidden bg-[#f7f9fc]">
 
             {/* =====================================================
                 BACKGROUND
@@ -362,7 +362,8 @@ export default function LoadingClient({
 
                     {/* Main text */}
                     <h1 className="
-                        text-2xl
+                        md:text-2xl
+                        text-lg
                         mt-4
                         font-semibold
                         tracking-normal

@@ -113,26 +113,29 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
 
 
     return (
-        <nav className="fixed top-4 left-1/2 z-50 w-[calc(100%-24px)] px-4 md:px-0 max-w-7xl -translate-x-1/2"
+        <nav className="fixed top-4 left-1/2 z-50 w-[calc(100%-24px)] px-4 md:px-2 max-w-7xl -translate-x-1/2"
             style={montserrat.style}
         >
             <div className="rounded-3xl shadow-lg shadow-black/50 bg-linear-to-r from-[#0a5e6b]/70 backdrop-blur-sm via-[#073338]/90 to-[#000000]/90">
 
-                <div className="mx-auto flex items-center justify-between gap-3 px-3 py-2.5 md:px-4">
+                <div className="mx-auto flex items-center justify-between gap-3 px-4 py-2.5 md:px-4">
 
                     {/* Mobile Menu */}
-                    <div className="md:hidden flex items-center gap-2">
+                    <div className="md:hidden flex items-center">
                         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     className="
-                                h-10 w-10
+                                
                                 rounded-full
                                 text-white/80
                                 hover:bg-white/10
                                 hover:text-white
+                                 p-0
+                                 aspect-square 
+                                justify-start
                             "
                                 >
                                     <Menu className="size-5" />
@@ -355,7 +358,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                             height={36}
                             loading="eager"
                             fill={false}
-                            className="rounded-full bg-red-100 object-contain object-center mr-6"
+                            className="rounded-full bg-red-100 object-contain object-center md:mr-6"
                         />
 
                         <span className="hidden md:block">
