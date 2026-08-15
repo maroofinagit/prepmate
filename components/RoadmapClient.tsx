@@ -308,7 +308,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
         : localRoadmap.phases;
 
     return (
-        <div className=" px-6 mt-28 md:mt-36 pb-12 space-y-10 max-w-6xl mx-auto relative">
+        <div className=" px-6 pt-28 md:pt-28 pb-12 space-y-10 max-w-6xl mx-auto relative">
 
             <div className="fixed bottom-0 right-6 z-50">
                 <a

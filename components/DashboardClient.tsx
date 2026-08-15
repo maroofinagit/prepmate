@@ -570,7 +570,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     </div>
                 </div>
             )}
-            <div className="space-y-8 md:pt-36 py-12 pt-30 px-6 md:px-12">
+            <div className="space-y-8 md:pt-28 py-12 pt-30 px-6 md:px-12">
 
                 <VisitMobile />
 

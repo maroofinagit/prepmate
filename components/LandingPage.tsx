@@ -103,7 +103,7 @@ export default function LandingPage({
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: "easeOut" }}
                     viewport={{ once: false, amount: 0.3 }}
-                    className="relative max-w-7xl mx-auto px-12 py-32 lg:pt-36  lg:pb-24"
+                    className="relative max-w-7xl mx-auto px-12 py-32 lg:pt-32 lg:pb-24"
                 >
 
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
