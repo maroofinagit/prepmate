@@ -92,6 +92,7 @@ export type UserExamCountAggregateOutputType = {
   created_at: number
   roadmap_status: number
   failure_reason: number
+  roadmapJson: number
   _all: number
 }
 
@@ -162,6 +163,7 @@ export type UserExamCountAggregateInputType = {
   created_at?: true
   roadmap_status?: true
   failure_reason?: true
+  roadmapJson?: true
   _all?: true
 }
 
@@ -265,6 +267,7 @@ export type UserExamGroupByOutputType = {
   created_at: Date
   roadmap_status: $Enums.RoadmapStatus
   failure_reason: string | null
+  roadmapJson: runtime.JsonValue | null
   _count: UserExamCountAggregateOutputType | null
   _avg: UserExamAvgAggregateOutputType | null
   _sum: UserExamSumAggregateOutputType | null
@@ -304,6 +307,7 @@ export type UserExamWhereInput = {
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
   failure_reason?: Prisma.StringNullableFilter<"UserExam"> | string | null
+  roadmapJson?: Prisma.JsonNullableFilter<"UserExam">
   roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
   exam?: Prisma.XOR<Prisma.ExamScalarRelationFilter, Prisma.ExamWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -325,6 +329,7 @@ export type UserExamOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
   failure_reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  roadmapJson?: Prisma.SortOrderInput | Prisma.SortOrder
   roadmap?: Prisma.RoadmapOrderByWithRelationInput
   exam?: Prisma.ExamOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
@@ -349,6 +354,7 @@ export type UserExamWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
   failure_reason?: Prisma.StringNullableFilter<"UserExam"> | string | null
+  roadmapJson?: Prisma.JsonNullableFilter<"UserExam">
   roadmap?: Prisma.XOR<Prisma.RoadmapNullableScalarRelationFilter, Prisma.RoadmapWhereInput> | null
   exam?: Prisma.XOR<Prisma.ExamScalarRelationFilter, Prisma.ExamWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -370,6 +376,7 @@ export type UserExamOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
   failure_reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  roadmapJson?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserExamCountOrderByAggregateInput
   _avg?: Prisma.UserExamAvgOrderByAggregateInput
   _max?: Prisma.UserExamMaxOrderByAggregateInput
@@ -394,6 +401,7 @@ export type UserExamScalarWhereWithAggregatesInput = {
   created_at?: Prisma.DateTimeWithAggregatesFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusWithAggregatesFilter<"UserExam"> | $Enums.RoadmapStatus
   failure_reason?: Prisma.StringNullableWithAggregatesFilter<"UserExam"> | string | null
+  roadmapJson?: Prisma.JsonNullableWithAggregatesFilter<"UserExam">
 }
 
 export type UserExamCreateInput = {
@@ -407,6 +415,7 @@ export type UserExamCreateInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
   user: Prisma.UserCreateNestedOneWithoutExamsInput
@@ -428,6 +437,7 @@ export type UserExamUncheckedCreateInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserExamInput
@@ -444,6 +454,7 @@ export type UserExamUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutExamsNestedInput
@@ -465,6 +476,7 @@ export type UserExamUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserExamNestedInput
@@ -484,6 +496,7 @@ export type UserExamCreateManyInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamUpdateManyMutationInput = {
@@ -497,6 +510,7 @@ export type UserExamUpdateManyMutationInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamUncheckedUpdateManyInput = {
@@ -513,6 +527,7 @@ export type UserExamUncheckedUpdateManyInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamListRelationFilter = {
@@ -539,6 +554,7 @@ export type UserExamCountOrderByAggregateInput = {
   created_at?: Prisma.SortOrder
   roadmap_status?: Prisma.SortOrder
   failure_reason?: Prisma.SortOrder
+  roadmapJson?: Prisma.SortOrder
 }
 
 export type UserExamAvgOrderByAggregateInput = {
@@ -754,6 +770,7 @@ export type UserExamCreateWithoutUserInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
   tests?: Prisma.TestCreateNestedManyWithoutUserExamInput
@@ -773,6 +790,7 @@ export type UserExamUncheckedCreateWithoutUserInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserExamInput
@@ -821,6 +839,7 @@ export type UserExamScalarWhereInput = {
   created_at?: Prisma.DateTimeFilter<"UserExam"> | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFilter<"UserExam"> | $Enums.RoadmapStatus
   failure_reason?: Prisma.StringNullableFilter<"UserExam"> | string | null
+  roadmapJson?: Prisma.JsonNullableFilter<"UserExam">
 }
 
 export type UserExamCreateWithoutExamInput = {
@@ -834,6 +853,7 @@ export type UserExamCreateWithoutExamInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
   user: Prisma.UserCreateNestedOneWithoutExamsInput
   tests?: Prisma.TestCreateNestedManyWithoutUserExamInput
@@ -853,6 +873,7 @@ export type UserExamUncheckedCreateWithoutExamInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserExamInput
@@ -895,6 +916,7 @@ export type UserExamCreateWithoutRoadmapInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
   user: Prisma.UserCreateNestedOneWithoutExamsInput
   tests?: Prisma.TestCreateNestedManyWithoutUserExamInput
@@ -915,6 +937,7 @@ export type UserExamUncheckedCreateWithoutRoadmapInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserExamInput
 }
@@ -946,6 +969,7 @@ export type UserExamUpdateWithoutRoadmapInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutExamsNestedInput
   tests?: Prisma.TestUpdateManyWithoutUserExamNestedInput
@@ -966,6 +990,7 @@ export type UserExamUncheckedUpdateWithoutRoadmapInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserExamNestedInput
 }
@@ -981,6 +1006,7 @@ export type UserExamCreateWithoutTestsInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
   user: Prisma.UserCreateNestedOneWithoutExamsInput
@@ -1001,6 +1027,7 @@ export type UserExamUncheckedCreateWithoutTestsInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserExamInput
 }
@@ -1032,6 +1059,7 @@ export type UserExamUpdateWithoutTestsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutExamsNestedInput
@@ -1052,6 +1080,7 @@ export type UserExamUncheckedUpdateWithoutTestsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserExamNestedInput
 }
@@ -1067,6 +1096,7 @@ export type UserExamCreateWithoutNotificationsInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapCreateNestedOneWithoutUserExamInput
   exam: Prisma.ExamCreateNestedOneWithoutUserExamsInput
   user: Prisma.UserCreateNestedOneWithoutExamsInput
@@ -1087,6 +1117,7 @@ export type UserExamUncheckedCreateWithoutNotificationsInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedCreateNestedOneWithoutUserExamInput
   tests?: Prisma.TestUncheckedCreateNestedManyWithoutUserExamInput
 }
@@ -1118,6 +1149,7 @@ export type UserExamUpdateWithoutNotificationsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutExamsNestedInput
@@ -1138,6 +1170,7 @@ export type UserExamUncheckedUpdateWithoutNotificationsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
 }
@@ -1155,6 +1188,7 @@ export type UserExamCreateManyUserInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamUpdateWithoutUserInput = {
@@ -1168,6 +1202,7 @@ export type UserExamUpdateWithoutUserInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
   exam?: Prisma.ExamUpdateOneRequiredWithoutUserExamsNestedInput
   tests?: Prisma.TestUpdateManyWithoutUserExamNestedInput
@@ -1187,6 +1222,7 @@ export type UserExamUncheckedUpdateWithoutUserInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserExamNestedInput
@@ -1205,6 +1241,7 @@ export type UserExamUncheckedUpdateManyWithoutUserInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamCreateManyExamInput = {
@@ -1220,6 +1257,7 @@ export type UserExamCreateManyExamInput = {
   created_at?: Date | string
   roadmap_status?: $Enums.RoadmapStatus
   failure_reason?: string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserExamUpdateWithoutExamInput = {
@@ -1233,6 +1271,7 @@ export type UserExamUpdateWithoutExamInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUpdateOneWithoutUserExamNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutExamsNestedInput
   tests?: Prisma.TestUpdateManyWithoutUserExamNestedInput
@@ -1252,6 +1291,7 @@ export type UserExamUncheckedUpdateWithoutExamInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   roadmap?: Prisma.RoadmapUncheckedUpdateOneWithoutUserExamNestedInput
   tests?: Prisma.TestUncheckedUpdateManyWithoutUserExamNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserExamNestedInput
@@ -1270,6 +1310,7 @@ export type UserExamUncheckedUpdateManyWithoutExamInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roadmap_status?: Prisma.EnumRoadmapStatusFieldUpdateOperationsInput | $Enums.RoadmapStatus
   failure_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roadmapJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -1326,6 +1367,7 @@ export type UserExamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   created_at?: boolean
   roadmap_status?: boolean
   failure_reason?: boolean
+  roadmapJson?: boolean
   roadmap?: boolean | Prisma.UserExam$roadmapArgs<ExtArgs>
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1348,6 +1390,7 @@ export type UserExamSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   created_at?: boolean
   roadmap_status?: boolean
   failure_reason?: boolean
+  roadmapJson?: boolean
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userExam"]>
@@ -1366,6 +1409,7 @@ export type UserExamSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   created_at?: boolean
   roadmap_status?: boolean
   failure_reason?: boolean
+  roadmapJson?: boolean
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userExam"]>
@@ -1384,9 +1428,10 @@ export type UserExamSelectScalar = {
   created_at?: boolean
   roadmap_status?: boolean
   failure_reason?: boolean
+  roadmapJson?: boolean
 }
 
-export type UserExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "exam_id" | "start_date" | "end_date" | "progress_percent" | "performanceScore" | "highestScore" | "lowestScore" | "lastTestScore" | "created_at" | "roadmap_status" | "failure_reason", ExtArgs["result"]["userExam"]>
+export type UserExamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "exam_id" | "start_date" | "end_date" | "progress_percent" | "performanceScore" | "highestScore" | "lowestScore" | "lastTestScore" | "created_at" | "roadmap_status" | "failure_reason" | "roadmapJson", ExtArgs["result"]["userExam"]>
 export type UserExamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roadmap?: boolean | Prisma.UserExam$roadmapArgs<ExtArgs>
   exam?: boolean | Prisma.ExamDefaultArgs<ExtArgs>
@@ -1427,6 +1472,7 @@ export type $UserExamPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     created_at: Date
     roadmap_status: $Enums.RoadmapStatus
     failure_reason: string | null
+    roadmapJson: runtime.JsonValue | null
   }, ExtArgs["result"]["userExam"]>
   composites: {}
 }
@@ -1868,6 +1914,7 @@ export interface UserExamFieldRefs {
   readonly created_at: Prisma.FieldRef<"UserExam", 'DateTime'>
   readonly roadmap_status: Prisma.FieldRef<"UserExam", 'RoadmapStatus'>
   readonly failure_reason: Prisma.FieldRef<"UserExam", 'String'>
+  readonly roadmapJson: Prisma.FieldRef<"UserExam", 'Json'>
 }
     
 

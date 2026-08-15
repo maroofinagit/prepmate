@@ -344,7 +344,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     flex shrink-0 items-center
                     text-lg
                     font-semibold
-                    tracking-widest
+                    tracking-[0.2em]
                     text-white
                 "
                     >

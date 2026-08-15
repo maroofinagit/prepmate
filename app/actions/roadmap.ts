@@ -4,7 +4,8 @@ import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
 import { updateTag } from "next/cache";
 import { RoadmapSchema } from "@/app/lib/zodSchema";
-
+import { i } from "framer-motion/client";
+import { Prisma } from "@/generated/prisma/client";
 
 const ai = new GoogleGenAI({});
 
@@ -138,29 +139,82 @@ export async function generateRoadmap(user_exam_id: number) {
             throw new Error("UserExam not found");
         }
 
+        if (userExam.roadmap_status === "completed") {
+            throw new Error("Roadmap already generated");
+        }
+
         const { exam, start_date, end_date } = userExam;
 
-        // 2️⃣ Mark generation started
-        await db.userExam.update({
-            where: { id: user_exam_id },
-            data: {
-                roadmap_status: "in_progress",
-            },
-        });
+        let roadmapData: any | null = null;
 
-        // 3️⃣ Build subjects/topics
-        const subjects = exam.subjects.map((s: any) => ({
-            name: s.name,
-            topics: s.topics.map((t: any) => ({
-                id: t.id,
-                name: t.name,
-                difficulty: t.difficulty,
-                description: t.description,
-            })),
-        }));
+        if (
+            userExam.roadmapJson &&
+            Object.keys(userExam.roadmapJson).length > 0
+        ) {
+            const parsed = RoadmapSchema.safeParse(userExam.roadmapJson);
 
-        // 4️⃣ AI Prompt
-        const prompt = `
+            if (parsed.success) {
+
+                const validTopicIds = new Set(
+                    userExam.exam.subjects.flatMap(subject =>
+                        subject.topics.map(topic => topic.id)
+                    )
+                );
+
+                let topicIdsValid = true;
+
+                for (const phase of parsed.data.phases) {
+                    for (const week of phase.weeks) {
+                        for (const task of week.tasks) {
+
+                            const hasInvalidTopic = task.topics.some(
+                                id => !validTopicIds.has(id)
+                            );
+
+                            if (hasInvalidTopic) {
+                                topicIdsValid = false;
+                                break;
+                            }
+                        }
+
+                        if (!topicIdsValid) break;
+                    }
+
+                    if (!topicIdsValid) break;
+                }
+
+
+                // Only assign it if BOTH validations passed
+                if (topicIdsValid) {
+                    roadmapData = parsed.data;
+                    console.log("✅ Using existing roadmapJson from database", userExam.roadmapJson);
+                }
+            }
+        }
+
+        if (!roadmapData) {
+
+            // 2️⃣ Mark generation started
+            await db.userExam.update({
+                where: { id: user_exam_id },
+                data: {
+                    roadmap_status: "in_progress",
+                },
+            });
+
+            // 3️⃣ Build subjects/topics
+            const subjects = exam.subjects.map((s: any) => ({
+                name: s.name,
+                topics: s.topics.map((t: any) => ({
+                    id: t.id,
+                    name: t.name,
+                    difficulty: t.difficulty,
+                    description: t.description,
+                })),
+            }));
+
+            // 4️⃣ AI Prompt
+            const prompt = `
 You are an expert academic planner.
 
 Create a personalized study roadmap for the exam "${exam.name}".
@@ -223,19 +277,50 @@ Date Constraints -
 - Every week date range must fully contain its tasks.
 - Milestone dates must fall within the roadmap duration.
 
-VERY IMPORTANT
+TOPIC ID RULES — STRICTLY FOLLOW:
 
-Every task MUST include a "topics" field that contains an array of integer topic IDs.
-The value must be an array of integers.
-Examples:
-"topics": [1, 2, 3]
-or
-"topics": [5]
+Every task MUST include a "topics" field containing an array of integer topic IDs.
 
-Never omit topics.
-Never return topic names.
-Never return topic objects.
-Return ONLY integer IDs.
+The ONLY valid topic IDs are the exact IDs explicitly provided in the "Subjects and topics" section above.
+
+You MUST NOT:
+- invent topic IDs
+- guess topic IDs
+- generate new topic IDs
+- modify or transform topic IDs
+- use sequential IDs unless they are explicitly provided
+- use topic IDs from your general knowledge
+- use topic IDs that are not present in the provided syllabus
+- use topic names instead of IDs
+- create IDs based on topic position, subject position, or array index
+
+For every task, select topic IDs ONLY from the Topic ID values provided above.
+
+Before returning the final JSON, internally verify EVERY integer inside every task's "topics" array against the provided Topic IDs.
+
+If a task cannot be associated with at least one of the provided Topic IDs, DO NOT create that task.
+
+NEVER return a topic ID that does not appear exactly in the provided Topic ID list.
+
+Example:
+
+If the provided topics contain:
+- Topic ID: 12
+- Topic ID: 18
+- Topic ID: 27
+
+Then these are valid:
+"topics": [12]
+"topics": [18, 27]
+
+These are INVALID:
+"topics": [1]
+"topics": [13]
+"topics": [99]
+
+The topic IDs are database identifiers, NOT numbers that you should infer or generate.
+
+Return ONLY the exact database topic IDs provided in the input.
 
 Return ONLY a single valid JSON object.
 
@@ -304,30 +389,60 @@ Do NOT
 
                                 `;
 
-        // 5️⃣ Generate roadmap with AI
-        const response = await generateWithFallback(prompt);
+            // 5️⃣ Generate roadmap with AI
+            const response = await generateWithFallback(prompt);
 
-        let textResponse = response.text ?? "";
+            let textResponse = response.text ?? "";
 
-        // console.log("Raw AI Response:", textResponse);
+            // Clean AI response
+            const cleanedText = textResponse
+                .trim()
+                .replace(/^```json\s */i, "")
+                .replace(/^```\s*/i, "")
+                .replace(/```$/g, "")
+                .trim();
 
-        // Clean AI response
-        const cleanedText = textResponse
-            .trim()
-            .replace(/^```json\s */i, "")
-            .replace(/^```\s*/i, "")
-            .replace(/```$/g, "")
-            .trim();
+            const resData = JSON.parse(cleanedText);
+            const parsed = RoadmapSchema.safeParse(resData);
 
-        const resData = JSON.parse(cleanedText);
-        const parsed = RoadmapSchema.safeParse(resData);
+            if (!parsed.success) {
+                console.error(parsed.error.message);
+                throw new Error("Roadmap validation failed: " + parsed.error.message);
+            }
 
-        if (!parsed.success) {
-            console.error(parsed.error.message);
-            throw new Error("Roadmap validation failed: " + parsed.error.message);
+            // Validate topic IDs
+            const validTopicIds = new Set(
+                exam.subjects.flatMap(subject =>
+                    subject.topics.map(topic => topic.id)
+                )
+            );
+
+            for (const phase of parsed.data.phases) {
+                for (const week of phase.weeks) {
+                    for (const task of week.tasks) {
+
+                        const invalidTopicIds = task.topics.filter(
+                            id => !validTopicIds.has(id)
+                        );
+
+                        if (invalidTopicIds.length > 0) {
+                            throw new Error(
+                                `Task "${task.title}" contains invalid topic IDs: ${invalidTopicIds.join(", ")}`
+                            );
+                        }
+                    }
+                }
+            }
+
+            roadmapData = parsed.data;
+
+            await db.userExam.update({
+                where: { id: user_exam_id },
+                data: {
+                    roadmapJson: roadmapData,
+                },
+            });
         }
-
-        const roadmapData = parsed.data;
 
         let roadmap;
         const maxRetries = 3;
@@ -336,13 +451,17 @@ Do NOT
             try {
                 // 6️⃣ Save everything in TRANSACTION
                 roadmap = await db.$transaction(async (tx) => {
-                    // Create roadmap
 
+                    //Delete existing tests for this user_exam_id
                     await tx.test.deleteMany({
-                        where: {
-                            userExamId: user_exam_id,
-                        },
+                        where: { userExamId: user_exam_id },
                     });
+
+                    // Delete existing roadmap, phases, weeks, tasks, milestones
+                    await tx.roadmap.deleteMany({
+                        where: { user_exam_id },
+                    });
+                    
 
                     const createdRoadmap = await tx.roadmap.create({
                         data: {
@@ -597,12 +716,12 @@ Do NOT
 
                     return createdRoadmap;
                 }, {
-                    maxWait: 10000, // 10 seconds
-                    timeout: 120000 // 2 minutes
+                    maxWait: 20000,
+                    timeout: 300000, // 5 minutes
                 });
             } catch (error: any) {
                 // Retry only transaction conflicts/deadlocks
-                if (error?.code === "P2034" && attempt < maxRetries) {
+                if (error?.code === "P2028" && attempt < maxRetries) {
                     console.warn(
                         `Transaction conflict. Retrying (${attempt}/${maxRetries})...`
                     );
@@ -623,6 +742,7 @@ Do NOT
             data: {
                 roadmap_status: "completed",
                 failure_reason: null,
+                roadmapJson: Prisma.JsonNull
             },
         });
 

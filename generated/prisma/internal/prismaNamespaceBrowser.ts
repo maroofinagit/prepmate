@@ -193,7 +193,8 @@ export const UserExamScalarFieldEnum = {
   lastTestScore: 'lastTestScore',
   created_at: 'created_at',
   roadmap_status: 'roadmap_status',
-  failure_reason: 'failure_reason'
+  failure_reason: 'failure_reason',
+  roadmapJson: 'roadmapJson'
 } as const
 
 export type UserExamScalarFieldEnum = (typeof UserExamScalarFieldEnum)[keyof typeof UserExamScalarFieldEnum]
@@ -367,6 +368,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const JsonNullValueInput = {

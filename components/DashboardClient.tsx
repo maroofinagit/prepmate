@@ -376,9 +376,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (soundEnabled) {
             playNotification();
         }
-        toast.success('Roadmap regenerated successfully. Refreshing dashboard...');
+        toast.success('Roadmap regenerated successfully. Redirecting to your updated roadmap...');
         setRegenerating(false);
-        router.refresh(); // refresh to update roadmap status and charts
+        router.replace(`/dashboard/roadmap/${selectedId}`); // redirect to the updated roadmap page
     }
 
     const handleDelete = async () => {
@@ -539,13 +539,22 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border text-center space-y-5">
 
+                        <div className="text-sm text-justify tracking-tight text-gray-500 flex flex-col gap-y-2">
+                            <span>
+                                Hey {dashboardUser?.name?.split(" ")[0] || "there"} ! Your roadmap is being carefully built and may take around <span className="font-bold whitespace-nowrap">5-7</span> minutes as its a big responsible task. The app may seem hanged but it's not, don’t worry it’s still working in the background.
+                            </span>
+                            <span>
+                                ☕️ Brew yourself a coffee, scroll for a while and let us handle the planning. We’ll let you know with a notification sound as soon as your roadmap is ready.
+                            </span>
+                        </div>
+
                         <div className="flex justify-center">
                             <div className="h-14 w-14 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
                         </div>
 
                         <div className="space-y-2">
                             <h2 className="text-2xl font-semibold text-gray-800">
-                                Generating Your Roadmap for {currentSelectedExam?.exam?.name || "the selected exam"}
+                                Regenerating Your Roadmap for {currentSelectedExam?.exam?.name || "the selected exam"}
                             </h2>
 
                             <p className="text-sm leading-relaxed text-gray-500">

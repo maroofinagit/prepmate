@@ -121,12 +121,23 @@ export default function ClientExamStart({ exam }: { exam: any }) {
         }
     }
 
+    const { name } = useUser();
+
     return (
         <>
             {
                 loading && (
                     <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-6 cursor-not-allowed">
                         <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border text-center space-y-5">
+
+                            <div className="text-sm text-justify tracking-tight text-gray-500 flex flex-col gap-y-2">
+                            <span>
+                                Hey {name?.split(" ")[0] || "there"} ! Your roadmap is being carefully built and may take around <span className="font-bold whitespace-nowrap">5-7</span> minutes as its a big responsible task. The app may seem hanged but it's not, don’t worry it’s still working in the background.
+                            </span>
+                            <span>
+                                ☕️ Brew yourself a coffee, scroll for a while and let us handle the planning. We’ll let you know with a notification sound as soon as your roadmap is ready.
+                            </span>
+                        </div>
 
                             <div className="flex justify-center">
                                 <div className="h-14 w-14 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />

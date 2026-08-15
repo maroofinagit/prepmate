@@ -126,6 +126,7 @@ model UserExam {
   exam             Exam           @relation(fields: [exam_id], references: [id], onDelete: Cascade)
   user             User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tests            Test[]
+  roadmapJson       Json?     
   notifications    Notification[]
 }
 

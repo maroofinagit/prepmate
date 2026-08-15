@@ -1985,7 +1985,8 @@ export const UserExamScalarFieldEnum = {
   lastTestScore: 'lastTestScore',
   created_at: 'created_at',
   roadmap_status: 'roadmap_status',
-  failure_reason: 'failure_reason'
+  failure_reason: 'failure_reason',
+  roadmapJson: 'roadmapJson'
 } as const
 
 export type UserExamScalarFieldEnum = (typeof UserExamScalarFieldEnum)[keyof typeof UserExamScalarFieldEnum]
@@ -2161,6 +2162,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const JsonNullValueInput = {
   JsonNull: JsonNull
 } as const
@@ -2305,20 +2314,6 @@ export type ListEnumRoadmapStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'TestType'
- */
-export type EnumTestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TestType'>
-    
-
-
-/**
- * Reference to a field of type 'TestType[]'
- */
-export type ListEnumTestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TestType[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -2329,6 +2324,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'TestType'
+ */
+export type EnumTestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TestType'>
+    
+
+
+/**
+ * Reference to a field of type 'TestType[]'
+ */
+export type ListEnumTestTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TestType[]'>
     
 
 
