@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 interface LoadingScreenProps {
     label: string | null;
@@ -163,14 +162,7 @@ function GhostCard({
 export default function LoadingClient({
     label = "Schema",
 }: LoadingScreenProps) {
-
-    const [hydrated, setHydrated] = useState(false);
-
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
-
-
+    
     return (
         <main className="relative min-h-screen overflow-hidden bg-[#f7f9fc]">
 
@@ -270,7 +262,11 @@ export default function LoadingClient({
                 px-6
             ">
                 <motion.div
-                    initial={hydrated ? { opacity: 0, scale: 0.9, y: 5 } : false}
+                    initial={{
+                        opacity: 0,
+                        scale: 0.92,
+                        y: 15,
+                    }}
                     animate={{
                         opacity: 1,
                         scale: 1,
