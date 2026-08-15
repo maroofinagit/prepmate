@@ -167,7 +167,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                     <div className="flex items-center gap-4 border-b border-white/10 px-6 py-5">
                                         <Avatar className="h-12 w-12 border border-white/10 ">
                                             <AvatarImage
-                                            className=" object-top object-cover"
+                                                className=" object-top object-cover"
                                                 src={user?.image || "/avatar.png"}
                                             />
                                             <AvatarFallback className="bg-white/10 text-white">
@@ -367,24 +367,25 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                     {isLoggedIn ? (
                         <div className="hidden md:flex items-center gap-3 tracking-wide">
 
-                            <Link
-                                href="/admin"
-                                className={`
+                            {isAdmin && (
+                                <Link
+                                    href="/admin"
+                                    className={`
         relative
         rounded-full
         px-4 py-2
         text-sm font-medium
         transition-colors duration-200
         ${pathname === "/admin"
-                                        ? "text-white"
-                                        : "text-white/70 hover:bg-white/6 hover:text-white"
-                                    }
+                                            ? "text-white"
+                                            : "text-white/70 hover:bg-white/6 hover:text-white"
+                                        }
     `}
-                            >
-                                {pathname === "/admin" && (
-                                    <motion.span
-                                        layoutId="navbar-active"
-                                        className="
+                                >
+                                    {pathname === "/admin" && (
+                                        <motion.span
+                                            layoutId="navbar-active"
+                                            className="
                 absolute
                 inset-0
                 rounded-full
@@ -392,19 +393,20 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                 border-white/30
                 bg-white/20
             "
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 420,
-                                            damping: 32,
-                                            mass: 0.8,
-                                        }}
-                                    />
-                                )}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 420,
+                                                damping: 32,
+                                                mass: 0.8,
+                                            }}
+                                        />
+                                    )}
 
-                                <span className="relative z-10">
-                                    Admin
-                                </span>
-                            </Link>
+                                    <span className="relative z-10">
+                                        Admin
+                                    </span>
+                                </Link>
+                            )}
 
                             {navLinksAuth.map((link) => {
                                 const isActive = pathname === link.href;
