@@ -52,12 +52,6 @@ export const auth = betterAuth({
         }
     },
 
-    rateLimit: {
-        max: 5,
-        window: 60,
-        enabled: true
-    },
-
     secret: process.env.BETTER_AUTH_SECRET || "",
     trustedOrigins: ["http://localhost:3000/", "http://192.168.*.*:*/**",],
 
