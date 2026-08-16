@@ -5,14 +5,15 @@ import ProfileImageUploader from "@/components/ProfilePicUpdater";
 import { useState } from "react";
 import { BellRing, CheckCircle2, GraduationCap, ShieldCheck } from "lucide-react";
 import { Button } from "./ui/button";
-import { markNotificationAsRead } from "@/app/actions/action";
+import { markNotificationAsRead, ProfileUserType } from "@/app/actions/action";
 import { toast } from "sonner";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useUser } from "@/app/context/userContext";
 import { playNotification, playError } from "@/app/lib/sound";
+import { Badge } from "./ui/badge";
 
-export default function ProfilePage({ user }: { user: any }) {
+export default function ProfilePage({ user }: { user: ProfileUserType }) {
 
     const { soundEnabled } = useUser();
     const [notifications, setNotifications] = useState(user.notifications);
@@ -69,15 +70,27 @@ export default function ProfilePage({ user }: { user: any }) {
                                 </h1>
 
                                 {user.role?.toLowerCase() === "admin" && (
-                                    <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                                    <Badge variant="default" className="bg-blue-600 text-white text-xs">
                                         Admin
-                                    </span>
+                                    </Badge>
                                 )}
+
                             </div>
 
-                            <p className="mt-2 text-sm md:text-base text-slate-600">
-                                {user.email}
-                            </p>
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-2">
+                                <p className="text-sm text-slate-500">
+                                    {user.email}
+                                </p>
+                               {user.emailVerified ? (
+                                    <Badge variant="default" className=" bg-green-600 text-white text-xs">
+                                        Email Verified
+                                    </Badge>
+                                ) : (
+                                    <Badge variant="default" className=" bg-red-600 text-white text-xs">
+                                        Email Not Verified
+                                    </Badge>
+                                )}
+                            </div>
 
                             <p className="mt-1 text-sm text-slate-500">
                                 Joined {format(new Date(user.createdAt), "dd MMM yyyy")}

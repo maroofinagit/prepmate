@@ -1127,6 +1127,68 @@ export async function getCurrentUser(userId: string) {
     }
 }
 
+export async function getProfileData(userId: string) {
+    if (!userId) {
+        console.error("❌ User ID is required to fetch profile data.");
+        return null;
+    }
+
+    try {
+
+        const user = await db.user.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                emailVerified: true,
+                role: true,
+                createdAt: true,
+
+                exams: {
+                    select: {
+                        id: true,
+                        progress_percent: true,
+                        start_date: true,
+                        end_date: true,
+
+                        exam: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+
+                notifications: {
+                    orderBy: {
+                        created_at: "desc",
+                    },
+                    take: 5,
+                    select: {
+                        id: true,
+                        message: true,
+                        created_at: true,
+                        is_read: true,
+                    },
+                },
+            },
+        });
+
+        return user;
+    } catch (error) {
+        console.error("❌ Error fetching profile data:", error);
+        return null;
+    }
+}
+
+export type ProfileUserType = NonNullable<Awaited<ReturnType<typeof getProfileData>>>;
+
+
+
 
 
 

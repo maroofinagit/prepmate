@@ -4,6 +4,7 @@ import { db } from "@/app/lib/db";
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import ProfileClient from "@/components/ProfileClient";
+import { getProfileData } from "@/app/actions/action";
 
 export default async function ProfilePage() {
 
@@ -15,22 +16,9 @@ export default async function ProfilePage() {
         redirect("/signin");
     }
 
-    const session = data.session;
+    const userId = data.user.id;
 
-    const user = await db.user.findUnique({
-        where: { id: session.userId },
-        include: {
-            exams: {
-                include: {
-                    exam: true,
-                },
-            },
-            notifications: {
-                orderBy: { created_at: "desc" },
-                take: 5,
-            },
-        },
-    });
+    const user = await getProfileData(userId);
 
     if (!user) {
         return <div className="text-center mt-20 text-gray-500 h-screen">User not found.</div>;
@@ -39,5 +27,5 @@ export default async function ProfilePage() {
     return (
         <ProfileClient user={user} />
     );
-    
+
 }
