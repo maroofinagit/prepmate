@@ -20,6 +20,11 @@ export default async function AuthenticatedLayout({
         redirect("/signin");
     }
 
+    if (data?.user.emailVerified === false) {
+        console.log("Email not verified. Redirecting to /verify-email");
+        redirect("/verify-email");
+    }
+
     const user = await getCurrentUser(data.session.userId);
 
     if (!user) {

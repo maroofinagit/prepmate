@@ -104,11 +104,11 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
 
     const handleLogout = async () => {
         await authClient.signOut();
-        router.push("/");
         setIsLoggedIn(false);
         sessionStorage.removeItem("show-login-toast");
         setSheetOpen(false);
         toast.success("Logged out successfully.", { duration: 1500 });
+        router.replace("/");
     };
 
 

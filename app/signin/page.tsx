@@ -29,6 +29,9 @@ export default function SignInPage() {
         const fetchSession = async () => {
             const { data } = await authClient.getSession();
             if (data?.session) router.push("/");
+            if (data?.user.emailVerified === false) {
+                router.push("/verify-email");
+            }
         };
         fetchSession();
     }, []);
@@ -36,8 +39,6 @@ export default function SignInPage() {
     // Email Sign-In
     const handleEmailSignIn = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-
 
         const { error } = await authClient.signIn.email(
             {
@@ -52,6 +53,10 @@ export default function SignInPage() {
                 },
                 onSuccess: () => {
                     sessionStorage.setItem("show-login-toast", "true");
+                    setLoading(false);
+                    setError("");
+                    setEmail("");
+                    setPassword("");
                     router.push("/");
                 },
                 onError: async (ctx) => {
@@ -77,6 +82,12 @@ export default function SignInPage() {
                             toast.error("Wrong password. Please try again.");
                             setLoading(false);
                         }
+                    }
+                    else if (ctx.error?.code === "EMAIL_NOT_VERIFIED") {
+                        setError("Email not verified. Please check your inbox for the verification email.");
+                        toast.error("Email not verified. Please check your inbox for the verification email.");
+                        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+                        setLoading(false);
                     }
                     else {
                         setError(ctx.error?.message || "Something went wrong.");
