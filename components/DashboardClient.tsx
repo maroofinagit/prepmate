@@ -781,9 +781,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     whitespace-nowrap
                     rounded-lg
                     px-4
-                    py-2
-                    md:text-base
-                    
+                    py-2                    
                     font-semibold
                     capitalize
                     cursor-pointer
@@ -806,7 +804,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                             )}
                         </TabsList>
 
-                        <Button className="hidden md:block bg-transparent border font-semibold text-green-700 border-green-600 hover:bg-green-800 text-sm hover:text-white hover:border-green-700 transition-colors duration-200">
+                        <Button className="hidden md:block bg-transparent cursor-pointer border font-semibold text-green-700 border-green-600 hover:bg-green-800 text-sm hover:text-white hover:border-green-700 transition-colors duration-200">
                             <Link href="/dashboard/today">
                                 See Today's Tasks
                             </Link>

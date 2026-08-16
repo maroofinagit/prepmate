@@ -319,7 +319,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                 </a>
             </div>
 
-            <div className="absolute top-0 right-0 w-80 md:block hidden">
+            <div className="absolute top-28 right-0 w-80 md:block hidden">
                 <Search
                     size={18}
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
