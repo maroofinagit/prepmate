@@ -1,14 +1,20 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import {
+    Card,
+    CardHeader,
+    CardContent,
+    CardTitle,
+    CardDescription,
+    CardFooter,
+} from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import Image from "next/image";
 import {
-
     XAxis,
     YAxis,
     BarChart,
@@ -34,12 +40,34 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog";
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { Award, BadgeCheck, BookOpen, CircleX, ClipboardCheck, Clock3, FileText, Lightbulb, Route, Sparkles, Trash2, TrendingDown, TrendingUp, TriangleAlert } from "lucide-react";
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "./ui/chart";
+import {
+    Award,
+    BadgeCheck,
+    BookOpen,
+    CircleX,
+    ClipboardCheck,
+    Clock3,
+    FileText,
+    Lightbulb,
+    Route,
+    Sparkles,
+    Trash2,
+    TrendingDown,
+    TrendingUp,
+    TriangleAlert,
+} from "lucide-react";
 import { generateRoadmap } from "@/app/actions/roadmap";
 import { Separator } from "./ui/separator";
 import { motion } from "framer-motion";
-import { format } from "date-fns"
+import { format } from "date-fns";
 import { DashboardUser, deleteUserExam } from "@/app/actions/action";
 import { Badge } from "./ui/badge";
 import { useUser } from "@/app/context/userContext";
@@ -61,13 +89,17 @@ type WeakTopic = {
     }[];
 };
 
-
-export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: DashboardUser }) {
-
+export default function DashboardAnalytics({
+    dashboardUser,
+}: {
+    dashboardUser: DashboardUser;
+}) {
     const { soundEnabled } = useUser();
     const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
-    const [selectedExam, setSelectedExam] = useState(newExams.length ? newExams[0] : null);
+    const [selectedExam, setSelectedExam] = useState(
+        newExams.length ? newExams[0] : null,
+    );
     const [regenerating, setRegenerating] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
     const [deleting, setDeleting] = useState(false);
@@ -86,10 +118,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         setSelectedExam((prev) => {
             if (!prev) return newExams[0];
 
-            return (
-                newExams.find((exam) => exam.id === prev.id) ??
-                newExams[0]
-            );
+            return newExams.find((exam) => exam.id === prev.id) ?? newExams[0];
         });
     }, [newExams]);
 
@@ -129,10 +158,11 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             (p.weeks || []).map((w: any) => ({
                 week: `W${w.week_number ?? "?"}`, // 👈 display
                 progress: Math.round(w.progress ?? 0),
-                weekNumber: typeof w.week_number === "number" ? w.week_number : Infinity, // 👈 logic
-            }))
+                weekNumber:
+                    typeof w.week_number === "number" ? w.week_number : Infinity, // 👈 logic
+            })),
         )
-        .sort((a, b) => a.weekNumber - b.weekNumber)
+        .sort((a, b) => a.weekNumber - b.weekNumber);
 
     // safe values for top cards
     const totalUserExams = newExams.length;
@@ -150,11 +180,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     const totalTests = exam?.tests?.length ?? 0;
 
-    const testsGenerated =
-        exam?.tests?.filter((t) => t.isGenerated).length ?? 0;
+    const testsGenerated = exam?.tests?.filter((t) => t.isGenerated).length ?? 0;
 
-    const testsAttempted =
-        exam?.tests?.filter((t) => t.attempt).length ?? 0;
+    const testsAttempted = exam?.tests?.filter((t) => t.attempt).length ?? 0;
 
     const testsPassed =
         exam?.tests?.filter((t) => t.attempt?.isPassed).length ?? 0;
@@ -164,19 +192,17 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
     //performance trend
     const performanceTrend =
-        exam?.tests?.filter((test: (typeof exam.tests)[number]) => test.attempt)
+        exam?.tests
+            ?.filter((test: (typeof exam.tests)[number]) => test.attempt)
             .sort(
                 (a, b) =>
-                    new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
+                    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
             )
             .map((test, index) => ({
                 test: `Test ${index + 1}`,
                 score: test.attempt!.percentage,
                 type: test.type,
             })) ?? [];
-
-
 
     const performanceChartConfig = {
         score: {
@@ -244,12 +270,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             value: Math.max(0, 100 - (selectedProgress ?? 0)),
             fill: "var(--color-remaining)",
         },
-    ]
+    ];
 
     const passRate =
-        testsAttempted > 0
-            ? Math.round((testsPassed / testsAttempted) * 100)
-            : 0;
+        testsAttempted > 0 ? Math.round((testsPassed / testsAttempted) * 100) : 0;
 
     const overallPerformanceSummary =
         performanceScore >= 85
@@ -305,23 +329,29 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
     const suggestions: string[] = [];
 
     if (selectedProgress < 50)
-        suggestions.push("Complete more roadmap tasks to build a stronger foundation.");
+        suggestions.push(
+            "Complete more roadmap tasks to build a stronger foundation.",
+        );
 
     if (testsAttempted < totalTests / 2)
-        suggestions.push("Attempt more practice tests to improve your preparation.");
+        suggestions.push(
+            "Attempt more practice tests to improve your preparation.",
+        );
 
     if (passRate < 60 && testsAttempted > 0)
-        suggestions.push("Review incorrect answers before taking the next assessment.");
+        suggestions.push(
+            "Review incorrect answers before taking the next assessment.",
+        );
 
     if (performanceScore >= 85)
-        suggestions.push("Maintain your momentum by attempting more advanced tests.");
+        suggestions.push(
+            "Maintain your momentum by attempting more advanced tests.",
+        );
 
-    if (
-        performanceScore >= 70 &&
-        passRate >= 70 &&
-        selectedProgress >= 70
-    ) {
-        suggestions.push("You're progressing well. Keep practicing consistently to reach mastery.");
+    if (performanceScore >= 70 && passRate >= 70 && selectedProgress >= 70) {
+        suggestions.push(
+            "You're progressing well. Keep practicing consistently to reach mastery.",
+        );
     }
 
     if (suggestions.length === 0) {
@@ -335,10 +365,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 `Your roadmap for ${selectedExam.exam?.name ?? "the selected exam"} is not generated yet. Please click "Regenerate Roadmap" to create your personalized study plan.`,
                 {
                     duration: 4000, // show for 4 seconds
-                }
+                },
             );
         }
-    }, [exams, selectedExam,]);
+    }, [exams, selectedExam]);
 
     const router = useRouter();
 
@@ -346,7 +376,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (!selectedId) return;
         setRegenerating(true);
         setLoadingMessage("Initializing roadmap regeneration...");
-        toast.info('Roadmap regeneration started. It may take a few moments to complete.');
+        toast.info(
+            "Roadmap regeneration started. It may take a few moments to complete.",
+        );
         await new Promise((r) => setTimeout(r, 1000));
 
         // Step 2: Generate Roadmap
@@ -355,7 +387,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             "Aligning tasks with your strategy…",
             "Calculating your weekly milestones…",
             "Creating Tests and Resources…",
-            "Almost there… sprinkling the final touches ✨"
+            "Almost there… sprinkling the final touches ✨",
         ];
 
         const loopId = startMessageLoop(loadingMessages, 5000);
@@ -365,7 +397,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             if (soundEnabled) {
                 playError();
             }
-            toast.error('Failed to regenerate roadmap. Please try again later.', {
+            toast.error("Failed to regenerate roadmap. Please try again later.", {
                 duration: 2000,
             });
             setRegenerating(false);
@@ -376,16 +408,21 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         if (soundEnabled) {
             playNotification();
         }
-        toast.success('Roadmap regenerated successfully. Redirecting to your updated roadmap...');
+        toast.success(
+            "Roadmap regenerated successfully. Redirecting to your updated roadmap...",
+        );
         setRegenerating(false);
         router.replace(`/dashboard/roadmap/${selectedId}`); // redirect to the updated roadmap page
-    }
+    };
 
     const handleDelete = async () => {
         if (!selectedId) return;
         try {
             setDeleting(true);
-            const res = await deleteUserExam(selectedId, dashboardUser?.id?.toString() ?? "");
+            const res = await deleteUserExam(
+                selectedId,
+                dashboardUser?.id?.toString() ?? "",
+            );
             if (res.success) {
                 if (soundEnabled) {
                     playNotification();
@@ -404,7 +441,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             setDltDialogOpen(false);
             setDeleting(false);
             setNewExams((prev) => prev.filter((ex) => ex.id !== selectedId));
-
         } catch (err) {
             console.error(err);
             if (soundEnabled) {
@@ -424,19 +460,14 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             return;
         }
 
-        if (
-            selectedExam &&
-            !newExams.some(ex => ex.id === selectedExam.id)
-        ) {
+        if (selectedExam && !newExams.some((ex) => ex.id === selectedExam.id)) {
             setSelectedExam(newExams[0] ?? null);
         }
     }, [newExams]);
 
-
     const getWeakTopics = (
-        exam: NonNullable<DashboardUser>["exams"][number]
+        exam: NonNullable<DashboardUser>["exams"][number],
     ): WeakTopic[] => {
-
         const TOPIC_ACCURACY_THRESHOLD = 70;
         const RECENT_TEST_COUNT = 5;
 
@@ -445,8 +476,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             .filter((test) => test.attempt)
             .sort(
                 (a, b) =>
-                    new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime()
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
             )
             .slice(0, RECENT_TEST_COUNT);
 
@@ -465,14 +495,11 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         >();
 
         for (const test of recentTests) {
-
             if (!test.attempt) continue;
 
-            const responses =
-                test.attempt.responses as Record<string, string>;
+            const responses = test.attempt.responses as Record<string, string>;
 
             for (const question of test.questions) {
-
                 const topic = question.topic;
 
                 const userAnswer = responses[String(question.id)];
@@ -499,35 +526,27 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
             }
         }
 
-        return [...topicStats.values()]
-            .map((topic) => {
-                const totalQuestions =
-                    topic.correctCount + topic.wrongCount;
+        return (
+            [...topicStats.values()]
+                .map((topic) => {
+                    const totalQuestions = topic.correctCount + topic.wrongCount;
 
-                const accuracy =
-                    totalQuestions > 0
-                        ? Math.round(
-                            (topic.correctCount / totalQuestions) * 100
-                        )
-                        : 0;
+                    const accuracy =
+                        totalQuestions > 0
+                            ? Math.round((topic.correctCount / totalQuestions) * 100)
+                            : 0;
 
-                return {
-                    ...topic,
-                    totalQuestions,
-                    accuracy,
-                };
-            })
-            // Only show topics that are currently weak
-            .filter(
-                (topic) =>
-                    topic.accuracy < TOPIC_ACCURACY_THRESHOLD
-            )
-            // Worst topics first
-            .sort(
-                (a, b) =>
-                    a.accuracy - b.accuracy ||
-                    b.wrongCount - a.wrongCount
-            );
+                    return {
+                        ...topic,
+                        totalQuestions,
+                        accuracy,
+                    };
+                })
+                // Only show topics that are currently weak
+                .filter((topic) => topic.accuracy < TOPIC_ACCURACY_THRESHOLD)
+                // Worst topics first
+                .sort((a, b) => a.accuracy - b.accuracy || b.wrongCount - a.wrongCount)
+        );
     };
 
     const weakTopics = selectedExam ? getWeakTopics(selectedExam) : [];
@@ -536,15 +555,19 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
         <>
             {regenerating && (
                 <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-6 cursor-not-allowed">
-
                     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border text-center space-y-5">
-
                         <div className="text-sm text-justify tracking-tight text-gray-500 flex flex-col gap-y-2">
                             <span>
-                                Hey {dashboardUser?.name?.split(" ")[0] || "there"} ! Your roadmap is being carefully built and may take around <span className="font-bold whitespace-nowrap">5-7</span> minutes as its a big responsible task. The app may seem hanged but it's not, don’t worry it’s still working in the background.
+                                Hey {dashboardUser?.name?.split(" ")[0] || "there"} ! Your
+                                roadmap is being carefully built and may take around{" "}
+                                <span className="font-bold whitespace-nowrap">5-7</span> minutes
+                                as its a big responsible task. The app may seem hanged but it's
+                                not, don’t worry it’s still working in the background.
                             </span>
                             <span>
-                                ☕️ Brew yourself a coffee, scroll for a while and let us handle the planning. We’ll let you know with a notification sound as soon as your roadmap is ready.
+                                ☕️ Brew yourself a coffee, scroll for a while and let us handle
+                                the planning. We’ll let you know with a notification sound as
+                                soon as your roadmap is ready.
                             </span>
                         </div>
 
@@ -554,7 +577,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                         <div className="space-y-2">
                             <h2 className="text-2xl font-semibold text-gray-800">
-                                Regenerating Your Roadmap for {currentSelectedExam?.exam?.name || "the selected exam"}
+                                Regenerating Your Roadmap for{" "}
+                                {currentSelectedExam?.exam?.name || "the selected exam"}
                             </h2>
 
                             <p className="text-sm leading-relaxed text-gray-500">
@@ -571,7 +595,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                 </div>
             )}
             <div className="space-y-8 md:pt-28 py-12 pt-30 px-6 md:px-12">
-
                 <VisitMobile />
 
                 {/* Header */}
@@ -584,10 +607,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         className="rounded-full aspect-square w-10 md:w-15 object-cover object-center"
                     />
                     <div>
-                        <h1 className="md:text-2xl tracking-wide text-xl font-bold">Welcome,<br />
-                            <span className="text-emerald-600">{dashboardUser?.name ?? "Student"}</span>
+                        <h1 className="md:text-2xl tracking-wide text-xl font-bold">
+                            Welcome,
+                            <br />
+                            <span className="text-emerald-600">
+                                {dashboardUser?.name ?? "Student"}
+                            </span>
                         </h1>
-                        <p className="text-muted-foreground mt-2 text-sm">Your Exam Analytics Dashboard</p>
+                        <p className="text-muted-foreground mt-2 text-sm">
+                            Your Exam Analytics Dashboard
+                        </p>
                     </div>
                 </div>
 
@@ -689,7 +718,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 ) : roadmapStatus === RoadmapStatus.completed ? (
                                     <Link href={`/dashboard/roadmap/${selectedId}`}>
                                         <Button className="md:hidden w-full h-full text-xs md:text-sm cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
-                                            Open <br />Roadmap
+                                            Open <br />
+                                            Roadmap
                                         </Button>
                                         <Button className="hidden md:block w-full h-full text-xs md:text-sm cursor-pointer hover:bg-green-700 hover:text-white transition-colors duration-200">
                                             Open Roadmap
@@ -755,9 +785,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                     }}
                     className="mt-6 p-4"
                 >
-
                     <div className="flex items-center w-full justify-between">
-
                         <TabsList
                             className="
         
@@ -805,16 +833,13 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                         </TabsList>
 
                         <Button className="hidden md:block bg-transparent cursor-pointer border font-semibold text-green-700 border-green-600 hover:bg-green-800 text-sm hover:text-white hover:border-green-700 transition-colors duration-200">
-                            <Link href="/dashboard/today">
-                                See Today's Tasks
-                            </Link>
+                            <Link href="/dashboard/today">See Today's Tasks</Link>
                         </Button>
                     </div>
 
                     {/* NO EXAMS */}
                     {newExams.length === 0 ? (
                         <TabsContent value="none">
-
                             {/* 📱 MOBILE (ONLY PIE) */}
                             <div className="block md:hidden mt-6">
                                 <Card>
@@ -827,7 +852,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
                                         >
                                             <PieChart>
-                                                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                                                <ChartTooltip
+                                                    content={<ChartTooltipContent hideLabel />}
+                                                />
 
                                                 <Pie
                                                     data={pieChartData}
@@ -837,8 +864,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 />
                                             </PieChart>
                                         </ChartContainer>
-                                        <p className="text-center font-semibold text-lg">0% Completed</p>
-
+                                        <p className="text-center font-semibold text-lg">
+                                            0% Completed
+                                        </p>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -846,7 +874,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                             {/* 🖥 DESKTOP (ALL EMPTY STATES) */}
                             <div className="hidden md:block">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
                                     <Card>
                                         <CardHeader>
                                             <CardTitle>Exam Progress</CardTitle>
@@ -857,7 +884,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
                                             >
                                                 <PieChart>
-                                                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                                                    <ChartTooltip
+                                                        content={<ChartTooltipContent hideLabel />}
+                                                    />
 
                                                     <Pie
                                                         data={pieChartData}
@@ -867,7 +896,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     />
                                                 </PieChart>
                                             </ChartContainer>
-                                            <p className="text-center font-semibold text-lg">0% Completed</p>
+                                            <p className="text-center font-semibold text-lg">
+                                                0% Completed
+                                            </p>
                                         </CardContent>
                                     </Card>
 
@@ -902,7 +933,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         tickLine={true}
                                                         axisLine={true}
                                                         tickMargin={8}
-
                                                     />
 
                                                     <YAxis
@@ -933,9 +963,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             opacity: 1,
                                                             stroke: "var(--color-progress-hover)",
                                                             strokeWidth: 2,
-                                                        }
-
-                                                        }
+                                                        }}
                                                     />
                                                 </BarChart>
                                             </ChartContainer>
@@ -943,7 +971,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                         <CardFooter className="flex-col items-start gap-2 text-sm">
                                             <div className="flex gap-2 leading-none font-medium">
-                                                Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
+                                                Keep pushing — steady progress wins{" "}
+                                                <TrendingUp className="h-4 w-4" />
                                             </div>
                                             <div className="leading-none text-muted-foreground">
                                                 Each phase represents your learning milestone
@@ -967,9 +996,23 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             >
                                                 <AreaChart data={weekProgressData}>
                                                     <defs>
-                                                        <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
-                                                            <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
+                                                        <linearGradient
+                                                            id="fillProgress"
+                                                            x1="0"
+                                                            y1="0"
+                                                            x2="0"
+                                                            y2="1"
+                                                        >
+                                                            <stop
+                                                                offset="5%"
+                                                                stopColor="var(--color-progress)"
+                                                                stopOpacity={0.8}
+                                                            />
+                                                            <stop
+                                                                offset="95%"
+                                                                stopColor="var(--color-progress)"
+                                                                stopOpacity={0.1}
+                                                            />
                                                         </linearGradient>
                                                     </defs>
 
@@ -1042,7 +1085,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         tickLine={true}
                                                         axisLine={true}
                                                         tickMargin={8}
-
                                                     />
 
                                                     <YAxis
@@ -1063,16 +1105,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         }
                                                     />
 
-                                                    <Bar
-                                                        dataKey="achieved"
-                                                        fill="#22c55e"
-                                                        radius={8}
-                                                    />
-                                                    <Bar
-                                                        dataKey="pending"
-                                                        fill="#e5e7eb"
-                                                        radius={8}
-                                                    />
+                                                    <Bar dataKey="achieved" fill="#22c55e" radius={8} />
+                                                    <Bar dataKey="pending" fill="#e5e7eb" radius={8} />
                                                 </BarChart>
                                             </ChartContainer>
                                         </CardContent>
@@ -1080,14 +1114,14 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                 </div>
 
                                 <h2 className="text-xl font-bold mt-10 mb-4">Milestones</h2>
-                                <div className="text-sm text-muted-foreground">No milestones yet.</div>
+                                <div className="text-sm text-muted-foreground">
+                                    No milestones yet.
+                                </div>
                             </div>
-
                         </TabsContent>
                     ) : (
                         newExams.map((ex) => (
                             <TabsContent key={ex.id} value={String(ex.id)}>
-
                                 {/* 📱 MOBILE */}
                                 <div className="block md:hidden mt-6 ">
                                     <Card>
@@ -1100,7 +1134,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
                                             >
                                                 <PieChart>
-                                                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                                                    <ChartTooltip
+                                                        content={<ChartTooltipContent hideLabel />}
+                                                    />
 
                                                     <Pie
                                                         data={pieChartData}
@@ -1114,7 +1150,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             <p className="text-center font-semibold ">
                                                 {ex.progress_percent ?? 0}% Completed
                                             </p>
-
                                         </CardContent>
                                         <CardFooter className="flex-col items-start gap-4 text-xs">
                                             <div className="flex gap-2 leading-none font-medium">
@@ -1126,7 +1161,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 <TrendingUp className="h-4 w-4" />
                                             </div>
                                             <div className="leading-none text-muted-foreground">
-                                                {(ex.progress_percent ?? 0)}% of your exam journey is complete
+                                                {ex.progress_percent ?? 0}% of your exam journey is
+                                                complete
                                             </div>
                                         </CardFooter>
                                     </Card>
@@ -1161,7 +1197,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         tickLine={true}
                                                         axisLine={true}
                                                         tickMargin={8}
-
                                                     />
 
                                                     <YAxis
@@ -1192,16 +1227,15 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             opacity: 1,
                                                             stroke: "#16a34a",
                                                             strokeWidth: 2,
-                                                        }
-
-                                                        }
+                                                        }}
                                                     />
                                                 </BarChart>
                                             </ChartContainer>
                                         </CardContent>
                                         <CardFooter className="flex-col items-start gap-4 text-xs">
                                             <div className="flex gap-2 leading-none font-medium">
-                                                Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
+                                                Your weekly effort is shaping your progress{" "}
+                                                <TrendingUp className="h-4 w-4" />
                                             </div>
                                             <div className="leading-none text-muted-foreground">
                                                 Track how consistently you’re improving week by week
@@ -1212,9 +1246,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                 {/* 🖥 DESKTOP */}
                                 <div className="hidden md:block">
-
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
                                         {/* Pie */}
                                         <motion.div
                                             className="h-full"
@@ -1225,7 +1257,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         >
                                             <Card className="h-full">
                                                 <CardHeader>
-                                                    <CardTitle>{currentSelectedExam?.exam.name} Exam Progress</CardTitle>
+                                                    <CardTitle>
+                                                        {currentSelectedExam?.exam.name} Exam Progress
+                                                    </CardTitle>
                                                 </CardHeader>
                                                 <CardContent>
                                                     <ChartContainer
@@ -1233,7 +1267,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         className="mx-auto aspect-square max-h-62.5 pb-0 [&_.recharts-pie-label-text]:fill-foreground"
                                                     >
                                                         <PieChart>
-                                                            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                                                            <ChartTooltip
+                                                                content={<ChartTooltipContent hideLabel />}
+                                                            />
 
                                                             <Pie
                                                                 data={pieChartData}
@@ -1257,7 +1293,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         <TrendingUp className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
-                                                        {(ex.progress_percent ?? 0)}% of your exam journey is complete
+                                                        {ex.progress_percent ?? 0}% of your exam journey is
+                                                        complete
                                                     </div>
                                                 </CardFooter>
                                             </Card>
@@ -1271,11 +1308,12 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.45, delay: 0.5 }}
                                         >
-
                                             <Card className="h-full">
                                                 <CardHeader>
                                                     <CardTitle>Phase Progress</CardTitle>
-                                                    <CardDescription>Progress across all phases</CardDescription>
+                                                    <CardDescription>
+                                                        Progress across all phases
+                                                    </CardDescription>
                                                 </CardHeader>
 
                                                 <CardContent>
@@ -1303,7 +1341,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                 tickLine={true}
                                                                 axisLine={true}
                                                                 tickMargin={8}
-
                                                             />
 
                                                             <YAxis
@@ -1319,7 +1356,9 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                     <ChartTooltipContent
                                                                         className="w-37.5"
                                                                         nameKey="progress"
-                                                                        labelFormatter={(value) => `Phase: ${value}`}
+                                                                        labelFormatter={(value) =>
+                                                                            `Phase: ${value}`
+                                                                        }
                                                                         formatter={(value) => `${value}% completed`}
                                                                     />
                                                                 }
@@ -1334,9 +1373,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                     opacity: 1,
                                                                     stroke: "#16a34a",
                                                                     strokeWidth: 2,
-                                                                }
-
-                                                                }
+                                                                }}
                                                             />
                                                         </BarChart>
                                                     </ChartContainer>
@@ -1344,7 +1381,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                                 <CardFooter className="flex-col items-start gap-2 text-sm">
                                                     <div className="flex gap-2 leading-none font-medium">
-                                                        Keep pushing — steady progress wins <TrendingUp className="h-4 w-4" />
+                                                        Keep pushing — steady progress wins{" "}
+                                                        <TrendingUp className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
                                                         Each phase represents your learning milestone
@@ -1352,7 +1390,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </CardFooter>
                                             </Card>
                                         </motion.div>
-
 
                                         {/* Weekly area chart */}
                                         <motion.div
@@ -1362,7 +1399,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.45, delay: 0.5 }}
                                         >
-
                                             <Card className="col-span-2 h-full">
                                                 <CardHeader>
                                                     <CardTitle>Weekly Progress</CardTitle>
@@ -1379,9 +1415,23 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     >
                                                         <AreaChart data={weekProgressData}>
                                                             <defs>
-                                                                <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
-                                                                    <stop offset="5%" stopColor="var(--color-progress)" stopOpacity={0.8} />
-                                                                    <stop offset="95%" stopColor="var(--color-progress)" stopOpacity={0.1} />
+                                                                <linearGradient
+                                                                    id="fillProgress"
+                                                                    x1="0"
+                                                                    y1="0"
+                                                                    x2="0"
+                                                                    y2="1"
+                                                                >
+                                                                    <stop
+                                                                        offset="5%"
+                                                                        stopColor="var(--color-progress)"
+                                                                        stopOpacity={0.8}
+                                                                    />
+                                                                    <stop
+                                                                        offset="95%"
+                                                                        stopColor="var(--color-progress)"
+                                                                        stopOpacity={0.1}
+                                                                    />
                                                                 </linearGradient>
                                                             </defs>
 
@@ -1403,10 +1453,13 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                                             <ChartTooltip
                                                                 cursor={true}
-                                                                content={<ChartTooltipContent
-                                                                    indicator="dot"
-                                                                    labelFormatter={(value) => `Week: ${value.replace("W", "")}`}
-                                                                />
+                                                                content={
+                                                                    <ChartTooltipContent
+                                                                        indicator="dot"
+                                                                        labelFormatter={(value) =>
+                                                                            `Week: ${value.replace("W", "")}`
+                                                                        }
+                                                                    />
                                                                 }
                                                             />
                                                             <ChartLegend content={<ChartLegendContent />} />
@@ -1422,7 +1475,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </CardContent>
                                                 <CardFooter className="flex-col items-start gap-2 text-sm">
                                                     <div className="flex gap-2 leading-none font-medium">
-                                                        Your weekly effort is shaping your progress <TrendingUp className="h-4 w-4" />
+                                                        Your weekly effort is shaping your progress{" "}
+                                                        <TrendingUp className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
                                                         Track how consistently you’re improving week by week
@@ -1432,6 +1486,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </motion.div>
 
                                         {/* Milestones Cards */}
+
                                         <motion.div
                                             className="h-full col-span-3"
                                             initial={{ opacity: 0, y: 25 }}
@@ -1440,10 +1495,11 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             transition={{ duration: 0.45, delay: 0.3 }}
                                         >
                                             <Card className="h-full col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 p-6">
-
                                                 <CardHeader className="col-span-3">
                                                     <CardTitle>Milestones</CardTitle>
-                                                    <CardDescription>Track your key achievements</CardDescription>
+                                                    <CardDescription>
+                                                        Track your key achievements
+                                                    </CardDescription>
                                                 </CardHeader>
 
                                                 {milestones.map((m: any) => {
@@ -1452,81 +1508,123 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     return (
                                                         <Card
                                                             key={m.id}
-                                                            className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-[1.5px] ${isDone
-                                                                ? "border-green-600 bg-green-50"
-                                                                : "border-gray-300 bg-white"
-                                                                }`}
+                                                            className={`
+        group relative overflow-hidden border
+        transition-all duration-300
+        hover:-translate-y-1 hover:shadow-xl
+        ${isDone
+                                                                    ? "border-green-200 bg-linear-to-br from-green-50 via-white to-emerald-50/50"
+                                                                    : "border-gray-200 bg-linear-to-br from-white via-white to-gray-50"
+                                                                }
+    `}
                                                         >
 
-                                                            <CardHeader className="pb-2">
-                                                                <CardTitle className="text-base flex items-center justify-between">
-                                                                    <span className="line-clamp-1">{m.name}</span>
 
-                                                                    {/* Emoji Badge */}
-                                                                    <span className="text-lg">
-                                                                        {isDone ? "🏆" : "🎯"}
-                                                                    </span>
-                                                                </CardTitle>
+                                                            <CardHeader className=" pl-5">
+                                                                <div className="flex items-start justify-between gap-3">
+                                                                    <div className="min-w-0 flex flex-col gap-3 ">
+
+                                                                        <CardTitle className="line-clamp-1 text-base font-semibold tracking-tight">
+                                                                            {m.name}
+                                                                        </CardTitle>
+
+
+                                                                        {/* Status Badge */}
+                                                                        <Badge className={`
+                                                                        text-xs font-medium
+                                                                        ${isDone ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}
+                                                                    `}>
+                                                                            {isDone ? "Completed" : "In Progress"}
+                                                                        </Badge>
+
+                                                                    </div>
+
+                                                                    {/* Status Icon */}
+                                                                    <div
+                                                                    >
+                                                                        {isDone ? "✓" : "⏳"}
+                                                                    </div>
+                                                                </div>
                                                             </CardHeader>
 
-                                                            <CardContent className="space-y-2">
-                                                                {/* Status */}
-                                                                <div className="flex items-center gap-2 text-sm">
-                                                                    <span className="text-lg">
-                                                                        {isDone ? "✅" : "⏳"}
-                                                                    </span>
-
-                                                                    <span
-                                                                        className={`font-medium ${isDone ? "text-green-700" : "text-gray-600"
-                                                                            }`}
-                                                                    >
-                                                                        {isDone ? "Completed" : "In Progress"}
-                                                                    </span>
-                                                                </div>
-
+                                                            <CardContent className="space-y-4 pl-5">
                                                                 {/* Goal */}
                                                                 {m.goal && (
-                                                                    <p className="text-sm text-muted-foreground line-clamp-2">
-                                                                        {m.goal}
-                                                                    </p>
+                                                                    <div>
+                                                                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                                                            Goal :
+                                                                        </p>
+
+                                                                        <p className="line-clamp-2 text-sm leading-relaxed">
+                                                                            {m.goal}
+                                                                        </p>
+                                                                    </div>
                                                                 )}
 
-                                                                {/* Date */}
-                                                                {m.target_date && (
-                                                                    <p className="text-xs text-muted-foreground">
-                                                                        📅 <span className=" ml-2">{format(new Date(m.target_date), "MMM dd, yyyy")}</span>
-                                                                    </p>
-                                                                )}
+                                                                {/* Divider */}
+                                                                <div className="h-px bg-border/60" />
+
+                                                                {/* Footer */}
+                                                                <div className="flex items-center justify-between gap-3">
+                                                                    {/* Target Date */}
+                                                                    {m.target_date ? (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div className="mr-2">
+                                                                                📅
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                                                                                    Target date :
+                                                                                </p>
+
+                                                                                <p className="text-xs font-semibold text-foreground">
+                                                                                    {format(
+                                                                                        new Date(m.target_date),
+                                                                                        "MMM dd, yyyy",
+                                                                                    )}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <span className="text-xs text-muted-foreground">
+                                                                            No target date
+                                                                        </span>
+                                                                    )}
+
+                                                                    {/* Meta */}
+                                                                    <span>
+                                                                        🏹
+                                                                    </span>
+
+                                                                </div>
                                                             </CardContent>
-
-
                                                         </Card>
                                                     );
-
                                                 })}
 
                                                 <CardFooter className="col-span-3 flex-col items-start gap-2 mt-4 text-sm">
                                                     <div className="flex gap-2 leading-none font-medium">
-                                                        Milestones are your stepping stones to success <Sparkles className="h-4 w-4" />
+                                                        Milestones are your stepping stones to success{" "}
+                                                        <Sparkles className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
-                                                        Celebrate each achievement as you progress through your exam journey
+                                                        Celebrate each achievement as you progress through
+                                                        your exam journey
                                                     </div>
                                                 </CardFooter>
-
                                             </Card>
                                         </motion.div>
-
-
                                     </div>
 
                                     {/* Performance Cards */}
 
-                                    <h1 className="text-2xl font-bold mt-10 mb-6">Performance Overview</h1>
+                                    <h1 className="text-2xl font-bold mt-10 mb-6">
+                                        Performance Overview
+                                    </h1>
 
                                     {/* Performance cards 1 */}
                                     <div className="grid gap-6 md:grid-cols-4">
-
                                         <motion.div
                                             initial={{ opacity: 0, y: 25 }}
                                             whileInView={{ opacity: 1, y: 0 }}
@@ -1539,9 +1637,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         <CardTitle className="mb-2 font-semibold">
                                                             Performance Score
                                                         </CardTitle>
-                                                        <CardDescription>
-                                                            Overall readiness
-                                                        </CardDescription>
+                                                        <CardDescription>Overall readiness</CardDescription>
                                                     </div>
 
                                                     <div className="rounded-lg bg-emerald-100 p-2 dark:bg-emerald-950">
@@ -1662,12 +1758,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </CardContent>
                                             </Card>
                                         </motion.div>
-
                                     </div>
 
                                     {/* Performance cards 2 */}
                                     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mt-6">
-
                                         <motion.div
                                             initial={{ opacity: 0, y: 25 }}
                                             whileInView={{ opacity: 1, y: 0 }}
@@ -1675,7 +1769,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             transition={{ duration: 0.2, delay: 0.5 }}
                                         >
                                             <Card className="h-full">
-
                                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                                     <div>
                                                         <CardTitle className="mb-2 font-semibold">
@@ -1710,7 +1803,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             transition={{ duration: 0.2, delay: 0.7 }}
                                         >
                                             <Card className="h-full">
-
                                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                                     <div>
                                                         <CardTitle className="mb-2 font-semibold">
@@ -1774,7 +1866,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     </p>
                                                 </CardContent>
                                             </Card>
-
                                         </motion.div>
 
                                         <motion.div
@@ -1789,9 +1880,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         <CardTitle className="mb-2 font-semibold">
                                                             Failed
                                                         </CardTitle>
-                                                        <CardDescription>
-                                                            Tests to improve
-                                                        </CardDescription>
+                                                        <CardDescription>Tests to improve</CardDescription>
                                                     </div>
 
                                                     <div className="rounded-lg bg-red-100 p-2 dark:bg-red-950">
@@ -1816,7 +1905,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
 
                                     {/* Performance Charts */}
                                     <div className="grid gap-6 md:grid-cols-2 mt-6">
-
                                         <motion.div
                                             initial={{ opacity: 0, x: -50 }}
                                             whileInView={{ opacity: 1, x: 0 }}
@@ -1838,7 +1926,11 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     >
                                                         <LineChart
                                                             accessibilityLayer
-                                                            data={performanceTrend.length > 0 ? performanceTrend : [{ test: "No Data", score: 0, type: "N/A" }]}
+                                                            data={
+                                                                performanceTrend.length > 0
+                                                                    ? performanceTrend
+                                                                    : [{ test: "No Data", score: 0, type: "N/A" }]
+                                                            }
                                                         >
                                                             <CartesianGrid vertical={true} />
 
@@ -1892,7 +1984,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 </CardContent>
                                                 <CardFooter className="flex-col items-start gap-2 text-sm">
                                                     <div className="flex gap-2 leading-none font-medium">
-                                                        Your performance trend over time <TrendingUp className="h-4 w-4" />
+                                                        Your performance trend over time{" "}
+                                                        <TrendingUp className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
                                                         Track your score progression across all tests
@@ -1915,7 +2008,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         Your overall test performance distribution
                                                     </CardDescription>
                                                 </CardHeader>
-
 
                                                 <CardContent>
                                                     <ChartContainer
@@ -1941,7 +2033,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     <p className="text-center text-lg font-semibold">
                                                         {testsAttempted > 0
                                                             ? `${Math.round((testsPassed / testsAttempted) * 100)}%`
-                                                            : "0%"} Passing Rate
+                                                            : "0%"}{" "}
+                                                        Passing Rate
                                                     </p>
                                                 </CardContent>
 
@@ -1955,7 +2048,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         <TrendingUp className="h-4 w-4" />
                                                     </div>
                                                     <div className="leading-none text-muted-foreground">
-                                                        {(pfPieChartData[0]?.value ?? 0)}% of your exam journey is complete
+                                                        {pfPieChartData[0]?.value ?? 0}% of your exam
+                                                        journey is complete
                                                     </div>
                                                 </CardFooter>
                                             </Card>
@@ -1983,16 +2077,19 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                 No Tests have been attempted yet.
                                                             </p>
                                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                                Start attempting tests to identify areas for improvement.
+                                                                Start attempting tests to identify areas for
+                                                                improvement.
                                                             </p>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <p className="text-sm font-medium">
-                                                                Great job! You haven't answered any questions incorrectly yet.
+                                                                Great job! You haven't answered any questions
+                                                                incorrectly yet.
                                                             </p>
                                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                                Great job! You haven't answered any questions incorrectly yet.
+                                                                Great job! You haven't answered any questions
+                                                                incorrectly yet.
                                                             </p>
                                                         </>
                                                     )}
@@ -2006,17 +2103,20 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         >
                                                             <div className="space-y-4">
                                                                 <div className="flex items-center gap-6">
-                                                                    <h4 className="font-medium">
-                                                                        {topic.name}
-                                                                    </h4>
+                                                                    <h4 className="font-medium">{topic.name}</h4>
 
                                                                     <div className="flex items-center gap-2">
-
-                                                                        <Badge variant="destructive" className="text-[10px] font-medium px-2 py-1">
+                                                                        <Badge
+                                                                            variant="destructive"
+                                                                            className="text-[10px] font-medium px-2 py-1"
+                                                                        >
                                                                             {topic.accuracy}% Accuracy
                                                                         </Badge>
 
-                                                                        <Badge variant="outline" className="text-[10px] font-normal px-2 py-1">
+                                                                        <Badge
+                                                                            variant="outline"
+                                                                            className="text-[10px] font-normal px-2 py-1"
+                                                                        >
                                                                             {topic.wrongCount} wrong
                                                                         </Badge>
                                                                     </div>
@@ -2025,7 +2125,10 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                                 <span className="text-sm font-medium text-muted-foreground">
                                                                     From Task :
                                                                     {topic.tasks.map((task, index) => (
-                                                                        <span className=" font-normal" key={task.id}>
+                                                                        <span
+                                                                            className=" font-normal"
+                                                                            key={task.id}
+                                                                        >
                                                                             {" " + task.title}
                                                                         </span>
                                                                     ))}
@@ -2037,13 +2140,16 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                             )}
                                         </CardContent>
                                         <CardFooter className="flex items-center font-medium text-sm text-muted-foreground">
-                                            💡 These aren't permanent. Keep practicing, take more tests, and watch your weak topics improve or disappear.
+                                            💡 These aren't permanent. Keep practicing, take more
+                                            tests, and watch your weak topics improve or disappear.
                                         </CardFooter>
                                     </Card>
 
                                     {/* Performance Summary */}
 
-                                    <h1 className="text-2xl font-bold mt-12 mb-6">Your {selectedExam?.exam.name} Summary</h1>
+                                    <h1 className="text-2xl font-bold mt-12 mb-6">
+                                        Your {selectedExam?.exam.name} Summary
+                                    </h1>
                                     <motion.div
                                         initial={{ opacity: 0, y: 25 }}
                                         whileInView={{ opacity: 1, y: 0 }}
@@ -2053,14 +2159,14 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         <Card className="h-full">
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
-                                                    <Sparkles className="h-5 w-5 text-emerald-600" />
-                                                    A quick overview of your current progress and performance.
+                                                    <Sparkles className="h-5 w-5 text-emerald-600" />A
+                                                    quick overview of your current progress and
+                                                    performance.
                                                 </CardTitle>
                                             </CardHeader>
 
                                             <CardContent className="space-y-6">
                                                 <div className="space-y-4">
-
                                                     <div className="flex items-start gap-3">
                                                         <TrendingUp className="mt-1 h-4 w-4 text-emerald-600" />
                                                         <div>
@@ -2123,25 +2229,24 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                 <div className="rounded-lg border bg-muted/40 p-4">
                                                     <div className="mb-3 flex items-center gap-2">
                                                         <Lightbulb className="h-4 w-4 text-yellow-500" />
-                                                        <h4 className="font-semibold">
-                                                            Suggestions
-                                                        </h4>
+                                                        <h4 className="font-semibold">Suggestions</h4>
                                                     </div>
 
                                                     <ul className="space-y-2 text-sm text-muted-foreground">
                                                         {suggestions.map((suggestion, index) => (
-                                                            <li key={index} className="flex items-start gap-2">
+                                                            <li
+                                                                key={index}
+                                                                className="flex items-start gap-2"
+                                                            >
                                                                 <span className="mt-1 text-yellow-500">💡</span>
                                                                 {suggestion}
                                                             </li>
                                                         ))}
                                                     </ul>
-
                                                 </div>
                                             </CardContent>
                                         </Card>
                                     </motion.div>
-
 
                                     {/* DELETE EXAM */}
                                     <motion.section
@@ -2152,7 +2257,6 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         className="mt-16 mx-auto border rounded-2xl border-red-200 p-6 shadow-sm transition-all duration-300 hover:shadow-xl"
                                     >
                                         <div className="flex flex-col gap-3 mb-6">
-
                                             <h2 className="text-2xl font-bold text-red-600">
                                                 Danger Zone
                                             </h2>
@@ -2163,11 +2267,8 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                         </div>
 
                                         <div className="rounded-2xl border border-red-200 bg-linear-to-r from-white to-red-50 p-6 shadow-sm transition-all duration-300 hover:shadow-xl">
-
                                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-
                                                 <div className="flex items-start gap-5">
-
                                                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
                                                         <Trash2 className="h-7 w-7 text-red-600" />
                                                     </div>
@@ -2178,15 +2279,17 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                         </h3>
 
                                                         <p className="mt-2 max-w-xl text-sm text-gray-500">
-                                                            Permanently remove this exam, its roadmap, progress,
-                                                            milestones, and associated learning data. This action
-                                                            cannot be reversed.
+                                                            Permanently remove this exam, its roadmap,
+                                                            progress, milestones, and associated learning
+                                                            data. This action cannot be reversed.
                                                         </p>
                                                     </div>
-
                                                 </div>
 
-                                                <Dialog open={dltDialogOpen} onOpenChange={setDltDialogOpen}>
+                                                <Dialog
+                                                    open={dltDialogOpen}
+                                                    onOpenChange={setDltDialogOpen}
+                                                >
                                                     <DialogTrigger asChild>
                                                         <Button
                                                             className="cursor-pointer text-base font-semibold rounded-lg bg-transparent border border-red-600 hover:bg-red-700 px-6 py-2 text-red-600 hover:text-white transition-all duration-300"
@@ -2198,9 +2301,7 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                     </DialogTrigger>
 
                                                     <DialogContent className="sm:max-w-md rounded-2xl">
-
                                                         <DialogHeader>
-
                                                             <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                                                                 <TriangleAlert className="h-8 w-8 text-red-600" />
                                                             </div>
@@ -2210,29 +2311,27 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             </DialogTitle>
 
                                                             <DialogDescription className="text-center">
-
                                                                 {deleting ? (
                                                                     <span className="flex items-center justify-center gap-2 font-medium text-black">
                                                                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
-                                                                        Deleting {exam?.exam?.name ?? "this exam"}...
+                                                                        Deleting {exam?.exam?.name ?? "this exam"}
+                                                                        ...
                                                                     </span>
                                                                 ) : (
                                                                     <>
                                                                         You are about to permanently delete{" "}
                                                                         <span className="font-semibold text-black">
                                                                             {exam?.exam?.name ?? "this exam"}
-                                                                        </span>.
+                                                                        </span>
+                                                                        .
                                                                         <br />
                                                                         This action cannot be undone.
                                                                     </>
                                                                 )}
-
                                                             </DialogDescription>
-
                                                         </DialogHeader>
 
                                                         <DialogFooter className="mt-6">
-
                                                             <DialogClose asChild>
                                                                 <Button
                                                                     variant="outline"
@@ -2251,28 +2350,22 @@ export default function DashboardAnalytics({ dashboardUser }: { dashboardUser: D
                                                             >
                                                                 {deleting ? "Deleting..." : "Yes, Delete"}
                                                             </Button>
-
                                                         </DialogFooter>
-
                                                     </DialogContent>
                                                 </Dialog>
-
                                             </div>
-
                                         </div>
                                     </motion.section>
-
                                 </div>
-
                             </TabsContent>
                         ))
                     )}
                 </Tabs>
 
                 <p className=" block md:hidden text-sm mt-4 bg-yellow-300 p-3 rounded-lg">
-                    ❗️ For full analytics, please access the dashboard on a desktop device. 📊
+                    ❗️ For full analytics, please access the dashboard on a desktop
+                    device. 📊
                 </p>
-
             </div>
         </>
     );

@@ -697,41 +697,24 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                             </DropdownMenu>
                         ) : (
                             <>
-                                <div className="relative flex items-center rounded-full">
-                                    {/* Moving active background */}
-                                    {pathname === "/signin" && (
+                                <div className="relative flex items-center gap-2 rounded-full">
+                                    {/* Active background */}
+                                    {(pathname === "/signin" || pathname === "/signup") && (
                                         <motion.div
                                             layoutId="auth-active"
                                             className="
-                    absolute
-                    inset-y-0
-                    left-0
-                    w-1/2
-                    rounded-full
-                    border border-white/30
-                    bg-white/20
-                "
-                                            transition={{
-                                                type: "spring",
-                                                stiffness: 500,
-                                                damping: 38,
-                                                mass: 0.7,
+                pointer-events-none
+                absolute
+                inset-y-0
+                left-0
+                w-20.5
+                rounded-full
+                border border-white/30
+                bg-white/20
+            "
+                                            animate={{
+                                                x: pathname === "/signin" ? 0 : 90,
                                             }}
-                                        />
-                                    )}
-
-                                    {pathname === "/signup" && (
-                                        <motion.div
-                                            layoutId="auth-active"
-                                            className="
-                    absolute
-                    inset-y-0
-                    right-0
-                    w-1/2
-                    rounded-full
-                    border border-white/30
-                    bg-white/20
-                "
                                             transition={{
                                                 type: "spring",
                                                 stiffness: 500,
@@ -745,14 +728,14 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                         asChild
                                         variant="ghost"
                                         className="
-                relative
-                z-10
-                rounded-full
-                px-5
-                text-white/80
-                hover:bg-transparent
-                hover:text-white
-            "
+            relative z-10
+            w-20.5
+            rounded-full
+            px-5
+            text-white/80
+            hover:bg-white/20
+            hover:text-white
+        "
                                     >
                                         <Link href="/signin">
                                             Sign In
@@ -763,14 +746,14 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                         asChild
                                         variant="ghost"
                                         className="
-                relative
-                z-10
-                rounded-full
-                px-5
-                text-white/80
-                hover:bg-transparent
-                hover:text-white
-            "
+            relative z-10
+            w-20.5
+            rounded-full
+            px-5
+            text-white/80
+            hover:bg-white/20
+            hover:text-white
+        "
                                     >
                                         <Link href="/signup">
                                             Sign Up

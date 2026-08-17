@@ -74,6 +74,7 @@ export default function SendEmailClient({ email, name }: { email: string; name: 
                     type="text"
                     placeholder="Enter subject"
                     value={subject}
+                    disabled={loading}
                     onChange={(e) => setSubject(e.target.value)}
                     className="w-full border p-2 rounded mb-3"
                 />
@@ -81,6 +82,7 @@ export default function SendEmailClient({ email, name }: { email: string; name: 
                 <textarea
                     placeholder="Enter email body"
                     value={body}
+                    disabled={loading}
                     onChange={(e) => setBody(e.target.value)}
                     className="w-full border p-2 rounded mb-4"
                     rows={5}
@@ -89,7 +91,7 @@ export default function SendEmailClient({ email, name }: { email: string; name: 
                 <button
                     onClick={handleSend}
                     disabled={loading}
-                    className={`w-full cursor-pointer bg-black text-white py-2 rounded hover:bg-green-700 hover:opacity-90 ${loading ? "cursor-not-allowed opacity-70 hover:opacity-70" : ""}`}
+                    className={`w-full cursor-pointer disabled:cursor-not-allowed bg-black text-white py-2 rounded hover:bg-green-700 hover:opacity-90 ${loading ? "cursor-not-allowed opacity-70 hover:opacity-70" : ""}`}
                 >
                     {loading ? "Sending..." : "Send Email"}
                 </button>
