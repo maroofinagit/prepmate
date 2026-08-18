@@ -11,12 +11,11 @@ import { error } from "next/dist/build/output/log";
 const ai = new GoogleGenAI({});
 
 const MODELS = [
-    "gemini-3.6-flash",
-    "gemini-3.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
+    "gemini-3.7-flash",        // Primary
+    "gemini-3.6-flash",        // Strong fallback
+    "gemini-3.5-flash",        // Fallback
+    "gemini-3.5-flash-lite",   // High-quota emergency fallback
+    "gemini-2.5-flash",        // Last resort
 ] as const;
 
 enum RoadmapFailureReason {
