@@ -1114,15 +1114,15 @@ Return ONLY this JSON array:
             },
         });
 
-        revalidateTag(`test-${testId}`, "max");
-        revalidateTag(`exam-${test.userExam.exam.id}`, "max");
-        revalidateTag(`exams`, "max");
-        revalidateTag(`userDashboard-${test.userExam.user_id}`, "max");
-        revalidateTag(`userExams-${test.userExam.user_id}`, "max");
-        revalidateTag(`tests-${test.userExam.id}-user-${test.userExam.user_id}`, "max");
-        revalidateTag(`todaysTasks-${test.userExam.user_id}`, "max");
-        revalidateTag(`userExam-${test.userExam.id}`, "max");
-        revalidateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user_id}`, "max");
+        revalidateTag(`test-${testId}`, { expire: 0 });
+        revalidateTag(`exam-${test.userExam.exam.id}`, {expire: 0});
+        revalidateTag(`exams`, { expire: 0 });
+        revalidateTag(`userDashboard-${test.userExam.user_id}`, { expire: 0 });
+        revalidateTag(`userExams-${test.userExam.user_id}`, { expire: 0 });
+        revalidateTag(`tests-${test.userExam.id}-user-${test.userExam.user_id}`, { expire: 0 });
+        revalidateTag(`todaysTasks-${test.userExam.user_id}`, { expire: 0 });
+        revalidateTag(`userExam-${test.userExam.id}`, { expire: 0 });
+        revalidateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user_id}`, { expire: 0 });
 
         onProgress({
             step: "completed",

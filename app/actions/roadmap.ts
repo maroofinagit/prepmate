@@ -919,14 +919,14 @@ Do NOT
             },
         });
 
-        revalidateTag(`roadmap-${user_exam_id}-user-${userExam.user_id}`, "max");
-        revalidateTag(`exam-${exam.id}`, "max");
-        revalidateTag(`exams`, "max");
-        revalidateTag(`userDashboard-${userExam.user_id}`, "max");
-        revalidateTag(`userExams-${userExam.user_id}`, "max");
-        revalidateTag(`tests-${user_exam_id}-user-${userExam.user_id}`, "max");
-        revalidateTag(`todaysTasks-${userExam.user_id}`, "max");
-        revalidateTag(`userExam-${user_exam_id}`, "max");
+        revalidateTag(`roadmap-${user_exam_id}-user-${userExam.user_id}`, { expire: 0 });
+        revalidateTag(`exam-${exam.id}`, { expire: 0 });
+        revalidateTag(`exams`, { expire: 0 });
+        revalidateTag(`userDashboard-${userExam.user_id}`, { expire: 0 });
+        revalidateTag(`userExams-${userExam.user_id}`, { expire: 0 });
+        revalidateTag(`tests-${user_exam_id}-user-${userExam.user_id}`, { expire: 0 });
+        revalidateTag(`todaysTasks-${userExam.user_id}`, { expire: 0 });
+        revalidateTag(`userExam-${user_exam_id}`, { expire: 0 });
 
 
         onProgress({
