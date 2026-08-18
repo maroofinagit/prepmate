@@ -236,13 +236,13 @@ export default function TestClient({ test, userExamId }: TestProps) {
             toast.success("Test submitted successfully!", {
                 id: toastId,
             });
-            setSubmitting(false);
-
+            
             // remove saved localstorage
             localStorage.removeItem(`test-${test.id}`);
-
+            
             // optional redirect
             router.push(`/user-exam/${userExamId}/tests/${test.id}/result`);
+            setSubmitting(false);
 
         } catch (err: any) {
 

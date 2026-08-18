@@ -2,7 +2,7 @@
 
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
-import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import { TestAttemptSchema } from "../lib/zodSchema";
@@ -599,12 +599,11 @@ export async function getTestResult(testId: number) {
 const ai = new GoogleGenAI({});
 
 const MODELS = [
-    "gemini-3.6-flash",
-    "gemini-3.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
+    "gemini-3.7-flash",        // Primary
+    "gemini-3.6-flash",        // Strong fallback
+    "gemini-3.5-flash",        // Fallback
+    "gemini-3.5-flash-lite",   // High-quota emergency fallback
+    "gemini-2.5-flash",        // Last resort
 ] as const;
 
 enum RoadmapFailureReason {
@@ -619,8 +618,16 @@ enum RoadmapFailureReason {
 const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function generateWithFallback(prompt: string) {
+export async function generateWithFallback(prompt: string, onProgress: (event: any) => void) {
+
     let lastError: any;
+
+    const aiStartProgress = 20;
+    const aiEndProgress = 35;
+
+    const totalAttempts = MODELS.length * 2;
+
+    let attemptNumber = 0;
 
     for (const model of MODELS) {
         // Try each model twice
@@ -629,6 +636,28 @@ export async function generateWithFallback(prompt: string) {
                 console.log(
                     `🤖 Trying ${model} (Attempt ${attempt}/2)`
                 );
+
+                attemptNumber++;
+
+                const attemptProgress =
+                    aiStartProgress +
+                    Math.round(
+                        ((attemptNumber - 1) /
+                            totalAttempts) *
+                        (aiEndProgress - aiStartProgress - 2)
+                    );
+
+                onProgress({
+                    step: "ai_generation_started",
+                    message: `Generating roadmap (Attempt ${attempt}/2)...`,
+                    progress: attemptProgress,
+                });
+
+                onProgress({
+                    step: "ai_generation",
+                    message: `Generating roadmap with ${model} (Attempt ${attempt}/2)...`,
+                    progress: attemptProgress,
+                });
 
                 const response =
                     await ai.models.generateContent({
@@ -640,7 +669,14 @@ export async function generateWithFallback(prompt: string) {
                     `✅ Test Attempt generated with ${model} (Attempt ${attempt})`
                 );
 
+                onProgress({
+                    step: "ai_generation_success",
+                    message: `Roadmap generated successfully with ${model} (Attempt ${attempt}/2)`,
+                    progress: 35,
+                });
+
                 return response;
+
             } catch (err: any) {
                 // Keep the latest error so we can throw it
                 // after all models have been exhausted.
@@ -699,7 +735,7 @@ export async function generateWithFallback(prompt: string) {
     throw lastError;
 }
 
-export async function generateTestAttempt(testId: number) {
+export async function generateTestAttempt(testId: number, onProgress: (event: any) => void) {
     try {
 
         // =========================
@@ -785,6 +821,12 @@ export async function generateTestAttempt(testId: number) {
         // =========================
         // EXTRACT TOPICS
         // =========================
+
+        onProgress({
+            step: "extracting_topics",
+            message: "Extracting topics from roadmap...",
+            progress: 10,
+        });
 
         let taskContext: {
             focus: string;
@@ -999,7 +1041,21 @@ Return ONLY this JSON array:
         // CALL GEMINI
         // =========================
 
-        const result = await generateWithFallback(prompt);
+        onProgress({
+            step: "ai_generation_starts",
+            message: "Preparing your exam data for AI roadmap generation...",
+            progress: 20,
+        });
+
+        const promptStarts = Date.now();
+
+        const result = await generateWithFallback(prompt, onProgress);
+
+        console.log(
+            "🟢 AI response received in:",
+            ((Date.now() - promptStarts) / 1000).toFixed(2),
+            "seconds"
+        );
 
         const responseText = result.text ?? "";
 
@@ -1018,6 +1074,12 @@ Return ONLY this JSON array:
 
         let generatedQuestions = parsed.data;
 
+        onProgress({
+            step: "generated",
+            message: "AI Roadmap Generated now processing it to the database!",
+            progress: 50,
+        });
+
         // =========================
         // SAVE QUESTIONS
         // =========================
@@ -1033,6 +1095,12 @@ Return ONLY this JSON array:
             })),
         });
 
+        onProgress({
+            step: "saved",
+            message: "Questions saved to the database successfully!",
+            progress: 75,
+        });
+
         // =========================
         // UPDATE TEST
         // =========================
@@ -1046,15 +1114,21 @@ Return ONLY this JSON array:
             },
         });
 
-        updateTag(`test-${testId}`);
-        updateTag(`exam-${test.userExam.exam.id}`);
-        updateTag(`exams`);
-        updateTag(`userDashboard-${test.userExam.user_id}`);
-        updateTag(`userExams-${test.userExam.user_id}`);
-        updateTag(`tests-${test.userExam.id}-user-${test.userExam.user_id}`);
-        updateTag(`todaysTasks-${test.userExam.user_id}`);
-        updateTag(`userExam-${test.userExam.id}`);
-        updateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user_id}`);
+        revalidateTag(`test-${testId}`, "max");
+        revalidateTag(`exam-${test.userExam.exam.id}`, "max");
+        revalidateTag(`exams`, "max");
+        revalidateTag(`userDashboard-${test.userExam.user_id}`, "max");
+        revalidateTag(`userExams-${test.userExam.user_id}`, "max");
+        revalidateTag(`tests-${test.userExam.id}-user-${test.userExam.user_id}`, "max");
+        revalidateTag(`todaysTasks-${test.userExam.user_id}`, "max");
+        revalidateTag(`userExam-${test.userExam.id}`, "max");
+        revalidateTag(`roadmap-${test.userExam.id}-user-${test.userExam.user_id}`, "max");
+
+        onProgress({
+            step: "completed",
+            message: "Test generation completed successfully!",
+            progress: 90,
+        });
 
         // =========================
         // SUCCESS
