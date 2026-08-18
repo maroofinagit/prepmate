@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
     Card,
     CardHeader,
@@ -94,7 +94,7 @@ export default function DashboardAnalytics({
 }: {
     dashboardUser: DashboardUser;
 }) {
-    const { soundEnabled } = useUser();
+    const { soundEnabled, name } = useUser();
     const exams = dashboardUser?.exams || [];
     const [newExams, setNewExams] = useState(exams);
     const [selectedExam, setSelectedExam] = useState(
@@ -102,8 +102,10 @@ export default function DashboardAnalytics({
     );
     const [regenerating, setRegenerating] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
+    const [progress, setProgress] = useState(0);
     const [deleting, setDeleting] = useState(false);
     const [dltDialogOpen, setDltDialogOpen] = useState(false);
+    const messageLoopRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         setNewExams(dashboardUser?.exams ?? []);
@@ -121,19 +123,6 @@ export default function DashboardAnalytics({
             return newExams.find((exam) => exam.id === prev.id) ?? newExams[0];
         });
     }, [newExams]);
-
-    function startMessageLoop(messages: string[], interval = 1500) {
-        let index = 0;
-        setLoadingMessage(messages[index]);
-        const id = setInterval(() => {
-            index = (index + 1) % messages.length;
-            setLoadingMessage(messages[index]);
-        }, interval);
-        return id; // you’ll use this to clear the loop
-    }
-
-    // update selectedExam if exams change and selectedExam becomes stale
-    // (keeps UI consistent if props update)
 
     const currentSelectedExam = useMemo(() => {
         if (!selectedExam) return null;
@@ -372,6 +361,22 @@ export default function DashboardAnalytics({
 
     const router = useRouter();
 
+    function startMessageLoop(
+        messages: string[],
+        interval = 5000
+    ) {
+        let index = 0;
+
+        setLoadingMessage(messages[index]);
+
+        const id = setInterval(() => {
+            index = (index + 1) % messages.length;
+            setLoadingMessage(messages[index]);
+        }, interval);
+
+        return id;
+    }
+
     const handleRegenerate = async () => {
         if (!selectedId) return;
         setRegenerating(true);
@@ -381,38 +386,149 @@ export default function DashboardAnalytics({
         );
         await new Promise((r) => setTimeout(r, 1000));
 
-        // Step 2: Generate Roadmap
-        const loadingMessages = [
-            "Generating your roadmap... please wait ⏳",
-            "Aligning tasks with your strategy…",
-            "Calculating your weekly milestones…",
-            "Creating Tests and Resources…",
-            "Almost there… sprinkling the final touches ✨",
-        ];
+        const eventSource = new EventSource(
+            `/api/roadmap/stream?userExamId=${selectedId}`,
+        );
 
-        const loopId = startMessageLoop(loadingMessages, 5000);
+        // 3️⃣ Receive events from server
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
 
-        const roadmapRes = await generateRoadmap(selectedId);
-        if (!roadmapRes.success) {
+            console.log("SSE event:", data);
+
+            // Server has established the connection
+            if (data.type === "connected") {
+                setLoadingMessage(
+                    "Starting your personalized roadmap..."
+                );
+                setProgress(8);
+            }
+
+            // progress
+            if (data.type === "progress") {
+
+                setProgress(data.progress);
+
+                // AI generation starts
+                if (data.step === "ai_generation" || data.step === "loading_existing") {
+
+                    if (!messageLoopRef.current) {
+                        const aiMessages = [
+                            "Analyzing your syllabus and exam requirements... ⏳",
+                            "Building the structure of your personalized roadmap...",
+                            "Connecting topics in the right learning order...",
+                            "Balancing difficult topics across your preparation period...",
+                            "Planning your weekly milestones and study strategy...",
+                            "Making sure your roadmap fits your preparation timeline...",
+                            "Almost there... the AI is putting the final pieces together ✨",
+                        ];
+
+                        messageLoopRef.current =
+                            startMessageLoop(
+                                aiMessages,
+                                5000
+                            );
+                    }
+
+                    return;
+                }
+
+                // Any progress event after AI generation
+                // means the AI stage is over.
+                if (messageLoopRef.current) {
+                    clearInterval(messageLoopRef.current);
+                    messageLoopRef.current = null;
+                }
+
+                // Show the REAL server message
+                setLoadingMessage(data.message);
+            }
+
+            // Generation completed
+            if (data.type === "completed") {
+                eventSource.close();
+                setProgress(100);
+
+                if (soundEnabled) {
+                    playNotification();
+                }
+
+                toast.success(
+                    "🎉 Roadmap generated successfully!"
+                );
+
+                setLoadingMessage(
+                    "🎯 Roadmap ready! Redirecting to your dashboard..."
+                );
+                setRegenerating(false);
+
+                setTimeout(() => {
+                    router.replace(
+                        `/dashboard/roadmap/${selectedId}`
+                    );
+                }, 1000);
+            }
+
+            // Generation failed
+            if (data.type === "error") {
+                eventSource.close();
+
+                setRegenerating(false);
+
+                if (soundEnabled) {
+                    playError();
+                }
+
+                toast.error(
+                    "Failed to generate roadmap. You can create one later from your dashboard.",
+                    {
+                        duration: 2000,
+                    }
+                );
+
+                setLoadingMessage(
+                    "Failed to generate roadmap. Redirecting to dashboard..."
+                );
+                setProgress(0);
+
+                setTimeout(() => {
+                    router.replace("/dashboard");
+                }, 2000);
+            }
+        };
+
+        // 4️⃣ Connection-level error
+        eventSource.onerror = () => {
+            console.error(
+                "SSE connection error"
+            );
+
+            eventSource.close();
+
             if (soundEnabled) {
                 playError();
             }
-            toast.error("Failed to regenerate roadmap. Please try again later.", {
-                duration: 2000,
-            });
+
+            toast.error(
+                "Connection to roadmap generator was lost.",
+                {
+                    duration: 3000,
+                }
+            );
+
             setRegenerating(false);
-            clearInterval(loopId);
-            return;
-        }
-        clearInterval(loopId);
-        if (soundEnabled) {
-            playNotification();
-        }
-        toast.success(
-            "Roadmap regenerated successfully. Redirecting to your updated roadmap...",
-        );
-        setRegenerating(false);
-        router.replace(`/dashboard/roadmap/${selectedId}`); // redirect to the updated roadmap page
+            setLoadingMessage(
+                "Connection lost. Redirecting to dashboard..."
+            );
+
+            setProgress(0);
+
+            setTimeout(() => {
+                router.replace("/dashboard");
+            }, 3000);
+
+        };
+
     };
 
     const handleDelete = async () => {
@@ -556,34 +672,46 @@ export default function DashboardAnalytics({
             {regenerating && (
                 <div className="fixed h-screen inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-6 cursor-not-allowed">
                     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border text-center space-y-5">
+
                         <div className="text-sm text-justify tracking-tight text-gray-500 flex flex-col gap-y-2">
                             <span>
-                                Hey {dashboardUser?.name?.split(" ")[0] || "there"} ! Your
-                                roadmap is being carefully built and may take around{" "}
-                                <span className="font-bold whitespace-nowrap">5-7</span> minutes
-                                as its a big responsible task. The app may seem hanged but it's
-                                not, don’t worry it’s still working in the background.
+                                Hey {name?.split(" ")[0] || "there"} ! Your roadmap is being carefully built and may take around <span className="font-bold whitespace-nowrap">5-7</span> minutes as its a big responsible task. The app may seem hanged but it's not, don’t worry it’s still working in the background.
                             </span>
                             <span>
-                                ☕️ Brew yourself a coffee, scroll for a while and let us handle
-                                the planning. We’ll let you know with a notification sound as
-                                soon as your roadmap is ready.
+                                ☕️ Brew yourself a coffee, scroll for a while and let us handle the planning. We’ll let you know with a notification sound as soon as your roadmap is ready.
                             </span>
                         </div>
 
                         <div className="flex justify-center">
-                            <div className="h-14 w-14 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
+                            <div className="h-10 aspect-square rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
                         </div>
 
                         <div className="space-y-2">
                             <h2 className="text-2xl font-semibold text-gray-800">
-                                Regenerating Your Roadmap for{" "}
-                                {currentSelectedExam?.exam?.name || "the selected exam"}
+                                Generating Your Roadmap for {selectedExam?.exam.name}
                             </h2>
 
                             <p className="text-sm leading-relaxed text-gray-500">
                                 {loadingMessage}
                             </p>
+                        </div>
+
+                        <div className="pt-3 space-y-2">
+                            <div className="flex items-center justify-between text-xs text-gray-500">
+                                <span>Progress</span>
+                                <span className="font-semibold text-blue-600">
+                                    {progress}%
+                                </span>
+                            </div>
+
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                                <div
+                                    className="h-full rounded-full bg-blue-600 transition-all duration-500 ease-out"
+                                    style={{
+                                        width: `${progress}%`,
+                                    }}
+                                />
+                            </div>
                         </div>
 
                         <div className="rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">

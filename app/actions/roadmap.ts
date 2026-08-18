@@ -2,10 +2,11 @@
 
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { RoadmapSchema } from "@/app/lib/zodSchema";
 import { i } from "framer-motion/client";
 import { Prisma } from "@/generated/prisma/client";
+import { error } from "next/dist/build/output/log";
 
 const ai = new GoogleGenAI({});
 
@@ -30,8 +31,15 @@ enum RoadmapFailureReason {
 const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function generateWithFallback(prompt: string) {
+export async function generateWithFallback(prompt: string, onProgress: (event: ProgressEvent) => void) {
     let lastError: any;
+
+    const aiStartProgress = 15;
+    const aiEndProgress = 35;
+
+    const totalAttempts = MODELS.length * 2;
+
+    let attemptNumber = 0;
 
     for (const model of MODELS) {
         // Try each model twice
@@ -40,6 +48,28 @@ export async function generateWithFallback(prompt: string) {
                 console.log(
                     `🤖 Trying ${model} (Attempt ${attempt}/2)`
                 );
+
+                attemptNumber++;
+
+                const attemptProgress =
+                    aiStartProgress +
+                    Math.round(
+                        ((attemptNumber - 1) /
+                            totalAttempts) *
+                        (aiEndProgress - aiStartProgress - 2)
+                    );
+
+                onProgress({
+                    step: "ai_generation_started",
+                    message: `Generating roadmap (Attempt ${attempt}/2)...`,
+                    progress: attemptProgress,
+                });
+
+                onProgress({
+                    step: "ai_generation",
+                    message: `Generating roadmap with ${model} (Attempt ${attempt}/2)...`,
+                    progress: attemptProgress,
+                });
 
                 const response =
                     await ai.models.generateContent({
@@ -50,6 +80,12 @@ export async function generateWithFallback(prompt: string) {
                 console.log(
                     `✅ Success with ${model} (Attempt ${attempt})`
                 );
+
+                onProgress({
+                    step: "ai_generation_success",
+                    message: `Roadmap generated successfully with ${model} (Attempt ${attempt}/2)`,
+                    progress: 35,
+                });
 
                 return response;
             } catch (err: any) {
@@ -110,7 +146,9 @@ export async function generateWithFallback(prompt: string) {
     throw lastError;
 }
 
-export async function generateRoadmap(user_exam_id: number) {
+export async function generateRoadmap(user_exam_id: number,
+    onProgress: (event: ProgressEvent) => void
+) {
     try {
         // 1️⃣ Fetch user exam
         const userExam = await db.userExam.findUnique({
@@ -151,6 +189,13 @@ export async function generateRoadmap(user_exam_id: number) {
             userExam.roadmapJson &&
             Object.keys(userExam.roadmapJson).length > 0
         ) {
+
+            onProgress({
+                step: "loading_existing",
+                message: "Loading existing roadmap from database...",
+                progress: 10,
+            });
+
             const parsed = RoadmapSchema.safeParse(userExam.roadmapJson);
 
             if (parsed.success) {
@@ -183,12 +228,31 @@ export async function generateRoadmap(user_exam_id: number) {
                     if (!topicIdsValid) break;
                 }
 
+                // All topic IDs referenced by the generated/existing roadmap
+                const generatedTopicIds = new Set<number>();
+
+                for (const phase of parsed.data.phases) {
+                    for (const week of phase.weeks) {
+                        for (const task of week.tasks) {
+                            for (const topicId of task.topics) {
+                                generatedTopicIds.add(topicId);
+                            }
+                        }
+                    }
+                }
+
 
                 // Only assign it if BOTH validations passed
                 if (topicIdsValid) {
                     roadmapData = parsed.data;
+                    onProgress({
+                        step: "using_existing",
+                        message: "Using existing roadmap from database",
+                        progress: 20,
+                    });
                     console.log("✅ Using existing roadmapJson from database", userExam.roadmapJson);
                 }
+
             }
         }
 
@@ -393,8 +457,14 @@ Do NOT
             console.log("🟡 Sending prompt to AI:", new Date().toISOString());
             const promptStart = Date.now();
 
+            onProgress({
+                step: "ai_generation_starts",
+                message: "Preparing your exam data for AI roadmap generation...",
+                progress: 10,
+            });
+
             // 5️⃣ Generate roadmap with AI
-            const response = await generateWithFallback(prompt);
+            const response = await generateWithFallback(prompt, onProgress);
 
             console.log(
                 "🟢 AI response received in:",
@@ -458,7 +528,27 @@ Do NOT
 
         console.log("🟡 Starting roadmap transaction:", new Date().toISOString());
 
+        onProgress({
+            step: "generated",
+            message: "AI Roadmap Generated now processing it to the database!",
+            progress: 50,
+        });
+
         const transactionStart = Date.now();
+        const transactionStartProgress = 60;
+        const transactionEndProgress = 90;
+        const totalPhases = roadmapData.phases.length;
+
+        const totalWeeks = roadmapData.phases.reduce(
+            (total: number, phase: any): number =>
+                total +
+                (Array.isArray(phase.weeks)
+                    ? phase.weeks.length
+                    : 0),
+            0
+        );
+
+        let completedWeeks = 0;
 
         // 6️⃣ Save everything in TRANSACTION
         roadmap = await db.$transaction(async (tx) => {
@@ -490,6 +580,13 @@ Do NOT
 
             console.log("Creating phases, weeks, and tests at:", new Date().toISOString());
             const phsasesStart = Date.now();
+
+            onProgress({
+                step: "phases",
+                message: "Creating phases, weeks, and tests...",
+                progress: 60,
+            });
+
 
             // Create phases → weeks → tasks
             if (
@@ -637,8 +734,38 @@ Do NOT
                                     });
                                 }
                             }
+
+                            completedWeeks++;
+                            const weekProgress =
+                                transactionStartProgress +
+                                Math.round(
+                                    (completedWeeks / totalWeeks) *
+                                    (transactionEndProgress - transactionStartProgress)
+                                );
+                            console.log(`Week ${completedWeeks} of ${totalWeeks} created. Progress: ${weekProgress}`);
+
+                            onProgress({
+                                step: "week_completed",
+                                message: `Created tasks for Week ${createdWeek.week_number} of Phase ${phaseIndex + 1}.`,
+                                progress: weekProgress,
+                            });
                         }
+
                     }
+
+                    const phaseProgress =
+                        transactionStartProgress +
+                        Math.round(
+                            ((phaseIndex + 1) / totalPhases) *
+                            (transactionEndProgress - transactionStartProgress)
+                        );
+
+                    onProgress({
+                        step: "phase_completed",
+                        message: `Created weeks and tasks for Phase ${phaseIndex + 1}.`,
+                        progress: phaseProgress,
+                    });
+
                 }
             }
 
@@ -685,6 +812,12 @@ Do NOT
 
             console.log("Creating final tests at:", new Date().toISOString());
             const finalTestsStart = Date.now();
+
+            onProgress({
+                step: "final_tests",
+                message: "Creating final tests...",
+                progress: 90,
+            });
 
             // 🔥 FINAL TESTS
             await tx.test.createMany({
@@ -754,7 +887,7 @@ Do NOT
             return createdRoadmap;
         }, {
             maxWait: 10000,
-            timeout: 150000, // 2.5 minutes
+            timeout: 180000,
         });
 
         console.log(
@@ -787,14 +920,21 @@ Do NOT
             },
         });
 
-        updateTag(`roadmap-${user_exam_id}-user-${userExam.user_id}`);
-        updateTag(`exam-${exam.id}`);
-        updateTag(`exams`);
-        updateTag(`userDashboard-${userExam.user_id}`);
-        updateTag(`userExams-${userExam.user_id}`);
-        updateTag(`tests-${user_exam_id}-user-${userExam.user_id}`);
-        updateTag(`todaysTasks-${userExam.user_id}`);
-        updateTag(`userExam-${user_exam_id}`);
+        revalidateTag(`roadmap-${user_exam_id}-user-${userExam.user_id}`, "max");
+        revalidateTag(`exam-${exam.id}`, "max");
+        revalidateTag(`exams`, "max");
+        revalidateTag(`userDashboard-${userExam.user_id}`, "max");
+        revalidateTag(`userExams-${userExam.user_id}`, "max");
+        revalidateTag(`tests-${user_exam_id}-user-${userExam.user_id}`, "max");
+        revalidateTag(`todaysTasks-${userExam.user_id}`, "max");
+        revalidateTag(`userExam-${user_exam_id}`, "max");
+
+
+        onProgress({
+            step: "completed",
+            message: "Roadmap generated successfully!",
+            progress: 95,
+        });
 
         return {
             success: true,
@@ -846,3 +986,10 @@ Do NOT
         };
     }
 }
+
+type ProgressEvent = {
+    step: string;
+    message: string;
+    progress: number;
+};
+
