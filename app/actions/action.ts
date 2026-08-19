@@ -603,6 +603,8 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
         throw new Error("Task ID is required.");
     }
 
+    const transStartTime = new Date().toISOString();
+
     try {
         await db.$transaction(async (tx) => {
             // 1️⃣ Mark task as completed and fetch hierarchy
@@ -701,6 +703,11 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
                     progress_percent: roadmapProgress,
                 },
             });
+            const transEndTime = new Date().toISOString();
+            console.log("Transaction completed in ", new Date(transEndTime).getTime() - new Date(transStartTime).getTime(), "ms");
+        },{
+            maxWait: 2000, // Maximum time to wait for the transaction to start
+            timeout: 10000, // Maximum time of 10 seconds for the transaction to complete
         });
 
         updateTag(`roadmap-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific roadmap
