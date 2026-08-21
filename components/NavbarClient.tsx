@@ -35,7 +35,12 @@ const montserrat = Montserrat({
     weight: ["400", "500", "600", "700"],
 });
 
-export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
+type NavbarClientProps = {
+    isAdmin: boolean;
+    notifications: number;
+};
+
+export default function NavbarClient({ isAdmin, notifications }: NavbarClientProps) {
 
     const dropdownContainer = {
         hidden: {},
@@ -79,7 +84,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
     const router = useRouter();
     const pathname = usePathname();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState<{ name?: string; email?: string; image?: string } | null>(null);
+    const [user, setUser] = useState<{ name: string; email: string; image: string, notifications: number } | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -91,7 +96,12 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                 if (error) console.error("Session fetch error:", error);
                 else if (data?.session) {
                     setIsLoggedIn(true);
-                    setUser({ name: data.user.name, email: data.user.email, image: data.user.image?.toString() });
+                    setUser({
+                        name: data.user.name || "User",
+                        email: data.user.email || "",
+                        image: data.user.image || "/avatar.png",
+                        notifications: notifications || 0,
+                    });
 
                 } else setIsLoggedIn(false);
             } catch (err) {
@@ -541,6 +551,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                 stiffness: 500,
                                                 damping: 30,
                                             }}
+                                            className="relative h-9 w-9 shrink-0"
                                         >
                                             <Avatar className="h-9 w-9 border border-white/10">
                                                 <AvatarImage
@@ -554,7 +565,14 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                         ? user.name.charAt(0).toUpperCase()
                                                         : "U"}
                                                 </AvatarFallback>
+
+
                                             </Avatar>
+
+                                            {(user?.notifications ?? 0) > 0 && (
+                                                <span className="absolute -top-1 -right-1 h-3 aspect-square rounded-full bg-red-500 border-2 border-white" />
+                                            )}
+
                                         </motion.div>
                                     </button>
                                 </DropdownMenuTrigger>
@@ -659,6 +677,7 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
             rounded-lg
             focus:bg-gray-200
             focus:text-black
+            relative
         "
                                                     >
                                                         <Link
@@ -668,6 +687,11 @@ export default function NavbarClient({ isAdmin }: { isAdmin: boolean }) {
                                                             <User className="h-4 w-4" />
                                                             Profile
                                                         </Link>
+                                                        {(user?.notifications ?? 0) > 0 && (
+                                                            <span className="absolute right-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white border-2">
+                                                                {user?.notifications}
+                                                            </span>
+                                                        )}
                                                     </motion.div>
                                                 </DropdownMenuItem>
 

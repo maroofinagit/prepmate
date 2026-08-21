@@ -14,6 +14,7 @@ import { Search } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { playNotification, playError } from "@/app/lib/sound";
 import { useUser } from "@/app/context/userContext";
+import { useRouter } from "next/navigation";
 
 
 export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
@@ -24,6 +25,8 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
     const [expandedWeeks, setExpandedWeeks] = useState<Record<number, (number | undefined)[]>>({});
     const [isExpandedAll, setIsExpandedAll] = useState(false);
     const [search, setSearch] = useState("");
+
+    const router = useRouter();
 
     // task -> checked
     const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
@@ -106,30 +109,74 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                 playNotification();
             }
             console.log("Sound enabled:", soundEnabled);
-            toast.success("Task completed!");
+            toast.success("Task completed!", { duration: 2500 });
 
             // instant UI update: mark task completed and clear checkbox for that task
             setLocalRoadmap((prev) => ({
                 ...prev,
-                phases: prev.phases.map((phase) => ({
-                    ...phase,
-                    weeks: phase.weeks.map((week) => ({
-                        ...week,
-                        tasks: week.tasks.map((task) =>
-                            task.id === taskId ? { ...task, is_completed: true } : task
-                        ),
-                    })),
-                })),
+
+                phases: prev.phases.map((phase) => {
+                    if (phase.id !== res.phaseId) {
+                        return phase;
+                    }
+
+                    return {
+                        ...phase,
+
+                        // Update this phase's progress
+                        progress: res.phaseProgress? res.phaseProgress : phase.progress,
+
+                        weeks: phase.weeks.map((week) => {
+                            if (week.id !== res.weekId) {
+                                return week;
+                            }
+
+                            return {
+                                ...week,
+
+                                // Update this week's progress
+                                progress: res.weekProgress? res.weekProgress : week.progress,
+
+                                tasks: week.tasks.map((task) =>
+                                    task.id === taskId
+                                        ? {
+                                            ...task,
+                                            is_completed: true,
+                                        }
+                                        : task
+                                ),
+                            };
+                        }),
+                    };
+                }),
+
                 userExam: {
                     ...prev.userExam,
                     exam: {
                         ...prev.userExam.exam,
-                        resources: prev.userExam.exam.resources, // keep resources unchanged
+                        resources: prev.userExam.exam.resources,
                     },
                 },
             }));
 
+            setCheckedTasks((prev) => ({
+                ...prev,
+                [taskId]: false,
+            }));
+
             setCheckedTasks((prev) => ({ ...prev, [taskId]: false }));
+
+            if (res.notifications && res.notifications.length > 0) {
+                res.notifications.forEach((notification, index) => {
+                    setTimeout(() => {
+                        toast(notification, { duration: 3000 });
+                        playNotification();
+                    }, (index + 1) * 3000);
+                });
+            }
+
+            router.refresh(); // refresh the page to reflect changes in the roadmap
+
         } catch (err) {
             console.error(err);
             if (soundEnabled) {
@@ -153,7 +200,7 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
             if (soundEnabled) {
                 playNotification();
             }
-            toast.success("Milestone updated!", { duration: 1500 });
+            toast.success("Milestone updated!", { duration: 2500 });
 
             // Instant UI update
             setLocalRoadmap((prev) => ({
@@ -679,6 +726,16 @@ export default function RoadmapClient({ roadmap }: { roadmap: Roadmap }) {
                                                     </div>
                                                 );
                                             })}
+
+                                            <div className="pt-3 flex flex-col gap-2">
+                                                <p className="text-sm text-gray-700">
+                                                    Phase Progress: {phase?.progress ?? 0}%
+                                                </p>
+                                                <Progress
+                                                    value={phase?.progress ?? 0}
+                                                    className="w-full"
+                                                />
+                                            </div>
                                         </CardContent>
                                     )}
                                 </Card>

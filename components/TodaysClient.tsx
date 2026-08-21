@@ -271,10 +271,20 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
             const res = await completeRoadmapTask(taskId, userExamId, id);
 
             if (!res.success) throw new Error("Failed to update task");
+
             if (soundEnabled) {
                 playNotification();
             }
             toast.success("Task completed!");
+
+            if (res.notifications && res.notifications.length > 0) {
+                res.notifications.forEach((notification, index) => {
+                    setTimeout(() => {
+                        playNotification();
+                        toast(notification, { duration: 3000 });
+                    }, (index + 1) * 3000);
+                });
+            }
 
         } catch (err) {
 
@@ -720,7 +730,7 @@ export default function TodaysClient({ todaysTasks }: { todaysTasks: any[] }) {
                                             <CardDescription>
                                                 {group.tasks.length}{" "}
                                                 {group.tasks.length === 1 ? "Task" : "Tasks"} Upcoming
-                                                
+
                                             </CardDescription>
                                         </div>
 

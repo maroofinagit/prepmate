@@ -2,7 +2,7 @@
 import { db } from "@/app/lib/db";
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
-import { cacheLife, updateTag, cacheTag } from "next/cache";
+import { cacheLife, updateTag, cacheTag, revalidatePath } from "next/cache";
 import { u } from "framer-motion/client";
 import { use } from "react";
 import { Resend } from "resend";
@@ -33,6 +33,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // todaysTasks-${userId}
 // Cache for today's tasks of a user
+
+// profileData-${userId}
+// Cache for a user's profile data including settings, etc.
+
+// notifications-${userId}
+// Cache for a user's notifications
 
 export async function getFullExams() {
     'use cache';
@@ -237,6 +243,7 @@ export async function createUserExam({
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${examId}`); // Invalidate the cache for the specific user exam
+        updateTag(`profileData-${userId}`); // Invalidate the cache for the user's profile data
 
         return {
             success: true,
@@ -315,6 +322,7 @@ export async function getRoadmap(user_exam_id: number, userId: string) {
                         description: true,
                         start_date: true,
                         end_date: true,
+                        progress: true,
 
                         weeks: {
                             orderBy: {
@@ -549,6 +557,7 @@ export async function deleteUserExam(user_exam_id: number, userId: string) {
     updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
     updateTag(`exams`); // Invalidate the cache for all exams
     updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
+    updateTag(`profileData-${userId}`); // Invalidate the cache for the user's profile data
 
     try {
 
@@ -585,6 +594,9 @@ export async function markNotificationAsRead(notificationId: number) {
             data: { is_read: true },
         });
 
+        updateTag(`profileData-${updatedNotification.user_id}`); // Invalidate the cache for the user's profile data
+        updateTag(`notifications-${updatedNotification.user_id}`); // Invalidate the cache for the user's notifications
+
         return {
             success: true
         };
@@ -598,7 +610,7 @@ export async function markNotificationAsRead(notificationId: number) {
 }
 
 
-export async function completeRoadmapTask(taskId: number, user_exam_id: number, userId: string): Promise<{ success: boolean }> {
+export async function completeRoadmapTask(taskId: number, user_exam_id: number, userId: string): Promise<{ success: boolean, notifications: string[], weekId?: number, phaseId?: number, weekProgress?: number, phaseProgress?: number }> {
     if (!taskId) {
         throw new Error("Task ID is required.");
     }
@@ -606,17 +618,61 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
     const transStartTime = new Date().toISOString();
 
     try {
-        await db.$transaction(async (tx) => {
+
+        const transaction = await db.$transaction(async (tx) => {
+
             // 1️⃣ Mark task as completed and fetch hierarchy
             const task = await tx.roadmapTask.update({
                 where: { id: taskId },
                 data: { is_completed: true },
-                include: {
+                select: {
+                    week_id: true,
                     week: {
-                        include: {
+                        select: {
+                            week_number: true,
+                            phase_id: true,
+                            progress: true,
+                            tasks: {
+                                select: {
+                                    is_completed: true,
+                                }
+                            },
+
                             phase: {
-                                include: {
-                                    roadmap: true,
+                                select: {
+                                    id: true,
+                                    phase_name: true,
+                                    progress: true,
+
+                                    weeks: {
+                                        select: {
+                                            id: true,
+                                            progress: true,
+                                        },
+                                    },
+
+                                    roadmap: {
+                                        select: {
+                                            id: true,
+                                            user_exam_id: true,
+                                            progress: true,
+                                            userExam: {
+                                                select: {
+                                                    exam: {
+                                                        select: {
+                                                            name: true,
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            phases: {
+                                                select: {
+                                                    id: true,
+                                                    progress: true,
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -625,25 +681,26 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
             });
 
             const weekId = task.week_id;
+            const weekNumber = task.week.week_number;
             const phaseId = task.week.phase_id;
-            const roadmapId = task.week.phase.roadmap_id;
+            const phaseName = task.week.phase.phase_name;
+            const roadmapId = task.week.phase.roadmap.id;
             const userExamId = task.week.phase.roadmap.user_exam_id;
+            const userExamName = task.week.phase.roadmap.userExam.exam.name;
 
             // 2️⃣ Week Progress
-            const weekTasks = await tx.roadmapTask.findMany({
-                where: { week_id: weekId },
-                select: {
-                    is_completed: true,
-                },
-            });
 
-            const weekProgress = weekTasks.length
+            console.log('Week progress before update for weekId', weekId, ':', task.week.progress);
+
+            const weekProgress = task.week.tasks.length
                 ? Math.round(
-                    (weekTasks.filter((t) => t.is_completed).length /
-                        weekTasks.length) *
+                    (task.week.tasks.filter((t) => t.is_completed).length /
+                        task.week.tasks.length) *
                     100
                 )
                 : 0;
+
+            console.log("Week Progress Calculation:", weekProgress)
 
             await tx.roadmapWeek.update({
                 where: { id: weekId },
@@ -652,20 +709,23 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
                 },
             });
 
-            // 3️⃣ Phase Progress
-            const phaseWeeks = await tx.roadmapWeek.findMany({
-                where: { phase_id: phaseId },
-                select: {
-                    progress: true,
-                },
-            });
+            console.log(`Phase progress before update for phaseId ${phaseId}:`, task.week.phase.progress);
 
-            const phaseProgress = phaseWeeks.length
+            // 3️⃣ Phase Progress
+            const phaseProgress = task.week.phase.weeks.length
                 ? Math.round(
-                    phaseWeeks.reduce((sum, week) => sum + week.progress, 0) /
-                    phaseWeeks.length
+                    task.week.phase.weeks.reduce(
+                        (sum, week) =>
+                            sum +
+                            (week.id === weekId
+                                ? weekProgress
+                                : week.progress),
+                        0
+                    ) / task.week.phase.weeks.length
                 )
                 : 0;
+
+            console.log("Phase Progress Calculation:", phaseProgress)
 
             await tx.roadmapPhase.update({
                 where: { id: phaseId },
@@ -675,17 +735,13 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
             });
 
             // 4️⃣ Roadmap Progress
-            const roadmapPhases = await tx.roadmapPhase.findMany({
-                where: { roadmap_id: roadmapId },
-                select: {
-                    progress: true,
-                },
-            });
 
-            const roadmapProgress = roadmapPhases.length
+            console.log(`Roadmap progress before update for roadmapId ${roadmapId}:`, task.week.phase.roadmap.progress);
+
+            const roadmapProgress = task.week.phase.roadmap.phases.length
                 ? Math.round(
-                    roadmapPhases.reduce((sum, phase) => sum + phase.progress, 0) /
-                    roadmapPhases.length
+                    task.week.phase.roadmap.phases.reduce((sum, phase) => sum + phase.progress, 0) /
+                    task.week.phase.roadmap.phases.length
                 )
                 : 0;
 
@@ -703,12 +759,75 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
                     progress_percent: roadmapProgress,
                 },
             });
+
             const transEndTime = new Date().toISOString();
             console.log("Transaction completed in ", new Date(transEndTime).getTime() - new Date(transStartTime).getTime(), "ms");
-        },{
+
+            return {
+                weekId,
+                weekProgress,
+                phaseId,
+                phaseProgress,
+                phaseName,
+                roadmapProgress,
+                roadmapId,
+                userExamId,
+                weekNumber,
+                userExamName,
+            };
+
+        }, {
             maxWait: 2000, // Maximum time to wait for the transaction to start
             timeout: 10000, // Maximum time of 10 seconds for the transaction to complete
         });
+
+        const { weekProgress, phaseProgress, roadmapProgress, roadmapId, userExamId, weekNumber, phaseName, userExamName, weekId, phaseId } = transaction;
+
+        console.log(`✅ Task completed for taskId: ${taskId}. Week Progress: ${weekProgress}%, Phase Progress: ${phaseProgress}%, Roadmap Progress: ${roadmapProgress}%`);
+
+        const notifications: string[] = [];
+
+        if (weekProgress === 100) {
+            const weekTestNotification = await db.notification.create({
+                data: {
+                    user_id: userId,
+                    roadmap_id: roadmapId,
+                    user_exam_id: userExamId,
+                    message: `🎉 Test for Week ${weekNumber} of ${userExamName} is been unlocked !`,
+                    is_read: false,
+                },
+            });
+            notifications.push(weekTestNotification.message);
+            console.log(`✅ Week completed for taskId: ${taskId}, weekProgress: ${weekProgress}%`);
+        }
+
+        if (phaseProgress === 100) {
+            const phaseTestNotification = await db.notification.create({
+                data: {
+                    user_id: userId,
+                    roadmap_id: roadmapId,
+                    user_exam_id: userExamId,
+                    message: `🎉 Test for Phase ${phaseName} of ${userExamName} is been unlocked !`,
+                    is_read: false,
+                },
+            });
+            notifications.push(phaseTestNotification.message);
+            console.log(`✅ Phase completed for taskId: ${taskId}, phaseProgress: ${phaseProgress}%`);
+        }
+
+        if (roadmapProgress === 100) {
+            const finalTestNotification = await db.notification.create({
+                data: {
+                    user_id: userId,
+                    roadmap_id: roadmapId,
+                    user_exam_id: userExamId,
+                    message: `🎉 Final tests for ${userExamName} is been unlocked !`,
+                    is_read: false,
+                },
+            });
+            notifications.push(finalTestNotification.message);
+            console.log(`✅ Roadmap completed for taskId: ${taskId}, roadmapProgress: ${roadmapProgress}%`);
+        }
 
         updateTag(`roadmap-${user_exam_id}-user-${userId}`); // Invalidate the cache for the specific roadmap
         updateTag(`userExams-${userId}`); // Invalidate the cache for the specific user exam
@@ -717,15 +836,24 @@ export async function completeRoadmapTask(taskId: number, user_exam_id: number, 
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
+        updateTag(`profileData-${userId}`); // Invalidate the cache for the user's profile data
+        updateTag(`notifications-${userId}`); // Invalidate the cache for the user's notifications
+        revalidatePath(`/profile`); // Revalidate the profile path for the user
 
         return {
             success: true,
+            notifications,
+            weekId,
+            phaseId,
+            weekProgress,
+            phaseProgress,
         };
 
     } catch (error) {
         console.error("❌ Error completing roadmap task:", error);
         return {
             success: false,
+            notifications: [],
         };
     }
 }
@@ -770,6 +898,7 @@ export async function completeMilestone(
         updateTag(`todaysTasks-${userId}`); // Invalidate the cache for today's tasks
         updateTag(`exams`); // Invalidate the cache for all exams
         updateTag(`userExam-${user_exam_id}`); // Invalidate the cache for the specific user exam
+        updateTag(`profileData-${userId}`); // Invalidate the cache for the user's profile data
 
         return { success: true };
     } catch (error) {
@@ -1135,6 +1264,11 @@ export async function getCurrentUser(userId: string) {
 }
 
 export async function getProfileData(userId: string) {
+
+    'use cache';
+    cacheTag(`profileData-${userId}`);
+    cacheLife('hours');
+
     if (!userId) {
         console.error("❌ User ID is required to fetch profile data.");
         return null;
@@ -1189,6 +1323,32 @@ export async function getProfileData(userId: string) {
     } catch (error) {
         console.error("❌ Error fetching profile data:", error);
         return null;
+    }
+}
+
+export async function countUnreadNotifications(userId: string) {
+
+    'use cache';
+    cacheTag(`notifications-${userId}`);
+    cacheLife('hours');
+
+    if (!userId) {
+        console.error("❌ User ID is required to count unread notifications.");
+        return 0;
+    }
+
+    try {
+        const count = await db.notification.count({
+            where: {
+                user_id: userId,
+                is_read: false,
+            },
+        });
+
+        return count;
+    } catch (error) {
+        console.error("❌ Error counting unread notifications:", error);
+        return 0;
     }
 }
 

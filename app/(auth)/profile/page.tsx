@@ -19,7 +19,7 @@ export default async function ProfilePage() {
     const userId = data.user.id;
 
     const user = await getProfileData(userId);
-
+    
     if (!user) {
         return <div className="text-center mt-20 text-gray-500 h-screen">User not found.</div>;
     }

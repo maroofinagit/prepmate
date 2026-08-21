@@ -799,6 +799,7 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
             },
         });
 
+
         if (!test) {
             return {
                 success: false,
@@ -828,6 +829,91 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
             progress: 10,
         });
 
+        //extract weak topics
+
+        const TOPIC_ACCURACY_THRESHOLD = 70;
+
+        const getWeakTopics = (ts: any[]) => {
+            // Consider ALL attempted tests
+            const attemptedTests = (ts ?? []).filter(
+                (test) => test.attempt
+            );
+
+            const topicStats = new Map<
+                number,
+                {
+                    id: number;
+                    name: string;
+                    correctCount: number;
+                    wrongCount: number;
+                }
+            >();
+
+            for (const test of attemptedTests) {
+                if (!test.attempt) continue;
+
+                const responses =
+                    test.attempt.responses as Record<string, string>;
+
+                for (const question of test.questions) {
+                    const topic = question.topic;
+
+                    const userAnswer =
+                        responses[String(question.id)];
+
+                    let stats = topicStats.get(topic.id);
+
+                    if (!stats) {
+                        stats = {
+                            id: topic.id,
+                            name: topic.name,
+                            correctCount: 0,
+                            wrongCount: 0,
+                        };
+
+                        topicStats.set(topic.id, stats);
+                    }
+
+                    if (userAnswer === question.correctAns) {
+                        stats.correctCount++;
+                    } else {
+                        stats.wrongCount++;
+                    }
+                }
+            }
+
+            return [...topicStats.values()]
+                .map((topic) => {
+                    const totalQuestions =
+                        topic.correctCount + topic.wrongCount;
+
+                    const accuracy =
+                        totalQuestions > 0
+                            ? Math.round(
+                                (topic.correctCount /
+                                    totalQuestions) *
+                                100
+                            )
+                            : 0;
+
+                    return {
+                        ...topic,
+                        totalQuestions,
+                        accuracy,
+                    };
+                })
+                .filter(
+                    (topic) =>
+                        topic.accuracy <
+                        TOPIC_ACCURACY_THRESHOLD
+                )
+                .sort(
+                    (a, b) =>
+                        a.accuracy - b.accuracy ||
+                        b.wrongCount - a.wrongCount
+                );
+        };
+
         let taskContext: {
             focus: string;
             tasks: {
@@ -841,6 +927,8 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
                 }[];
             }[];
         }[] = [];
+
+        let relevantWeakTopics: {}[] = [];
 
         // WEEKLY TEST
         if (test.type === "WEEKLY" && test.week) {
@@ -861,10 +949,111 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
                 },
             ];
 
+
+            // ============================================
+            // 2. GET PREVIOUS WEEKS
+            // ============================================
+
+            const previousWeeks = await db.roadmapWeek.findMany({
+                where: {
+                    phase: {
+                        roadmap: {
+                            user_exam_id: test.userExamId,
+                        },
+                    },
+
+                    // Only weeks before the current week
+                    start_date: {
+                        lt: test.week.start_date!,
+                    },
+                },
+
+                include: {
+                    tests: {
+                        where: {
+                            // Only attempted tests
+                            attempt: {
+                                isNot: null,
+                            },
+                        },
+
+                        include: {
+                            attempt: true,
+
+                            questions: {
+                                include: {
+                                    topic: true,
+                                },
+                            },
+                        },
+                    },
+                },
+
+                orderBy: {
+                    start_date: "asc",
+                },
+            });
+
+
+            // ============================================
+            // 3. GET ALL ATTEMPTED TESTS FROM PREVIOUS WEEKS
+            // ============================================
+
+            const previousWeekTests = previousWeeks.flatMap(
+                (week) => week.tests
+            );
+
+
+            // ============================================
+            // 4. FIND WEAK TOPICS
+            // ============================================
+
+            const previousWeakTopics =
+                getWeakTopics(previousWeekTests);
+
+
+            // ============================================
+            // 5. GET CURRENT WEEK TOPIC IDs
+            // ============================================
+
+            const currentWeekTopicIds = new Set(
+                test.week.tasks.flatMap((task) =>
+                    task.topics.map((topic) => topic.id)
+                )
+            );
+
+
+            // ============================================
+            // 6. ONLY KEEP WEAK TOPICS THAT
+            //    APPEAR IN CURRENT WEEK
+            // ============================================
+
+            relevantWeakTopics =
+                previousWeakTopics.filter((topic) =>
+                    currentWeekTopicIds.has(topic.id)
+                );
+
+
+            console.log(
+                "Previous weak topics:",
+                previousWeakTopics
+            );
+
+            console.log(
+                "Current week topic IDs:",
+                [...currentWeekTopicIds]
+            );
+
+            console.log(
+                "Relevant weak topics:",
+                relevantWeakTopics
+            );
+
         }
 
         // PHASE TEST
         else if (test.type === "PHASE" && test.phase) {
+
             taskContext = test.phase.weeks.map((week) => ({
                 focus: week.focus,
                 tasks: week.tasks.map((task) => ({
@@ -878,6 +1067,107 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
                     })),
                 })),
             }));
+
+            // ============================================
+            // 2. GET PREVIOUS PHASES
+            // ============================================
+
+            const previousPhases = await db.roadmapPhase.findMany({
+                where: {
+                    roadmap: {
+                        user_exam_id: test.userExamId,
+                    },
+
+                    // Only phases before the current phase
+                    start_date: {
+                        lt: test.phase.start_date!,
+                    },
+                },
+
+                include: {
+                    tests: {
+                        where: {
+                            // Only attempted tests
+                            attempt: {
+                                isNot: null,
+                            },
+                        },
+
+                        include: {
+                            attempt: true,
+
+                            questions: {
+                                include: {
+                                    topic: true,
+                                },
+                            },
+                        },
+                    },
+                },
+
+                orderBy: {
+                    start_date: "asc",
+                },
+            });
+
+
+            // ============================================
+            // 3. GET ALL ATTEMPTED TESTS
+            //    FROM PREVIOUS PHASES
+            // ============================================
+
+            const previousPhaseTests = previousPhases.flatMap(
+                (phase) => phase.tests
+            );
+
+
+            // ============================================
+            // 4. FIND WEAK TOPICS
+            // ============================================
+
+            const previousWeakTopics =
+                getWeakTopics(previousPhaseTests);
+
+
+            // ============================================
+            // 5. GET ALL TOPIC IDs IN CURRENT PHASE
+            // ============================================
+
+            const currentPhaseTopicIds = new Set(
+                test.phase.weeks.flatMap((week) =>
+                    week.tasks.flatMap((task) =>
+                        task.topics.map((topic) => topic.id)
+                    )
+                )
+            );
+
+
+            // ============================================
+            // 6. KEEP ONLY WEAK TOPICS THAT
+            //    APPEAR IN CURRENT PHASE
+            // ============================================
+
+            relevantWeakTopics =
+                previousWeakTopics.filter((topic) =>
+                    currentPhaseTopicIds.has(topic.id)
+                );
+
+
+            console.log(
+                "Previous phase weak topics:",
+                previousWeakTopics
+            );
+
+            console.log(
+                "Current phase topic IDs:",
+                [...currentPhaseTopicIds]
+            );
+
+            console.log(
+                "Relevant phase weak topics:",
+                relevantWeakTopics
+            );
+
         }
 
         // FINAL TEST
@@ -922,11 +1212,150 @@ export async function generateTestAttempt(testId: number, onProgress: (event: an
                     }))
                 );
             }
+
+            // ============================================
+            // 2. BUILD FULL STUDY CONTEXT
+            // ============================================
+
+            if (roadmap) {
+                taskContext = roadmap.phases.flatMap((phase) =>
+                    phase.weeks.map((week) => ({
+                        focus: week.focus,
+                        tasks: week.tasks.map((task) => ({
+                            name: task.title,
+                            description: task.description,
+                            topics: task.topics.map((topic) => ({
+                                id: topic.id,
+                                name: topic.name,
+                                description: topic.description,
+                                difficulty: topic.difficulty,
+                            })),
+                        })),
+                    }))
+                );
+            }
+
+
+            // ============================================
+            // 3. GET ALL PREVIOUS ATTEMPTED TESTS
+            // ============================================
+
+            const previousTests = await db.test.findMany({
+                where: {
+                    userExamId: test.userExamId,
+
+                    // Only tests the student actually attempted
+                    attempt: {
+                        isNot: null,
+                    },
+                },
+
+                include: {
+                    attempt: true,
+
+                    questions: {
+                        include: {
+                            topic: true,
+                        },
+                    },
+                },
+
+                orderBy: {
+                    createdAt: "asc",
+                },
+            });
+
+
+            // ============================================
+            // 4. FIND ALL WEAK TOPICS
+            // ============================================
+
+            const weakTopics = getWeakTopics(previousTests);
+
+
+            // ============================================
+            // 5. GET TOPICS AVAILABLE IN FINAL
+            // ============================================
+
+            const finalTopicIds = new Set(
+                taskContext.flatMap((week) =>
+                    week.tasks.flatMap((task) =>
+                        task.topics.map((topic) => topic.id)
+                    )
+                )
+            );
+
+
+            // ============================================
+            // 6. KEEP ONLY TOPICS THAT ARE ACTUALLY
+            //    PART OF THE CURRENT ROADMAP
+            // ============================================
+
+            relevantWeakTopics = weakTopics.filter(
+                (topic) => finalTopicIds.has(topic.id)
+            );
+
+
+            console.log(
+                "All weak topics:",
+                weakTopics
+            );
+
+            console.log(
+                "Relevant final weak topics:",
+                relevantWeakTopics
+            );
         }
+
 
         // =========================
         // GEMINI PROMPT
         // =========================
+
+        const weakTopicContext = relevantWeakTopics.length > 0
+            ? `
+Weak Topics:
+
+The following topics have been identified as weak based on the student's
+performance in previous attempted tests relevant to this test.
+
+A topic is considered weak when its overall accuracy is below 70%.
+
+${relevantWeakTopics
+                .map(
+                    (topic: any) => `- Topic ID: ${topic.id}
+  Name: ${topic.name}
+  Accuracy: ${topic.accuracy}%
+  Questions Attempted: ${topic.totalQuestions}
+  Wrong Answers: ${topic.wrongCount}`
+                )
+                .join("\n")}
+
+MANDATORY WEAK TOPIC REQUIREMENT:
+
+Every weak topic listed above MUST appear in at least one generated question.
+
+If there are multiple weak topics, ALL of them must be represented.
+Do NOT select only some of the weak topics.
+
+Each weak-topic question MUST use the exact topicId provided above.
+
+Weak-topic coverage takes priority over even distribution across topics.
+
+If there are only a few weak topics, additional questions may be generated
+from those weak topics when appropriate.
+
+Do not generate questions for weak topics that are not present in the
+Study Context.
+`
+            : `
+Weak Topics:
+
+No relevant weak topics were identified for this test.
+
+Generate the test normally using the Study Context and the standard
+question distribution.
+`;
 
         const prompt = `
 You are an expert exam question setter.
@@ -971,6 +1400,8 @@ ${task.topics
                 )
                 .join("\n")}
 
+                ${weakTopicContext}
+
 Instructions:
 
 1. Generate ONLY valid JSON.
@@ -991,6 +1422,47 @@ Instructions:
 16. Distribute questions evenly across all provided tasks and topics.
 17. Difficulty should match the topic difficulty whenever reasonable.
 18. Use concise, grammatically correct English suitable for technical interviews and competitive exams.
+
+WEAK TOPIC RULES:
+
+19. If Weak Topics are provided above, EVERY listed weak topic MUST be
+    represented by at least one question.
+
+20. Do NOT omit any listed weak topic.
+
+21. Do NOT replace a weak topic with another topic.
+
+22. Every question intended to address a weak topic MUST use the exact
+    topicId of that weak topic.
+
+23. If there are multiple weak topics, ensure that each distinct weak topic
+    receives at least one question before adding additional questions.
+
+24. Weak-topic coverage takes priority over even distribution across topics.
+
+25. If the number of weak topics is smaller than the total number of
+    questions, the remaining questions should cover the rest of the
+    Study Context.
+
+26. Additional questions may be generated for weak topics when appropriate,
+    especially when there are fewer weak topics than the number of questions
+    that can reasonably be dedicated to weakness remediation.
+
+27. Never generate a question for a weak topic unless that topic exists in
+    the current Study Context.
+
+
+GENERAL DISTRIBUTION:
+
+28. After every relevant weak topic has been covered, distribute the
+    remaining questions broadly across the provided tasks and topics.
+
+29. Difficulty distribution should be followed as closely as possible.
+
+30. Difficulty should match the topic difficulty whenever reasonable.
+
+31. Use concise, grammatically correct English suitable for technical
+    interviews and competitive exams.
 
 Question Count:
 - WEEKLY: 10 questions
@@ -1115,7 +1587,7 @@ Return ONLY this JSON array:
         });
 
         revalidateTag(`test-${testId}`, { expire: 0 });
-        revalidateTag(`exam-${test.userExam.exam.id}`, {expire: 0});
+        revalidateTag(`exam-${test.userExam.exam.id}`, { expire: 0 });
         revalidateTag(`exams`, { expire: 0 });
         revalidateTag(`userDashboard-${test.userExam.user_id}`, { expire: 0 });
         revalidateTag(`userExams-${test.userExam.user_id}`, { expire: 0 });

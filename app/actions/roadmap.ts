@@ -2,7 +2,7 @@
 
 import { db } from "@/app/lib/db";
 import { GoogleGenAI } from "@google/genai";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { RoadmapSchema } from "@/app/lib/zodSchema";
 import { i } from "framer-motion/client";
 import { Prisma } from "@/generated/prisma/client";
@@ -927,6 +927,8 @@ Do NOT
         revalidateTag(`tests-${user_exam_id}-user-${userExam.user_id}`, { expire: 0 });
         revalidateTag(`todaysTasks-${userExam.user_id}`, { expire: 0 });
         revalidateTag(`userExam-${user_exam_id}`, { expire: 0 });
+        revalidateTag(`profileData-${userExam.user_id}`, { expire: 0 });
+        revalidatePath(`/dashboard`); // Revalidate the dashboard path for the user
 
 
         onProgress({

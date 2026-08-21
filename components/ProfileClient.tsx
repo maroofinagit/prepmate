@@ -2,8 +2,8 @@
 
 import { format } from "date-fns";
 import ProfileImageUploader from "@/components/ProfilePicUpdater";
-import { useState } from "react";
-import { BellRing, CheckCircle2, GraduationCap, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BellRing, CheckCircle2, ChevronUp, GraduationCap, ShieldCheck } from "lucide-react";
 import { Button } from "./ui/button";
 import { markNotificationAsRead, ProfileUserType } from "@/app/actions/action";
 import { toast } from "sonner";
@@ -17,6 +17,25 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
 
     const { soundEnabled } = useUser();
     const [notifications, setNotifications] = useState(user.notifications);
+    const [showAllNotifications, setShowAllNotifications] = useState(false);
+
+
+    useEffect(() => {
+        setNotifications(user.notifications);
+    }, [user.notifications]);
+
+    const sortedNotifications = [...notifications].sort((a, b) => {
+        // Unread notifications first
+        if (a.is_read !== b.is_read) {
+            return a.is_read ? 1 : -1;
+        }
+
+        // If both have same read status, newest first
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    const visibleNotifications = sortedNotifications.slice(0, 2);
+    const remainingNotifications = sortedNotifications.slice(2);
 
     const handleNotification = async (id: number) => {
         try {
@@ -81,7 +100,7 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
                                 <p className="text-sm text-slate-500">
                                     {user.email}
                                 </p>
-                               {user.emailVerified ? (
+                                {user.emailVerified ? (
                                     <Badge variant="default" className=" bg-green-600 text-white text-xs">
                                         Email Verified
                                     </Badge>
@@ -217,7 +236,31 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
                 className="mt-14"
             >
                 <div className="flex flex-col gap-3 mb-6">
-                    <h2 className="text-xl md:text-2xl font-bold">Recent Activity</h2>
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl md:text-2xl font-bold">
+                            Recent Activity
+                        </h2>
+
+                        {remainingNotifications.length > 0 && (
+                            <Button
+
+                                size="sm"
+                                className="cursor-pointer bg-gray-100 hover:bg-gray-400 text-gray-700 hover:text-white transition-all duration-300"
+                                onClick={() =>
+                                    setShowAllNotifications((prev) => !prev)
+                                }
+                            >
+                                {showAllNotifications
+                                    ?
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs md:text-sm">View Less</span>
+                                        <ChevronUp className="size-4 md:size-5" />
+                                    </div>
+                                    : `View More (${remainingNotifications.length})`}
+                            </Button>
+                        )}
+                    </div>
+
                     <p className="text-sm text-muted-foreground">
                         Stay updated with your latest account notifications.
                     </p>
@@ -225,7 +268,9 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
 
                 {user.notifications.length > 0 ? (
                     <div className="space-y-6">
-                        {notifications.map((n: any, index: number) => (
+
+                        {/* First two notifications */}
+                        {visibleNotifications.map((n: any, index: number) => (
                             <motion.div
                                 key={n.id}
                                 initial={{ opacity: 0, x: -20 }}
@@ -251,8 +296,23 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
                                             {n.message}
                                         </p>
 
-                                        <p className="mt-2 text-xs md:text-sm text-slate-500">
-                                            {format(new Date(n.created_at), "dd MMM yyyy")}
+                                        <p className="mt-2 flex gap-2 text-xs md:text-sm text-slate-500">
+                                            <span>
+
+                                                {format(
+                                                    new Date(n.created_at),
+                                                    "dd MMM yyyy"
+                                                )}
+                                            </span>
+                                            <span>
+
+                                                {
+                                                    format(
+                                                        new Date(n.created_at),
+                                                        "hh:mm a"
+                                                    )
+                                                }
+                                            </span>
                                         </p>
                                     </div>
 
@@ -269,7 +329,9 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
                                                 size="sm"
                                                 variant="outline"
                                                 className="cursor-pointer hover:bg-blue-600 hover:text-white"
-                                                onClick={() => handleNotification(n.id)}
+                                                onClick={() =>
+                                                    handleNotification(n.id)
+                                                }
                                             >
                                                 Mark as Read
                                             </Button>
@@ -278,6 +340,79 @@ export default function ProfilePage({ user }: { user: ProfileUserType }) {
                                 </div>
                             </motion.div>
                         ))}
+
+                        {/* Remaining notifications */}
+                        {showAllNotifications &&
+                            remainingNotifications.map((n: any, index: number) => (
+                                <motion.div
+                                    key={n.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{
+                                        duration: 0.35,
+                                        delay: index * 0.06,
+                                    }}
+                                >
+                                    <div
+                                        className={`flex hover:scale-102 items-center gap-5 rounded-2xl border p-5 shadow-sm transition-all duration-300 hover:shadow-lg ${n.is_read
+                                            ? "bg-white border-slate-200"
+                                            : "bg-blue-50 border-blue-200 border-l-4 border-l-blue-600"
+                                            }`}
+                                    >
+                                        <div className="flex md:p-4 p-2 items-center justify-center rounded-md md:rounded-xl bg-blue-100">
+                                            <BellRing className="size-4 md:size-6 text-blue-600" />
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <p className="font-medium text-xs md:text-base text-slate-800">
+                                                {n.message}
+                                            </p>
+
+                                            <p className="mt-2 flex gap-2 text-xs md:text-sm text-slate-500">
+                                                <span>
+
+                                                    {format(
+                                                        new Date(n.created_at),
+                                                        "dd MMM yyyy"
+                                                    )}
+                                                </span>
+                                                <span>
+
+                                                    {
+                                                        format(
+                                                            new Date(n.created_at),
+                                                            "hh:mm a"
+                                                        )
+                                                    }
+                                                </span>
+                                            </p>
+                                        </div>
+
+                                        <div className="flex items-center">
+                                            {n.is_read ? (
+                                                <div className="flex items-center gap-2 text-green-600">
+                                                    <CheckCircle2 className="size-5 md:size-6" />
+                                                    <span className="hidden md:block text-sm font-medium">
+                                                        Read
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="cursor-pointer hover:bg-blue-600 hover:text-white"
+                                                    onClick={() =>
+                                                        handleNotification(n.id)
+                                                    }
+                                                >
+                                                    Mark as Read
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-dashed bg-slate-50 py-12 text-center">
