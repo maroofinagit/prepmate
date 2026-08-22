@@ -11,12 +11,12 @@ export default function MaintenancePage() {
                 </h1>
 
                 <p className="text-muted-foreground text-lg">
-                    PrepMate is currently undergoing scheduled maintenance to improve
+                    Schemae is currently undergoing scheduled maintenance to improve
                     your experience.
                 </p>
 
                 <p className="text-sm text-muted-foreground">
-                    Please check back in a few minutes.
+                    Please check back after September 1st.
                 </p>
 
                 <div className="pt-4">
